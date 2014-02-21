@@ -8,6 +8,7 @@
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
 		<config>src/com/logsys/spring/applicationContext.xml</config>
+		<config>src/com/bwi/spring/bwiContext.xml</config>
 	</configs>
 	<configSets>
 	</configSets>
