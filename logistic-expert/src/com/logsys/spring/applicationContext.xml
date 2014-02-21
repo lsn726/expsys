@@ -25,11 +25,9 @@
 			</props>
 		</property>
 		<property name="mappingResources">
-			<value>
-				<list>
-					<value>com/logsys/hibernate/hibernate.hbm.xml</value>
-				</list>
-			</value>
+			<list>
+				<value>com/logsys/hibernate/hibernate.hbm.xml</value>
+			</list>
 		</property>
 	</bean>
 	<bean id="transactionManager"

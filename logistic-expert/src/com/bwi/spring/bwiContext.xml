@@ -6,5 +6,7 @@
 	<!-- BOM部分配置开始 -->
 	<bean id="MRPBomCell" class="com.bwi.bom.mrp.MRPBomCell">
 	</bean>
+	<bean id="MRPBom" class="com.bwi.bom.mrp.MRPBom">
+	</bean>
 
 </beans>

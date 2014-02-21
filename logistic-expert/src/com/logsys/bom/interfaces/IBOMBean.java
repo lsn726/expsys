@@ -1,8 +1,7 @@
 package com.logsys.bom.interfaces;
 
 import java.util.Collection;
-
-import com.bwi.bom.mrp.MRPBomCell;
+import java.util.Set;
 
 /**
  * BOM的Bean对象接口
@@ -20,6 +19,6 @@ public interface IBOMBean {
 	public Collection<IBOMCellBean> getCellBean(Object model);
 	
 	/**获取制造成品所需材料列表*/
-	public Collection<Object> getPNList(Object model);
+	public Set getPNSet(Object model);
 
 }
