@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.logsys.bom.interfaces.IBOMBean;
-import com.logsys.bom.interfaces.IBOMCellBean;
+import com.logsys.bom.interfaces.IBOMContentBean;
 
 /**
  * 专用于MRP的BomBean,在加入BOMCell时,重复Cell的Qty将叠加
@@ -26,7 +26,7 @@ public class MRPBom implements IBOMBean {
 	}
 	
 	@Override
-	public boolean insertCell(IBOMCellBean cellbean) {
+	public boolean insertCell(IBOMContentBean cellbean) {
 		if(cellbean==null) {
 			logger.error("参数为空");
 			return false;
@@ -36,7 +36,7 @@ public class MRPBom implements IBOMBean {
 			if(!container.containsKey(bomcell.getPn()))
 				container.put(bomcell.getPn(), bomcell);
 			else {
-				logger.warn("Object already exists in BOM, qty will be added to original.");
+				logger.info("BOM中已存在物料，原有消耗数量将叠加");
 				MRPBomCell temp=container.get(bomcell.getPn());
 				temp.setQty(temp.getQty()+bomcell.getQty());
 			}
@@ -49,7 +49,7 @@ public class MRPBom implements IBOMBean {
 	}
 
 	@Override
-	public boolean removeCell(IBOMCellBean cellbean) {
+	public boolean removeCell(IBOMContentBean cellbean) {
 		if(cellbean==null) {
 			logger.error("参数为空");
 			return false;
@@ -68,9 +68,9 @@ public class MRPBom implements IBOMBean {
 	}
 
 	@Override
-	public List<IBOMCellBean> getCellBean(Object model) {
+	public List<IBOMContentBean> getCellBean(Object model) {
 		if(container.containsKey(model)) {
-			List<IBOMCellBean> list=new ArrayList<IBOMCellBean>();
+			List<IBOMContentBean> list=new ArrayList<IBOMContentBean>();
 			list.add(container.get(model));
 			return list;
 		}

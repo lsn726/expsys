@@ -10,13 +10,13 @@ import java.util.Set;
 public interface IBOMBean {
 	
 	/**写入新的BomCell节点*/
-	public boolean insertCell(IBOMCellBean cellbean);
+	public boolean insertCell(IBOMContentBean cellbean);
 	
 	/**移除新的BomCell节点*/
-	public boolean removeCell(IBOMCellBean cellbean);
+	public boolean removeCell(IBOMContentBean cellbean);
 	
 	/**根据model获取BomCell信息列表*/
-	public Collection<IBOMCellBean> getCellBean(Object model);
+	public Collection<IBOMContentBean> getCellBean(Object model);
 	
 	/**获取制造成品所需材料列表*/
 	public Set getPNSet(Object model);

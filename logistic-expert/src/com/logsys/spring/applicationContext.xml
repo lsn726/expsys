@@ -35,5 +35,7 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<import resource="com/bwi/spring/bwiContext.xml" />
 
 </beans>
