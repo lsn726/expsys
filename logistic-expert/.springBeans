@@ -9,6 +9,7 @@
 	<configs>
 		<config>src/com/logsys/spring/applicationContext.xml</config>
 		<config>src/com/bwi/spring/bwiContext.xml</config>
+		<config>src/com/logsys/demand/demandContext.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

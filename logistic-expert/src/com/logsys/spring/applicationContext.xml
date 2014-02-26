@@ -5,37 +5,6 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
 
-
-	<bean id="MysqlDataSource"
-		class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="url" value="jdbc:mysql://localhost:3306/explogistic"></property>
-		<property name="username" value="dev"></property>
-		<property name="password" value="123456"></property>
-	</bean>
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-		<property name="dataSource">
-			<ref bean="MysqlDataSource" />
-		</property>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">
-					org.hibernate.dialect.MySQLDialect
-				</prop>
-			</props>
-		</property>
-		<property name="mappingResources">
-			<list>
-				<value>com/logsys/hibernate/hibernate.hbm.xml</value>
-			</list>
-		</property>
-	</bean>
-	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	<tx:annotation-driven transaction-manager="transactionManager" />
-	
-	<import resource="com/bwi/spring/bwiContext.xml" />
+	<import resource="com/logsys/demand/demandContext.xml" />
 
 </beans>

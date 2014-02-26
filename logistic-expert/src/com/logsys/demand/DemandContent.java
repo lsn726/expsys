@@ -66,5 +66,11 @@ public class DemandContent {
 	public void setDlvfix(int dlvfix) {
 		this.dlvfix = dlvfix;
 	}
+
+	@Override
+	public String toString() {
+		return "DemandContent [id=" + id + ", pn=" + pn + ", qty=" + qty
+				+ ", date=" + date + ", dlvfix=" + dlvfix + "]";
+	}
 	
 }

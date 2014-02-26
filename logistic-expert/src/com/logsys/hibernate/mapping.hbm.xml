@@ -11,7 +11,6 @@
 		<id name="id" column="id">
 			<generator class="increment"/>
 		</id>
-		<property name="reltime" type="timestamp" column="reltime" />
 		<property name="pn" type="string" column="pn" />
 		<property name="qty" type="double" column="qty"/>
 		<property name="date" type="date" column="date" />

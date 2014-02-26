@@ -12,14 +12,16 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * 需求数据文件读取器
  * @author lx8sn6
  */
-public class DemandDataFileReader {
+public class DemandDataReaderFile {
 	
-	private static Logger logger=Logger.getLogger(DemandDataFileReader.class);
+	private static Logger logger=Logger.getLogger(DemandDataReaderFile.class);
 
 	/**需求日期列*/
 	private static final int COL_DATE=0;
@@ -60,9 +62,11 @@ public class DemandDataFileReader {
 			logger.error("文件打开错误,或者文件格式错误。可能不是正确的Excel文件。");
 			return null;
 		}
+		//ApplicationContext sprcontext=new ClassPathXmlApplicationContext("com/logsys/demand/demandContext.xml");
 		demandlist=new ArrayList<DemandContent>();
 		DemandContent node;
 		for(Row row:sheet) {
+			//node=(DemandContent)sprcontext.getBean("FileDemandContent");
 			node=new DemandContent();
 			try {
 				node.setDate(row.getCell(COL_DATE).getDateCellValue());

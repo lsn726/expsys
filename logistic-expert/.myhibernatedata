@@ -1,6 +1,7 @@
 #MyEclipse Hibernate Properties
-#Thu Feb 20 14:22:23 CST 2014
+#Wed Feb 26 14:19:56 CST 2014
 genVersionTag=false
+sessionFactoryName=com.logsys.hibernate.HibernateSessionFactory
 genAnnotations=false
 configFile=/logistic-expert/src/com/logsys/spring/applicationContext.xml
 reStrategyClass=
