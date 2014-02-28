@@ -62,11 +62,9 @@ public class DemandDataReaderFile {
 			logger.error("文件打开错误,或者文件格式错误。可能不是正确的Excel文件。");
 			return null;
 		}
-		//ApplicationContext sprcontext=new ClassPathXmlApplicationContext("com/logsys/demand/demandContext.xml");
 		demandlist=new ArrayList<DemandContent>();
 		DemandContent node;
 		for(Row row:sheet) {
-			//node=(DemandContent)sprcontext.getBean("FileDemandContent");
 			node=new DemandContent();
 			try {
 				node.setDate(row.getCell(COL_DATE).getDateCellValue());

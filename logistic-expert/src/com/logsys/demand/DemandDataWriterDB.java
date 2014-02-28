@@ -1,9 +1,12 @@
 package com.logsys.demand;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -44,44 +47,65 @@ public class DemandDataWriterDB {
 			return counter;
 		} catch(Throwable ex) {
 			logger.error("需求数据写入出现错误："+ex.toString());
+			ex.printStackTrace();
 			return 0;
 		}
 	}
 	
 	/**
-	 * 更新数据库需求表,如果该条目没有在数据库中，则写入数据库
+	 * 更新根据DemandUtil的fillEmptyDemandNodes生成的Map对象所包含的Demand信息,如果该条目没有在数据库中，则写入数据库
 	 * @param demandlist 需求数据
 	 * @return 更新的条目数量
 	 */
-	public static int updateOrInsert(List<DemandContent> demandlist) {
-		if(demandlist==null) {
+	public static int updateOrInsert(Map<String,Map<Date,DemandContent>> demandmap) {
+		if(demandmap==null) {
 			logger.error("参数为空，需求列表未能更新");
 			return 0;
 		}
-		if(demandlist.size()==0) return 0;
+		if(demandmap.size()==0) return 0;
 		try {
 			Session session=HibernateSessionFactory.getSessionFactory().getCurrentSession();
+			session.beginTransaction();
+			int counter=0;
+			Map<Date,DemandContent> submap;
 			Criteria criteria;
-			List<DemandContent> result;
-			DemandContent temp;
-			for(DemandContent dcontent:demandlist) {
-				criteria=session.createCriteria("DemandContent")
-					.add(Restrictions.eq("pn", dcontent.getPn()))
-					.add(Restrictions.eq("date", dcontent.getDate()));
-				result=criteria.list();
-				if(result.size()==0) continue;
-				if(result.size()!=1) {
-					logger.error("日期:"+dcontent.getDate()+",pn:"+dcontent.getPn()+",有多个记录存在.数据库错误,违反pn-date独立约束.");
-					return 0;
+			Date mindate;
+			Date maxdate;
+			Query delquery;			//删除旧记录的Query
+			Query insertquery;		//写入新纪录的Query
+			for(Object pn:demandmap.keySet()) {
+				//首先删除区间内指定型号的记录
+				submap=demandmap.get(pn);
+				mindate=DemandUtil.getMinDate(submap);
+				maxdate=DemandUtil.getMaxDate(submap);
+				delquery=session.createQuery("delete from DemandContent where pn=:pn and date>=:mindate and date<=:maxdate");
+				delquery.setString("pn", (String)pn);
+				delquery.setDate("mindate", mindate);
+				delquery.setDate("maxdate", maxdate);
+				delquery.executeUpdate();
+				//再写入新的记录
+				DemandContent tempDContent;
+				for(Object date:demandmap.keySet()) {
+					tempDContent=(DemandContent)submap.get(date);
+					if(tempDContent==null) {
+						logger.warn("收到null需求对象，请检查程序Bug。");
+						continue;
+					}
+					session.save(tempDContent);
+					counter++;
+					if(counter%50==0) {
+						session.flush();
+						session.clear();
+					}
 				}
-				temp=result.get(0);
-				temp.setQty(dcontent.getQty());
-				temp.setDlvfix(dcontent.getDlvfix());
-				criteria=session.createCriteria("DemandContent");
-				
+				session.flush();
+				session.clear();
 			}
+			session.getTransaction().commit();
+			return counter;
 		} catch(Throwable ex) {
 			logger.error("需求数据更新出现错误："+ex.toString());
+			ex.printStackTrace();
 			return 0;
 		}
 	}

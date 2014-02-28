@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -17,49 +18,45 @@ public class DemandUtil {
 	private static Logger logger=Logger.getLogger(DemandUtil.class);
 	
 	/**
-	 * 在demandlist中查找指定part bumber的最早需求日期
+	 * 在经过 函数demListToMapByPn处理后的单个demandmap中查找最小日期的函数.
 	 * @param demandlist 需求数据列表
-	 * @param pn 指定的part number
-	 * @return 返回的指定pn最小需求日期
+	 * @return 返回的找到的最小需求日期
 	 */
-	public static Date getMinDate(List<DemandContent> demandlist,String pn) {
-		if(demandlist==null) {
+	public static Date getMinDate(Map<Date,DemandContent> demandmap) {
+		if(demandmap==null) {
 			logger.error("需求数据列表为空。");
 			return null;
 		}
-		if(demandlist.size()==0) {
+		if(demandmap.size()==0) {
 			logger.warn("需求数据列表不包含任何数据。");
 			return null;
 		}
 		Date mindate=new Date("2199/12/31");		//设置一个最大日期
-		for(DemandContent dcontent:demandlist)
-			if(dcontent.getPn().equals(pn))			//如果型号相符
-				if(mindate.after(dcontent.getDate()))	//如果最小日期在此最新日期之后
-					mindate=(Date) dcontent.getDate().clone();			//设置为最小日期
-		return mindate;
+		for(Date date:demandmap.keySet())
+			if(mindate.after(date))			//如果最小日期在此最新日期之后
+				mindate=date;				//设置为最小日期
+		return (Date)mindate.clone();
 	}
 	
 	/**
-	 * 在demandlist中查找指定part bumber的最晚需求日期
+	 * 在经过 函数demListToMapByPn处理后的单个demandmap中查找最大日期的函数.
 	 * @param demandlist 需求数据列表
-	 * @param pn 指定型号
-	 * @return 最晚需求日期
+	 * @return 返回的找到的最晚需求日期
 	 */
-	public static Date getMaxDate(List<DemandContent> demandlist,String pn) {
-		if(demandlist==null) {
+	public static Date getMaxDate(Map<Date,DemandContent> demandmap) {
+		if(demandmap==null) {
 			logger.error("需求数据列表为空。");
 			return null;
 		}
-		if(demandlist.size()==0) {
+		if(demandmap.size()==0) {
 			logger.warn("需求数据列表不包含任何数据。");
 			return null;
 		}
 		Date maxdate=new Date("1910/12/31");		//设置一个最小日期
-		for(DemandContent dcontent:demandlist)
-			if(dcontent.getPn().equals(pn))			//如果型号相符
-				if(maxdate.before(dcontent.getDate()))			//如果最小日期在此最新日期之后
-					maxdate=(Date) dcontent.getDate().clone();	//设置为最小日期
-		return maxdate;
+		for(Date date:demandmap.keySet())
+			if(maxdate.before(date))		//如果最小日期在此最新日期之后
+				maxdate=date;				//设置为最小日期
+		return (Date)maxdate.clone();
 	}
 	
 	/**
@@ -96,18 +93,34 @@ public class DemandUtil {
 			logger.error("参数为空");
 			return -1;
 		}
+		if(demandmap.size()==0) return 0;
 		if(begin.after(end)) {
 			logger.error("开始时间晚于结束时间。");
 			return -1;
 		}
 		int counter=0;
 		Date index=(Date)begin.clone();
+		Calendar cal=Calendar.getInstance();
+		DemandContent dcontent;
+		String pn=demandmap.get(demandmap.keySet().toArray()[0]).getPn();
 		while(true) {
 			if(index.after(end)) break;
 			if(!demandmap.containsKey(index)) {		//如果没有这个日期，则加入空节点
-				
+				dcontent=new DemandContent();
+				dcontent.setDate((Date)index.clone());
+				dcontent.setPn(pn);
+				dcontent.setQty(0);
+				dcontent.setDlvfix(0);
+				demandmap.put(dcontent.getDate(), dcontent);
+				counter++;
 			}
+			cal.setTime(index);
+			cal.add(Calendar.DAY_OF_MONTH,1);
+			index=cal.getTime();
 		}
+		return counter;
 	}
+	
+	
 
 }
