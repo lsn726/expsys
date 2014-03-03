@@ -85,7 +85,7 @@ public class DemandDataWriterDB {
 				delquery.executeUpdate();
 				//再写入新的记录
 				DemandContent tempDContent;
-				for(Object date:demandmap.keySet()) {
+				for(Object date:submap.keySet()) {
 					tempDContent=(DemandContent)submap.get(date);
 					if(tempDContent==null) {
 						logger.warn("收到null需求对象，请检查程序Bug。");
