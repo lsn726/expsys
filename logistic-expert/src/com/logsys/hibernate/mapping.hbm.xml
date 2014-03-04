@@ -18,3 +18,17 @@
 	</class>
 
 </hibernate-mapping>
+
+<hibernate-mapping package="com.logsys.model">
+
+	<class name="ModelContent" table="model">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<property name="client" type="string" column="clinet" />
+		<property name="model" type="string" column="model" />
+		<property name="prjcode" type="string" column="prjcode" />
+		<property name="info" type="string" column="info" />
+	</class>
+
+</hibernate-mapping>

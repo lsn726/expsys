@@ -16,12 +16,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * 需求数据文件读取器
+ * 需求数据Excel文件读取器
  * @author lx8sn6
  */
-public class DemandDataReaderFile {
+public class DemandDataReaderExcel {
 	
-	private static Logger logger=Logger.getLogger(DemandDataReaderFile.class);
+	private static Logger logger=Logger.getLogger(DemandDataReaderExcel.class);
 
 	/**需求日期列*/
 	private static final int COL_DATE=0;

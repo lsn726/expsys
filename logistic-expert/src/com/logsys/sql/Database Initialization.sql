@@ -19,3 +19,12 @@ CREATE TABLE `demand_backup` (
   `dlvfix` int(5) DEFAULT '0' COMMENT '发货日期修正',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='需求备份表';
+
+CREATE TABLE `model` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `client` char(20) NOT NULL COMMENT '客户名',
+  `model` char(20) NOT NULL COMMENT '型号',
+  `prjcode` char(10) NOT NULL COMMENT '项目代号',
+  `info` char(30) NOT NULL COMMENT '型号信息',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='型号表'
