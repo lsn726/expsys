@@ -17,8 +17,12 @@ public class DemandUtil {
 
 	private static Logger logger=Logger.getLogger(DemandUtil.class);
 	
+	private static final Date DATE_MAX=new Date("2199/12/31");
+	
+	private static final Date DATE_MIN=new Date("1910/12/31");
+	
 	/**
-	 * 在经过 函数demListToMapByPn处理后的单个demandmap中查找最小日期的函数.
+	 * 在经过 函数demListToMapByPn处理后的单个demandmap(型号)中查找最小日期的函数.
 	 * @param demandlist 需求数据列表
 	 * @return 返回的找到的最小需求日期
 	 */
@@ -31,7 +35,7 @@ public class DemandUtil {
 			logger.warn("需求数据列表不包含任何数据。");
 			return null;
 		}
-		Date mindate=new Date("2199/12/31");		//设置一个最大日期
+		Date mindate=(Date)DATE_MAX.clone();//设置一个最大日期
 		for(Date date:demandmap.keySet())
 			if(mindate.after(date))			//如果最小日期在此最新日期之后
 				mindate=date;				//设置为最小日期
@@ -39,7 +43,7 @@ public class DemandUtil {
 	}
 	
 	/**
-	 * 在经过 函数demListToMapByPn处理后的单个demandmap中查找最大日期的函数.
+	 * 在经过 函数demListToMapByPn处理后的单个demandmap(型号)中查找最大日期的函数.
 	 * @param demandlist 需求数据列表
 	 * @return 返回的找到的最晚需求日期
 	 */
@@ -52,11 +56,51 @@ public class DemandUtil {
 			logger.warn("需求数据列表不包含任何数据。");
 			return null;
 		}
-		Date maxdate=new Date("1910/12/31");		//设置一个最小日期
+		Date maxdate=(Date)DATE_MIN.clone();//设置一个最小日期
 		for(Date date:demandmap.keySet())
 			if(maxdate.before(date))		//如果最小日期在此最新日期之后
 				maxdate=date;				//设置为最小日期
 		return (Date)maxdate.clone();
+	}
+	
+	/**
+	 * 检视DemandUtil.demListToMapByPn()函数处理的结果，计算多个型号的最小时间。
+	 * @param demmap
+	 * @return 返回的找到的最早需求日期
+	 */
+	public static Date getMinDateInMultiModel(Map<String,Map<Date,DemandContent>> demmap) {
+		if(demmap==null) {
+			logger.error("需求数据参数为空");
+			return null;
+		}
+		Date mindate=(Date)DATE_MAX.clone();
+		Date temp;
+		for(String model:demmap.keySet()) {
+			temp=getMinDate(demmap.get(model));
+			if(mindate.after(temp))
+				mindate=temp;
+		}
+		return mindate;
+	}
+	
+	/**
+	 * 检视DemandUtil.demListToMapByPn()函数处理的结果，计算多个型号的最小时间。
+	 * @param demmap
+	 * @return 返回的找到的最晚需求日期
+	 */
+	public static Date getMaxDateInMultiModel(Map<String,Map<Date,DemandContent>> demmap) {
+		if(demmap==null) {
+			logger.error("需求数据参数为空");
+			return null;
+		}
+		Date maxdate=(Date)DATE_MIN.clone();
+		Date temp;
+		for(String model:demmap.keySet()) {
+			temp=getMaxDate(demmap.get(model));
+			if(maxdate.before(temp))
+				maxdate=temp;
+		}
+		return maxdate;
 	}
 	
 	/**

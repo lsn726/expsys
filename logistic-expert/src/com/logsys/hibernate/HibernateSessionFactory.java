@@ -64,7 +64,7 @@ public class HibernateSessionFactory {
      */
 	public static void rebuildSessionFactory() {
 		try {
-			configuration.configure();
+			configuration.configure("com/logsys/hibernate/hibernate.cfg.xml");
 			serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
 			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 		} catch (Exception e) {

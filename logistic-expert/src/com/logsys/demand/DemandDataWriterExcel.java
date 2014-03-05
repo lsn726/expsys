@@ -2,13 +2,21 @@ package com.logsys.demand;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.logsys.model.ModelDataReader;
 
 /**
  * 需求数据写入器:Excel
@@ -17,6 +25,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class DemandDataWriterExcel {
 
 	private static final Logger logger=Logger.getLogger(DemandDataWriterExcel.class);
+	
+	/**型号表头行*/
+	private static final int ROW_HEADER=0;
+	
+	/**需求起始行*/
+	private static final int ROW_BEGIN=1;
+	
+	/**日期列*/
+	private static final int COL_DATE=0;
+	
 	
 	/**
 	 * 将由DemandUtil.demListToMapByPn()生成的数据写入Excel表格
@@ -35,9 +53,38 @@ public class DemandDataWriterExcel {
 			return false;
 		}
 		try {
-			Workbook wb=new XSSFWorkbook();
-			Sheet demsheet=wb.createSheet("Demand");
-			
+			Workbook wb=new XSSFWorkbook();				//创建工作簿
+			Sheet demsheet=wb.createSheet("Demand");	//创建sheet
+			Set<String> modelset=demmap.keySet();		//获取型号集
+			Map<String,Integer> modelorder=ModelDataReader.sortModels(modelset);	//对于型号集进行排序
+			Row row=demsheet.createRow(ROW_HEADER);		//创建表头行
+			for(String model:modelset)	{				//写入表头
+				row.createCell(modelorder.get(model)+1).setCellValue(model);
+			}
+			Date mindate=DemandUtil.getMinDateInMultiModel(demmap);			//获取时间下限
+			Date maxdate=DemandUtil.getMaxDateInMultiModel(demmap);			//获取时间上限
+			int rowcounter=ROW_BEGIN;					//起始行
+			CellStyle datestyle=wb.createCellStyle();	//日期格式
+			datestyle.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat("yyyy/MM/dd"));
+			Calendar dateindex=Calendar.getInstance();	//获取时间实例作为索引
+			dateindex.setTime(mindate);					//索引起始为时间下限
+			Map<Date,DemandContent> modeldem;
+			DemandContent tempDemCon;
+			while(true) {								//写入时间和需求数量
+				row=demsheet.createRow(rowcounter);		//创建新行
+				row.createCell(COL_DATE).setCellValue(dateindex);	//写入日期
+				row.getCell(COL_DATE).setCellStyle(datestyle);		//设置日期风格
+				for(String model:demmap.keySet()) {		//模型遍历，找到当日是否有需求
+					modeldem=demmap.get(model);
+					tempDemCon=modeldem.get(dateindex.getTime());
+					if(tempDemCon==null) continue;
+					row.createCell(modelorder.get(model)+1).setCellValue(tempDemCon.getQty());
+				}
+				dateindex.add(Calendar.DAY_OF_MONTH, 1);//新加一天
+				if(dateindex.getTime().after(maxdate))	//如果日期索引到最大日期之后，则退出循环
+					break;
+				rowcounter++;
+			}
 			FileOutputStream fileOut=new FileOutputStream(filepath);
 			wb.write(fileOut);
 			fileOut.close();
