@@ -15,4 +15,15 @@
 		<property name="dlvfix" type="int" column="dlvfix" />
 	</class>
 
+	<class name="DemandBackupContent" table="demand_backup">
+		<id name="id" column="id">
+			<generator class="increment"/>
+		</id>
+		<property name="version" type="timestamp" column="version" />
+		<property name="pn" type="string" column="pn" />
+		<property name="qty" type="double" column="qty"/>
+		<property name="date" type="date" column="date" />
+		<property name="dlvfix" type="int" column="dlvfix" />
+	</class>
+
 </hibernate-mapping>

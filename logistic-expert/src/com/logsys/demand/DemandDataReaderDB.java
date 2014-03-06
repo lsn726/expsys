@@ -21,31 +21,39 @@ public class DemandDataReaderDB {
 	
 	/**
 	 * 从数据库中提取指定型号，指定时间区间内的需求数据
-	 * @param pnset 型号集
+	 * @param pnset 型号集，null表明需要所有型号
 	 * @param begin 开始时间，null表明没有起始时间上限
 	 * @param end 结束时间，null表明没有起始时间下限
 	 * @return 成功则是包含需求数据的列表/失败则为null
 	 */
 	public static List<DemandContent> getDataFromDB(Set<String> pnset, Date begin, Date end) {
-		if(pnset==null) {
-			logger.error("型号集参数为空.");
-			return null;
-		}
 		if(begin!=null&&end!=null) 
 			if(begin.after(end)) {
 				logger.error("起始时间晚于结束时间。");
 				return null;
 			}
-		if(pnset.size()==0)
-			return new ArrayList<DemandContent>();
+		if(pnset!=null)
+			if(pnset.size()==0)
+				return new ArrayList<DemandContent>();
 		//生成hql语句
-		String hql="from DemandContent where (";
-		for(Object pn:pnset)
-			hql=hql+"pn='"+(String)pn+"' or ";
-		hql=hql.substring(0,hql.length()-4);	//去掉最后一个or
-		hql+=")";
-		if(begin!=null) hql+=" and date>=:begindate";
-		if(end!=null) hql+=" and date<=:enddate";
+		String hql;
+		if(pnset!=null) {							//如果需要pnset约束
+			hql="from DemandContent where (";
+			for(Object pn:pnset)
+				hql=hql+"pn='"+(String)pn+"' or ";
+			hql=hql.substring(0,hql.length()-4);	//去掉最后一个or
+			hql+=")";
+			if(begin!=null) hql+=" and date>=:begindate";
+			if(end!=null) hql+=" and date<=:enddate";
+		}  else {
+			hql="from DemandContent";
+			if(begin!=null&&end!=null)
+				hql+=" where date>=:begindate and date<=:enddate";
+			else if(begin!=null&&end==null)
+				hql+=" where date>=:begindate";
+			else if(begin==null&&end!=null)
+				hql+=" where date<=:enddate";
+		}
 		//开始提取数量
 		List<DemandContent> demlist;
 		Session session;

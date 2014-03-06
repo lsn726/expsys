@@ -1,14 +1,15 @@
 package com.logsys.demand;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import com.logsys.hibernate.HibernateSessionFactory;
 
@@ -89,7 +90,8 @@ public class DemandDataWriterDB {
 					tempDContent=(DemandContent)submap.get(date);
 					if(tempDContent==null) {
 						logger.warn("收到null需求对象，请检查程序Bug。");
-						continue;
+						session.getTransaction().rollback();
+						return -1;
 					}
 					session.save(tempDContent);
 					counter++;
@@ -107,6 +109,62 @@ public class DemandDataWriterDB {
 			logger.error("需求数据更新出现错误："+ex.toString());
 			ex.printStackTrace();
 			return 0;
+		}
+	}
+	
+	/**
+	 * 将pnset所包含的的型号集，从begin到end的需求数据，从demand表备份到demand_backup表中
+	 * @param pnset 需要备份的型号集,null则为所有型号
+	 * @param begin 备份开始时间,null为不设开始时间
+	 * @param end 备份结束时间,null为不设结束时间
+	 * @return 备份的条目数
+	 */
+	public static int backupDemandData(Set<String> pnset, Date begin, Date end) {
+		if(begin.after(end)) {
+			logger.error("起始时间晚于结束时间。");
+			return -1;
+		}
+		List<DemandContent> orilist=DemandDataReaderDB.getDataFromDB(pnset, begin, end);	//读取需要处理的数据
+		if(orilist==null) {
+			logger.error("备份原始数据读取错误。");
+			return -1;
+		}
+		if(orilist.size()==0)
+			return 0;
+		try {
+			List<DemandBackupContent> backupDemList=new ArrayList<DemandBackupContent>();
+			DemandBackupContent temp;
+			Date version=new Date();
+			//将需求对象转换为Backup需求对象
+			for(DemandContent demcontent:orilist) {
+				if(demcontent==null) {
+					logger.error("出现空对象，请检查Bug。");
+					return -1;
+				}
+				temp=new DemandBackupContent();
+				temp.setDate(demcontent.getDate());
+				temp.setDlvfix(demcontent.getDlvfix());
+				temp.setPn(demcontent.getPn());
+				temp.setQty(demcontent.getQty());
+				temp.setVersion((Date)version.clone());
+				backupDemList.add(temp);
+			}
+			Session session=HibernateSessionFactory.getSession();
+			session.beginTransaction();
+			int counter=0;
+			for(DemandBackupContent backupDem:backupDemList) {
+				session.save(backupDem);
+				if(counter%50==0) {
+					session.flush();
+					session.clear();
+				}
+				counter++;
+			}
+			session.getTransaction().commit();
+			return counter;
+		} catch(Throwable ex) {
+			logger.error("写入出现错误:"+ex);
+			return -1;
 		}
 	}
 	
