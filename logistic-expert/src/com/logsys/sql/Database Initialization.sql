@@ -27,4 +27,21 @@ CREATE TABLE `model` (
   `prjcode` char(10) NOT NULL COMMENT '项目代号',
   `info` char(30) NOT NULL COMMENT '型号信息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='型号表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='型号表';
+
+CREATE TABLE `material` (
+  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `pn` char(30) NOT NULL COMMENT '物料号',
+  `plant` char(10) NOT NULL COMMENT '工厂',
+  `description` char(50) NOT NULL COMMENT '物料描述',
+  `type` char(10) NOT NULL COMMENT '物料类型',
+  `uom` char(10) NOT NULL COMMENT '计量单位',
+  `price` double NOT NULL COMMENT '价格',
+  `currency` char(10) NOT NULL COMMENT '价格货币',
+  `qtyprice` int(10) NOT NULL COMMENT '价格计件数量 真实价格=price/qtyprice',
+  `provider` char(30) NOT NULL COMMENT '供应商',
+  `makebuy` char(30) NOT NULL COMMENT 'MakeBuy',
+  `buyer` char(30) NOT NULL COMMENT '采购人',
+  `inuse` tinyint(10) NOT NULL COMMENT '是否可用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物料表'
