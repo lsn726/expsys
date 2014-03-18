@@ -38,10 +38,27 @@ CREATE TABLE `material` (
   `uom` char(10) NOT NULL COMMENT '计量单位',
   `price` double NOT NULL COMMENT '价格',
   `currency` char(10) NOT NULL COMMENT '价格货币',
-  `qtyprice` int(10) NOT NULL COMMENT '价格计件数量 真实价格=price/qtyprice',
-  `provider` char(30) NOT NULL COMMENT '供应商',
-  `makebuy` char(30) NOT NULL COMMENT 'MakeBuy',
-  `buyer` char(30) NOT NULL COMMENT '采购人',
-  `inuse` tinyint(10) NOT NULL COMMENT '是否可用',
+  `qtyprice` int(10) NOT NULL COMMENT '价格计件数量',
+  `provider` char(30) DEFAULT NULL COMMENT '供应商',
+  `makebuy` char(30) DEFAULT NULL COMMENT 'MakeBuy',
+  `buyer` char(30) DEFAULT NULL COMMENT '采购人',
+  `inuse` tinyint(10) DEFAULT '0' COMMENT '是否可用',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物料表'
+
+CREATE TABLE `conversion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `origin` char(10) NOT NULL COMMENT '原单位',
+  `target` char(10) NOT NULL COMMENT '目标单位',
+  `factor` double NOT NULL COMMENT '1 origin=factor * target',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='换算表'
+
+CREATE TABLE `bom` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `lvl` int(3) NOT NULL COMMENT '层级',
+  `pn` char(30) NOT NULL COMMENT '组件号',
+  `qty` double NOT NULL COMMENT '消耗量',
+  `unit` char(10) NOT NULL COMMENT '消耗单位',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='BOM'

@@ -26,6 +26,10 @@ public class MaterialContent {
 	
 	private String provider;
 	
+	private String makebuy;
+	
+	private String buyer;
+	
 	private boolean inuse;
 	
 	public MaterialContent() {
@@ -135,6 +139,22 @@ public class MaterialContent {
 
 	public void setInuse(boolean inuse) {
 		this.inuse = inuse;
+	}
+
+	public String getMakebuy() {
+		return makebuy;
+	}
+
+	public void setMakebuy(String makebuy) {
+		this.makebuy = makebuy;
+	}
+
+	public String getBuyer() {
+		return buyer;
+	}
+
+	public void setBuyer(String buyer) {
+		this.buyer = buyer;
 	}
 
 }

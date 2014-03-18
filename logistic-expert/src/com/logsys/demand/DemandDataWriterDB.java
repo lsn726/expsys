@@ -25,7 +25,7 @@ public class DemandDataWriterDB {
 	/**
 	 * 批量写入数据库数据
 	 * @param demandlist 需求数据列表
-	 * @return 写入数据库的数量 
+	 * @return 写入数据库的数量 /-1写入失败
 	 */
 	public static int insert(List<DemandContent> demandlist) {
 		if(demandlist==null) {
@@ -33,10 +33,17 @@ public class DemandDataWriterDB {
 			return 0;
 		}
 		if(demandlist.size()==0) return 0;
+		Session session;
 		try {
-			Session session=HibernateSessionFactory.getSession();
+			session=HibernateSessionFactory.getSession();
 			session.beginTransaction();
-			int counter=0;
+		} catch(Throwable ex) {
+			logger.error("session创建出现错误:"+ex);
+			return -1;
+		}
+		int counter;
+		try {
+			counter=0;
 			for(DemandContent dcontent:demandlist) {
 				session.save(dcontent);
 				if(counter%100==0) {
@@ -46,12 +53,13 @@ public class DemandDataWriterDB {
 				counter++;
 			}
 			session.getTransaction().commit();
-			return counter;
 		} catch(Throwable ex) {
 			logger.error("需求数据写入出现错误："+ex.toString());
 			ex.printStackTrace();
-			return 0;
+			session.close();
+			counter=-1;
 		}
+		return counter;
 	}
 	
 	/**
@@ -173,9 +181,10 @@ public class DemandDataWriterDB {
 	/**
 	 * 将DemandUtil.demListToMapByPn处理后的结果所对应的在数据库需求表中的需求型号/时间区间中的数据做备份， 不是备份demmap中的数据，而是所对应日期的数据
 	 * @param demmap DemandUtil.demListToMapByPn处理后的结果所对应的在数据
+	 * @param version 需求版本, null为当前时间
 	 * @return 备份的条数
 	 */
-	public static int backupDemandData(Map<String,Map<Date,DemandContent>> demmap) {
+	public static int backupDemandData(Map<String,Map<Date,DemandContent>> demmap, Date version) {
 		if(demmap==null) {
 			logger.error("参数为空");
 			return -1;
@@ -184,7 +193,7 @@ public class DemandDataWriterDB {
 		Set<String> pnset;
 		int bkupcounter=0;
 		int singleres=0;
-		Date version=new Date();
+		if(version==null) version=new Date();
 		for(String model:demmap.keySet()) {
 			pnset=new HashSet<String>();
 			pnset.add(model);

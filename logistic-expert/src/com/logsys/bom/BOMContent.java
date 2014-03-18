@@ -1,25 +1,33 @@
 package com.logsys.bom;
 
+/**
+ * BOM内容类，对应数据库的bom表bean
+ * @author lx8sn6
+ *
+ */
 public class BOMContent {
 
-	/**id*/
 	private int id;
 	
-	/**物料PN*/
+	private int lvl;
+	
 	private String pn;
 	
-	/**消耗数量*/
 	private double qty;
+	
+	private String unit;
 
 	public BOMContent() {
 		super();
 	}
-
-	public BOMContent(int id, String pn, double qty) {
+	
+	public BOMContent(int id, int lvl, String pn, double qty, String unit) {
 		super();
 		this.id = id;
+		this.lvl = lvl;
 		this.pn = pn;
 		this.qty = qty;
+		this.unit = unit;
 	}
 
 	public int getId() {
@@ -28,6 +36,14 @@ public class BOMContent {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getLvl() {
+		return lvl;
+	}
+
+	public void setLvl(int lvl) {
+		this.lvl = lvl;
 	}
 
 	public String getPn() {
@@ -45,5 +61,13 @@ public class BOMContent {
 	public void setQty(double qty) {
 		this.qty = qty;
 	}
-	
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
 }

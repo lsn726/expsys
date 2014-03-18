@@ -31,15 +31,23 @@ public class ModelDataReader {
 		}
 		if(modelset.size()==0)
 			return new HashMap<String,Integer>();
-		Map<String,Integer> ordermap;
+		Session session;
 		try {
-			Session session=HibernateSessionFactory.getSession();
-			String hql="from ModelContent where ";
-			for(String model:modelset)
-				hql+="model='"+model+"' or ";
-			hql=hql.substring(0, hql.length()-4);
-			hql+=" order by client,prjcode,info,model";
-			Query query=session.createQuery(hql);
+			session=HibernateSessionFactory.getSession();
+			session.beginTransaction();
+		} catch(Throwable ex) {
+			logger.error("Session创建错误:"+ex);
+			return null;
+		}
+		String hql="from ModelContent where ";		//开始创建hql
+		for(String model:modelset)
+			hql+="model='"+model+"' or ";
+		hql=hql.substring(0, hql.length()-4);
+		hql+=" order by client,prjcode,info,model";
+		Map<String,Integer> ordermap=null;
+		Query query;
+		try {
+			query=session.createQuery(hql);
 			List<ModelContent> list=query.list();
 			int position=0;
 			ordermap=new HashMap<String,Integer>();
@@ -47,11 +55,12 @@ public class ModelDataReader {
 				ordermap.put(model.getModel(), position);
 				position++;
 			}
-			return ordermap;
 		} catch(Throwable ex) {
 			logger.error("排序出现错误:"+ex.toString());
-			return null;
+		} finally {
+			session.close();
 		}
+		return ordermap;
 	}
 	
 }

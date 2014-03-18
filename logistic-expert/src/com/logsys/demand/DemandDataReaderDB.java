@@ -55,21 +55,28 @@ public class DemandDataReaderDB {
 				hql+=" where date<=:enddate";
 		}
 		//开始提取数量
-		List<DemandContent> demlist;
+		List<DemandContent> demlist=null;
 		Session session;
 		try {
 			session=HibernateSessionFactory.getSession();
-			Query query=session.createQuery(hql);
+			session.beginTransaction();
+		} catch(Throwable ex) {
+			logger.error("Session创建错误："+ex);
+			return null;
+		}
+		Query query;
+		try {
+			query=session.createQuery(hql);
 			if(begin!=null) query.setDate("begindate", begin);
 			if(end!=null) query.setDate("enddate", end);
 			demlist=query.list();
-			session.close();
-			return demlist;
 		} catch(Throwable ex) {
 			logger.error("数据提取出现错误："+ex);
 			ex.printStackTrace();
-			return null;
+		} finally {
+			session.close();
 		}
+		return demlist;
 	}
 	
 }

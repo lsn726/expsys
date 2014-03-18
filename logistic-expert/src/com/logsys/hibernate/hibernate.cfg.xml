@@ -33,6 +33,7 @@
 	<mapping resource="com/logsys/demand/demand.hbm.xml" />
 	<mapping resource="com/logsys/model/model.hbm.xml" />
 	<mapping resource="com/logsys/material/material.hbm.xml" />
+	<mapping resource="com/logsys/bom/bom.hbm.xml" />
 
 </session-factory>
 
