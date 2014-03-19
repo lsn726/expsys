@@ -104,7 +104,7 @@ public class DemandUtil {
 	}
 	
 	/**
-	 * 混合无顺序的List->Map<型号,Map<日期,DemandBean>>
+	 * 混合无顺序的List->Map<型号,Map<日期,DemandBean>>,相同型号相同日期的需求将被合并
 	 * @param demandlist 需求列表
 	 * @return 格式化后的Map对象
 	 */
@@ -115,12 +115,17 @@ public class DemandUtil {
 		}
 		String pn;
 		Map<String,Map<Date,DemandContent>> demandmap=new HashMap<String,Map<Date,DemandContent>>();
+		Date demdate;
 		for(DemandContent demand:demandlist) {
-			if(demandlist==null) continue;
+			if(demand==null) continue;
 			pn=demand.getPn();
 			if(!demandmap.containsKey(pn))						//如果型号不存在，则新建Map并写入
 				demandmap.put(pn, new HashMap<Date,DemandContent>());
-			demandmap.get(pn).put((Date)demand.getDate().clone(), demand);	//写入需求数据
+			demdate=demand.getDate();
+			if(demandmap.get(pn).containsKey(demdate))			//如果已经有该型号下该日期的dem，则合并需求
+				demandmap.get(pn).get(demdate).setQty(demandmap.get(pn).get(demdate).getQty()+demand.getQty());
+			else
+				demandmap.get(pn).put((Date)demand.getDate().clone(), demand);	//写入需求数据
 		}
 		return demandmap;
 	}
