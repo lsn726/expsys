@@ -3,10 +3,10 @@ package com.logsys.bom;
 import java.util.Date;
 
 /**
- * BOM内容类，对应数据库的bom表bean
+ * BOM备份内容表，对应bom_backup表的内容bean
  * @author lx8sn6
  */
-public class BOMContent {
+public class BOMBackupContent {
 
 	private int id;
 	
@@ -19,8 +19,10 @@ public class BOMContent {
 	private String unit;
 	
 	private Date version;
+	
+	private Date validto;
 
-	public BOMContent() {
+	public BOMBackupContent() {
 		super();
 	}
 
@@ -70,6 +72,14 @@ public class BOMContent {
 
 	public void setVersion(Date version) {
 		this.version = version;
+	}
+
+	public Date getValidto() {
+		return validto;
+	}
+
+	public void setValidto(Date validto) {
+		this.validto = validto;
 	}
 	
 }

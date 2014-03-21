@@ -44,7 +44,7 @@ CREATE TABLE `material` (
   `buyer` char(30) DEFAULT NULL COMMENT '采购人',
   `inuse` tinyint(10) DEFAULT '0' COMMENT '是否可用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物料表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物料表';
 
 CREATE TABLE `conversion` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -52,7 +52,7 @@ CREATE TABLE `conversion` (
   `target` char(10) NOT NULL COMMENT '目标单位',
   `factor` double NOT NULL COMMENT '1 origin=factor * target',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='换算表'
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='换算表';
 
 CREATE TABLE `bom` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -60,5 +60,17 @@ CREATE TABLE `bom` (
   `pn` char(30) NOT NULL COMMENT '组件号',
   `qty` double NOT NULL COMMENT '消耗量',
   `unit` char(10) NOT NULL COMMENT '消耗单位',
+  `version` date NOT NULL COMMENT 'BOM版本',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='BOM'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='BOM';
+
+CREATE TABLE `bom_backup` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `lvl` int(3) NOT NULL COMMENT '层级',
+  `pn` char(30) NOT NULL COMMENT '组件号',
+  `qty` double NOT NULL COMMENT '消耗量',
+  `unit` char(10) NOT NULL COMMENT '消耗单位',
+  `version` date NOT NULL COMMENT 'BOM版本',
+  `validto`	date NOT NULL COMMENT '有效期至',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COMMENT='BOM Backup';
