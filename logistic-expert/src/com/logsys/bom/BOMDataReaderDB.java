@@ -91,6 +91,30 @@ public class BOMDataReaderDB {
 			logger.error("列表错误，物料号值为空.");
 			return null;
 		}
+		List<BOMContent> pnlist=getBOMListByPN(pn);			//获得所有BOM中pn的节点
+		if(pnlist==null) return null;
+		if(pnlist.size()==0) {
+			logger.error("指定的pn不存在于任何BOM列表中。");
+			return null;
+		}
+		int pnlvl=pnlist.get(0).getLvl();
+		List<BOMContent> lvllist=getNodesByLevel(pnlvl);	//获得所有同级别的节点
+		if(lvllist==null) return null;
+		if(lvllist.size()==0) return null;
+		int beginkey=-1;
+		int endkey=-1;
+		for(BOMContent bcont:lvllist) {						//找到开始id和结束id
+			if(beginkey!=-1) {
+				endkey=bcont.getId();			//如果beginkey已经设置，则下一个同级别则为endkey
+				break;
+			}
+			if(bcont.getPn().equals(pn))		//如果同级别pn相同，设置为起始key
+				beginkey=bcont.getId();
+		}
+		if(beginkey==-1||endkey==-1) {
+			logger.error("错误，不能确认开始id和结束id。");
+			return null;
+		}
 		Session session;
 		try {
 			session=HibernateSessionFactory.getSession();
@@ -99,19 +123,19 @@ public class BOMDataReaderDB {
 			logger.error("创建Session错误:"+ex);
 			return null;
 		}
-		List<BOMContent> pnlist=getBOMListByPN(pn);			//获得所有BOM中pn的节点
-		if(pnlist==null) return null;
-		if(pnlist.size()==0) return null;
-		int pnlvl=pnlist.get(0).getLvl();
-		List<BOMContent> lvllist=getNodesByLevel(pnlvl);	//获得所有同级别的节点
-		if(lvllist==null) return null;
-		if(lvllist.size()==0) return null;
-		int beginkey=-1;
-		int endkey=-1;
-		for(BOMContent bcont:lvllist) {						//
-			
+		Query query;
+		List<BOMContent> finallist=null;
+		String hql;
+		hql="from BOMContent where id>="+beginkey+" and id<"+endkey;
+		try {
+			query=session.createQuery(hql);
+			finallist=query.list();
+		} catch(Throwable ex) {
+			logger.error("BOM完全列表 查询错误。"+ex);
+		} finally {
+			session.close();
 		}
-		return null;
+		return finallist;
 	}
 	
 }

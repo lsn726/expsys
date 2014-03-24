@@ -100,6 +100,7 @@ public class BOMUtil {
 		}
 		List<BOMContent> bomlist=BOMDataReaderDB.getBOMListByPN(pn);
 		if(bomlist==null) return BOM_PN_STATUS.ERROR;
+		if(bomlist.size()==0) return BOM_PN_STATUS.NOTEXIST;
 		boolean isTopNode=false;
 		boolean isSubNode=false;
 		for(BOMContent cont:bomlist) {
