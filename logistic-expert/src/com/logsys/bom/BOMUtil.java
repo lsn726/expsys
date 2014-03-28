@@ -1,8 +1,15 @@
 package com.logsys.bom;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import com.logsys.material.MaterialContent;
+import com.logsys.material.MaterialDataReaderDB;
 
 /**
  * BOM工具类
@@ -112,6 +119,46 @@ public class BOMUtil {
 		if(!isTopNode&&isSubNode) return BOM_PN_STATUS.SUBNODE;
 		if(!isTopNode&&!isSubNode) return BOM_PN_STATUS.ERROR;
 		return BOM_PN_STATUS.ERROR;
+	}
+	
+	/**
+	 * 获取pnset物料集中物料的原材料BOM集,如果有相同的BOM物料消耗则相加
+	 * @param modelset 要获取原材料BOM集的模型列表
+	 * @return Map<pnset中的pn,Map<原材料pn,消耗数量>>对象
+	 */
+	public static Map<String,Map<String,Double>> getRowBomMatrix(Set<String> modelset) {
+		if(modelset==null) {
+			logger.error("不能获取物料矩阵，物料集为空。");
+			return null;
+		}
+		if(modelset.size()==0) return new HashMap<String,Map<String,Double>>();
+		Map<String,Map<String,Double>> bomRowMap=new HashMap<String,Map<String,Double>>();
+		List<BOMContent> bomlist;							//pn的完整bom列表
+		Set<String> matset;									//每个pn下的物料集
+		List<MaterialContent> matlist;						//筛选过后的物料列表
+		Map<String,Double> bomcons;							//物料的bom消耗图
+		for(String pn:modelset) {			//循环获取BOM
+			bomlist=BOMDataReaderDB.getComplBOMByPN(pn);	//先获取pn的完整BOM
+			if(bomlist==null) {								//如果有物料无法获取完整BOM则跳过这个物料号
+				logger.warn("有物料pn获取完整BOM出现错误,跳过这个物料:"+pn);
+				continue;
+			}
+			matset=new HashSet<String>();
+			for(BOMContent bcont:bomlist)					//将组装料转化为物料集
+				matset.add(bcont.getPn());
+			matlist=MaterialDataReaderDB.getDataFromDB(matset, "buy", true, false);	//筛选出buy的物料列表
+			bomcons=new HashMap<String,Double>();
+			for(MaterialContent mcont:matlist) 				//遍历所选列表，初始化bom消耗图
+				bomcons.put(mcont.getPn(), 0.0);
+			String asmpn;									//组装件Pn
+			for(BOMContent bcont:bomlist)	{				//二次遍历BOM,写入消耗数量
+				asmpn=bcont.getPn();						//获取组装件pn
+				if(bomcons.containsKey(asmpn))				//如果存在于bom消耗图中，则说明是buy的物料
+					bomcons.put(asmpn, bomcons.get(asmpn)+bcont.getQty());	//在原基础上加上消耗数量
+			}
+			bomRowMap.put(pn, bomcons);						//将子物料bom写入总图
+		}
+		return bomRowMap;
 	}
 	
 }

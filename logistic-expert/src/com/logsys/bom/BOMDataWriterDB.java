@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.logsys.bom.BOMUtil.BOM_PN_STATUS;
@@ -133,6 +134,46 @@ public class BOMDataWriterDB {
 			session.close();
 		}
 		return counter;
+	}
+	
+	/**
+	 * 从顶级节点删除完整的BOM
+	 * @param pn 想要删除的顶级节点BOM的PN
+	 * @return 删除的记录条数/失败-1
+	 */
+	public static int delComplBOMFromTopNode(String pn) {
+		if(pn==null) {
+			logger.error("无法删除完整BOM，物料号参数为空");
+			return -1;
+		}
+		BOM_PN_STATUS pnstatus=BOMUtil.getPNStatusInBOMDB(pn);
+		if(pnstatus!=BOM_PN_STATUS.TOPNODE&&pnstatus!=BOM_PN_STATUS.MIXNODE) {
+			logger.error("无法删除完整BOM，物料号非顶级节点.");
+			return -1;
+		}
+		List<BOMContent> bomlist=BOMDataReaderDB.getComplBOMByPN(pn);		//获取完整列表
+		if(bomlist==null) return -1;
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.getTransaction().begin();
+		} catch(Throwable ex) {
+			logger.error("创建Session错误:"+ex);
+			return -1;
+		}
+		int counter=0;
+		try {
+			for(BOMContent bcont:bomlist) {									//对完整列表做删除操作。
+				session.delete(bcont);
+				counter++;
+			}
+			session.getTransaction().commit();
+			return counter;
+		} catch(Throwable ex) {
+			logger.error("删除时出现错误："+ex);
+			session.close();
+			return -1;
+		}
 	}
 	
 }

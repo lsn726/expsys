@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.logsys.model.ModelDataReader;
+import com.logsys.model.ModelDataReaderDB;
 
 /**
  * 需求数据写入器:Excel
@@ -56,7 +56,7 @@ public class DemandDataWriterExcel {
 			Workbook wb=new XSSFWorkbook();				//创建工作簿
 			Sheet demsheet=wb.createSheet("Demand");	//创建sheet
 			Set<String> modelset=demmap.keySet();		//获取型号集
-			Map<String,Integer> modelorder=ModelDataReader.sortModels(modelset);	//对于型号集进行排序
+			Map<String,Integer> modelorder=ModelDataReaderDB.sortModels(modelset);	//对于型号集进行排序
 			Row row=demsheet.createRow(ROW_HEADER);		//创建表头行
 			for(String model:modelset)	{				//写入表头
 				row.createCell(modelorder.get(model)+1).setCellValue(model);

@@ -8,7 +8,7 @@ CREATE TABLE `demand` (
   `dlvfix` int(5) DEFAULT '0' COMMENT '发货日期修正',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Date-Pn-Unique` (`pn`,`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=2729 DEFAULT CHARSET=utf8 COMMENT='需求表';
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='需求表';
 
 CREATE TABLE `demand_backup` (
   `id` int(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -27,7 +27,7 @@ CREATE TABLE `model` (
   `prjcode` char(10) NOT NULL COMMENT '项目代号',
   `info` char(30) NOT NULL COMMENT '型号信息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='型号表';
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='型号表'
 
 CREATE TABLE `material` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -73,4 +73,4 @@ CREATE TABLE `bom_backup` (
   `version` date NOT NULL COMMENT 'BOM版本',
   `validto`	date NOT NULL COMMENT '有效期至',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COMMENT='BOM Backup';
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='BOM Backup';

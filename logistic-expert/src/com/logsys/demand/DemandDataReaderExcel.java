@@ -70,9 +70,11 @@ public class DemandDataReaderExcel {
 				node.setDate(row.getCell(COL_DATE).getDateCellValue());
 				row.getCell(COL_PN).setCellType(Cell.CELL_TYPE_STRING);
 				node.setPn(row.getCell(COL_PN).getStringCellValue());
+				row.getCell(COL_QTY).setCellType(Cell.CELL_TYPE_NUMERIC);
 				node.setQty(row.getCell(COL_QTY).getNumericCellValue());
 			} catch(Throwable ex) {
 				logger.error("Excel中数据格式错误。");
+				ex.printStackTrace();
 				return null;
 			}
 			demandlist.add(node);

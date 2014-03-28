@@ -2,7 +2,6 @@ package com.logsys.material;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -24,9 +23,10 @@ public class MaterialDataReaderDB {
 	 * @param pnset 物料号码集合,null为不限制物料号码
 	 * @param makebuy 是内置"make"还是外购"buy",如果两个都不不是或者null则不予以限制
 	 * @param inuse 物料是否正在使用
+	 * @param orderedlist 是否需要对物料进行排序
 	 * @return List<物料信息>列表/null查找失败
 	 */
-	public static List<MaterialContent> getDataFromDB(Set<String> pnset, String makebuy, boolean inuse) {
+	public static List<MaterialContent> getDataFromDB(Set<String> pnset, String makebuy, boolean inuse, boolean orderedlist) {
 		if(pnset!=null)
 			if(pnset.size()==1) return new ArrayList<MaterialContent>();
 		Session session;
@@ -41,13 +41,16 @@ public class MaterialDataReaderDB {
 		if(pnset!=null) {							//如果有pnset限制
 			hql+=" and (";
 			for(String pn:pnset)
-				hql+="pn='"+pn+"' and ";
+				hql+="pn='"+pn+"' or ";
+			hql=hql.substring(0,hql.length()-" or ".length());
 			hql+=")";
 		}
-		if(inuse=true) hql+=" and inuse=1";			//如果限制物料是否正在使用
+		if(inuse) hql+=" and inuse=1";				//如果限制物料是否正在使用
 		if(makebuy!=null)							//如果makebuy有限制
 			if(makebuy.equals("make")||makebuy.equals("buy"))
 				hql+=(" and makebuy='"+makebuy+"'");//如果makebuy有限制
+		if(orderedlist)								//是否需要进行排序
+			hql+=" order by description,makebuy,buyer,provider,pn";
 		MaterialContent matcontent;
 		List<MaterialContent> matlist;
 		Query query;
@@ -55,15 +58,12 @@ public class MaterialDataReaderDB {
 			query=session.createQuery(hql);
 			matlist=query.list();
 		} catch(Throwable ex) {
-			logger.error("数据库物料查找出现错误."+ex);
+			logger.error("数据库物料查找出现错误.",ex);
 			return null;
 		} finally {
 			session.close();
 		}
 		return matlist;
 	}
-
-	
-	
 	
 }

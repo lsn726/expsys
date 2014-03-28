@@ -105,14 +105,14 @@ public class BOMDataReaderDB {
 		int endkey=-1;
 		for(BOMContent bcont:lvllist) {						//找到开始id和结束id
 			if(beginkey!=-1) {
-				endkey=bcont.getId();			//如果beginkey已经设置，则下一个同级别则为endkey
+				endkey=bcont.getId();			//如果beginkey已经设置，则下一个同级别则为endkey,除非到了列表末尾
 				break;
 			}
 			if(bcont.getPn().equals(pn))		//如果同级别pn相同，设置为起始key
 				beginkey=bcont.getId();
 		}
-		if(beginkey==-1||endkey==-1) {
-			logger.error("错误，不能确认开始id和结束id。");
+		if(beginkey==-1) {
+			logger.error("错误，不能确认开始id。");
 			return null;
 		}
 		Session session;
@@ -126,7 +126,9 @@ public class BOMDataReaderDB {
 		Query query;
 		List<BOMContent> finallist=null;
 		String hql;
-		hql="from BOMContent where id>="+beginkey+" and id<"+endkey;
+		hql="from BOMContent where id>="+beginkey;
+		if(endkey!=-1)
+			hql+=" and id<"+endkey;
 		try {
 			query=session.createQuery(hql);
 			finallist=query.list();
