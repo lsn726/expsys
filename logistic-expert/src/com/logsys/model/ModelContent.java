@@ -20,6 +20,9 @@ public class ModelContent {
 	
 	/**型号信息*/
 	private String info;
+	
+	/**包装数量*/
+	private int pq;
 
 	public ModelContent() {
 	}
@@ -71,6 +74,14 @@ public class ModelContent {
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	public int getPq() {
+		return pq;
+	}
+
+	public void setPq(int pq) {
+		this.pq = pq;
 	}
 	
 }

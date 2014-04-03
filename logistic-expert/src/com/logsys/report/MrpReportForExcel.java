@@ -70,6 +70,7 @@ public class MrpReportForExcel {
 		if(matorder_fin==null) return false;
 		bommap=BOMUtil.getRowBomMatrix(matset_fin);					//获取所有BOM集
 		if(bommap==null) return false;
+		
 		return true;
 	}
 	

@@ -26,8 +26,9 @@ CREATE TABLE `model` (
   `model` char(20) NOT NULL COMMENT '型号',
   `prjcode` char(10) NOT NULL COMMENT '项目代号',
   `info` char(30) NOT NULL COMMENT '型号信息',
+  `pq` int(6) DEFAULT NULL COMMENT '包装数量',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='型号表'
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='型号表'
 
 CREATE TABLE `material` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -74,3 +75,23 @@ CREATE TABLE `bom_backup` (
   `validto`	date NOT NULL COMMENT '有效期至',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='BOM Backup';
+
+CREATE TABLE `prodplan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `prdline` char(30) NOT NULL COMMENT '生产线',
+  `pn` char(30) NOT NULL COMMENT '生产型号',
+  `qty` double NOT NULL COMMENT '生产数量',
+  `date` date NOT NULL COMMENT '生产日期',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_PLAN` (`prdline`,`date`,`pn`)
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COMMENT='生产计划表'
+
+CREATE TABLE `prodplan_backup` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `prdline` char(30) NOT NULL COMMENT '生产线',
+  `pn` char(30) NOT NULL COMMENT '生产型号',
+  `qty` double NOT NULL COMMENT '生产数量',
+  `date` date NOT NULL COMMENT '生产日期',
+  `version` datetime NOT NULL COMMENT '计划版本',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='生产计划表'

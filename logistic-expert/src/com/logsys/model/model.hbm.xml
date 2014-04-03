@@ -13,6 +13,7 @@
 		<property name="model" type="string" column="model" />
 		<property name="prjcode" type="string" column="prjcode" />
 		<property name="info" type="string" column="info" />
+		<property name="pq" type="integer" column="pq" />
 	</class>
 
 </hibernate-mapping>

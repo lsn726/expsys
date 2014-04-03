@@ -2,10 +2,9 @@ package com.logsys.demand;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +36,7 @@ public class DemandDataWriterExcel {
 	
 	
 	/**
-	 * 将由DemandUtil.demListToMapByPn()生成的数据写入Excel表格
+	 * 将由DemandUtil.demListToMapByPn()生成的数据写入Excel表格。注意！如果demmap中包含Model表中没有的型号，则会将这些型号的需求在demmap中自动删除
 	 * @param filepath 文件路径
 	 * @param demmap 经过DemandUtil.demListToMapByPn()处理，包含Demand的数据表格
 	 * @return 成功true/失败false
@@ -58,8 +57,17 @@ public class DemandDataWriterExcel {
 			Set<String> modelset=demmap.keySet();		//获取型号集
 			Map<String,Integer> modelorder=ModelDataReaderDB.sortModels(modelset);	//对于型号集进行排序
 			Row row=demsheet.createRow(ROW_HEADER);		//创建表头行
+			Set<String> illegalmodel=new HashSet<String>();		//非法型号集
 			for(String model:modelset)	{				//写入表头
+				if(modelorder.get(model)==null) {		//如果没有这个型号，则跳过此型号,加入非法型号集
+					logger.warn("型号表model中没有需求列表中出现的型号:"+model+",忽略这个型号.");
+					illegalmodel.add(model);			//加入非法型号集
+					continue;
+				}
 				row.createCell(modelorder.get(model)+1).setCellValue(model);
+			}
+			for(String model:illegalmodel) {			//删除非法型号
+				demmap.remove(model);
 			}
 			Date mindate=DemandUtil.getMinDateInMultiModel(demmap);			//获取时间下限
 			Date maxdate=DemandUtil.getMaxDateInMultiModel(demmap);			//获取时间上限

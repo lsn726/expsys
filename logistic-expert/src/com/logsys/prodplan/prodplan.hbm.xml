@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.logsys.prodplan">
+
+	<class name="ProdplanContent" table="prodplan">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<property name="pn" type="string" column="pn" />
+		<property name="prdline" type="string" column="prdline" />
+		<property name="qty" type="double" column="qty" />
+		<property name="date" type="date" column="date" />
+	</class>
+	
+	<class name="ProdplanBackupContent" table="prodplan_backup">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<property name="pn" type="string" column="pn" />
+		<property name="prdline" type="string" column="prdline" />
+		<property name="qty" type="double" column="qty" />
+		<property name="date" type="date" column="date" />
+		<property name="version" type="timestamp" column="version" />
+	</class>
+
+</hibernate-mapping>
