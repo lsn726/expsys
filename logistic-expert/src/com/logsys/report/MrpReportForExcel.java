@@ -1,12 +1,10 @@
 package com.logsys.report;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.Sheet;
 
 import com.logsys.bom.BOMUtil;
 import com.logsys.material.MaterialContent;
@@ -15,7 +13,9 @@ import com.logsys.material.MaterialUtil;
 import com.logsys.model.ModelContent;
 import com.logsys.model.ModelDataReaderDB;
 import com.logsys.model.ModelUtil;
-import com.logsys.util.Rectangle;
+import com.logsys.prodplan.ProdplanContent;
+import com.logsys.prodplan.ProdplanDataReaderDB;
+import com.logsys.util.DateInterval;
 
 /**
  * 创建Mrp报告
@@ -46,6 +46,9 @@ public class MrpReportForExcel {
 	/**BOM图*/
 	Map<String,Map<String,Double>> bommap;
 	
+	/**生产计划列表*/
+	List<ProdplanContent> pplist;
+	
 	/**
 	 * 生成报告函数，并存储于filepath中
 	 * @param filepath 需要存储的文件路径
@@ -62,7 +65,7 @@ public class MrpReportForExcel {
 		if(matset_raw==null) return false;
 		matorder_raw=MaterialUtil.getOrderedMatMap(matset_raw);		//获取原材料顺序图
 		if(matorder_raw==null) return false;
-		matlist_fin=ModelDataReaderDB.getDataFromDB(null);			//初始化成品列表
+		matlist_fin=ModelDataReaderDB.getDataFromDB(null);			//初始化成品列表，获取所有Model
 		if(matlist_fin==null) return false;
 		matset_fin=ModelUtil.getModelSet(matlist_fin);				//初始化成品集
 		if(matset_fin==null) return false;
@@ -70,7 +73,8 @@ public class MrpReportForExcel {
 		if(matorder_fin==null) return false;
 		bommap=BOMUtil.getRowBomMatrix(matset_fin);					//获取所有BOM集
 		if(bommap==null) return false;
-		
+		pplist=ProdplanDataReaderDB.getProdplan(new DateInterval());//获取计划列表
+		if(pplist==null) return false;
 		return true;
 	}
 	

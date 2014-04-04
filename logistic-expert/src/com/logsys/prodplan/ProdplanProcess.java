@@ -17,16 +17,21 @@ public class ProdplanProcess {
 	
 	/**
 	 * 从Excel表中读取生产计划数据并写入数据库
+	 * @param startdate 起始日期,null则默认为下一周的周一
+	 * @param enddate 结束如期,null则不限制下限
+	 * @param resetPlanBeyondScope 是否重置区间以外未来的计划，即是否删除指定区间未来期间后的计划
 	 * @return 写入生产计划的条目数量
 	 */
-	public static int importProdplanFromExcel(String filepath, Date startdate, Date enddate) {
+	public static int importProdplanFromExcel(String filepath, Date startdate, Date enddate, boolean resetPlanBeyondScope) {
 		//首先从Excel文件中读取计划
 		List<ProdplanContent> pplist=ProdplanDataReaderExcel.getFAPlanFromFileBWI(filepath, startdate, enddate);
 		if(pplist==null) return -1;
 		//确认读取的计划区间
 		DateInterval dinterval=ProdplanUtils.getDataInterval(pplist);
 		if(dinterval==null) return -1;
-		//TODO: 删除原区间计划
+		//删除原区间计划
+		int deletecounter=ProdplanDataWriterDB.deleteProdplan(dinterval,resetPlanBeyondScope);
+		if(deletecounter<0) return -1;
 		//写入新计划
 		int writecounter=ProdplanDataWriterDB.writeToDB(pplist);
 		if(writecounter<0) return -1;

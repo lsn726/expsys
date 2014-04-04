@@ -34,7 +34,7 @@ public class ProdplanDataWriterDB {
 			session=HibernateSessionFactory.getSession();
 			session.getTransaction().begin();
 		} catch(Throwable ex) {
-			logger.error("创建Session错误:"+ex);
+			logger.error("创建Session错误:",ex);
 			return -1;
 		}
 		int counter=0;
@@ -109,11 +109,39 @@ public class ProdplanDataWriterDB {
 	
 	/**
 	 * 删除规定区间内的生产计划 
-	 * @param dinterval 指定的区间
-	 * @return 删除的数量
+	 * @param dinterval 指定的时间区间
+	 * @param resetPlanBeyondScope 是否删除指定区间以外未来的计划
+	 * @return 删除的数量/-1失败
 	 */
-	//public static int deleteProdplan(DateInterval dinterval) {
-		
-	//}
+	public static int deleteProdplan(DateInterval dinterval, boolean resetPlanBeyondScope) {
+		if(dinterval==null) {
+			logger.error("不能删除计划.区间参数为空.");
+			return -1;
+		}
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.getTransaction().begin();
+		} catch(Throwable ex) {
+			logger.error("创建Session错误:",ex);
+			return -1;
+		}
+		Query query;
+		String hql="delete from ProdplanContent where date>=:begindate";
+		if(!resetPlanBeyondScope)
+			hql+=" and date<=:enddate";
+		try {
+			query=session.createQuery(hql);
+			query.setDate("begindate", dinterval.begindate);
+			if(!resetPlanBeyondScope) query.setDate("enddate", dinterval.enddate);
+			int deletedqty=query.executeUpdate();
+			session.close();
+			return deletedqty;
+		} catch(Throwable ex) {
+			logger.error("不能删除计划记录：",ex);
+			session.close();
+			return -1;
+		}
+	}
 	
 }
