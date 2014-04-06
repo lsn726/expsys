@@ -6,11 +6,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="com.genuitec.runtime.library/com.genuitec.spring_3.1">
-		<attributes>
-			<attribute name="owner.project.facets" value="me.spring"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="com.genuitec.runtime.library/com.genuitec.hibernate_4.1">
 		<attributes>
 			<attribute name="owner.project.facets" value="me.hibernate"/>
@@ -24,5 +19,6 @@
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.9-20121203.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
