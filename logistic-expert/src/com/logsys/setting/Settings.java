@@ -23,6 +23,9 @@ public class Settings {
 		/**生产线信息配置类*/
 		public static final BWIPLInfo plinfo=new BWIPLInfo20140331();
 		
+		
+		
+		
 	}
 	
 }
