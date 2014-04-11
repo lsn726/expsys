@@ -21,6 +21,13 @@ public abstract class BWIPLInfo {
 	public abstract String getFA2Name();
 	
 	/**
+	 * 通过别名获取标准生产线名称
+	 * @param alias 别名
+	 * @return 生产线名称/失败null
+	 */
+	public abstract String getStdProdlineNameByAlias(String alias);
+	
+	/**
 	 * 返回信息类版本
 	 * @return 版本
 	 */

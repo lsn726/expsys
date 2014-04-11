@@ -17,6 +17,7 @@ public class ProdplanProcess {
 	
 	/**
 	 * 从Excel表中读取生产计划数据并写入数据库
+	 * @param filepath 详细文件路径
 	 * @param startdate 起始日期,null则默认为下一周的周一
 	 * @param enddate 结束如期,null则不限制下限
 	 * @param resetPlanBeyondScope 是否重置区间以外未来的计划，即是否删除指定区间未来期间后的计划

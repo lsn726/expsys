@@ -95,3 +95,13 @@ CREATE TABLE `prodplan_backup` (
   `version` datetime NOT NULL COMMENT '计划版本',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='生产计划表'
+
+CREATE TABLE `production` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `workcenter` char(20) NOT NULL COMMENT '工作中心',
+  `operatorqty` int(5) NOT NULL COMMENT '操作工数量',
+  `outputqty` double NOT NULL COMMENT '产出数量',
+  `tfbegin` timestamp NOT NULL COMMENT 'Time Frame产出时间开始',
+  `tfend` timestamp NOT NULL COMMENT 'Time Frame产出时间结束',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='生产表'
