@@ -11,32 +11,30 @@ import java.util.Map;
  *
  */
 public class BWIPLInfo20140331 extends BWIPLInfo {
-
-	/**Map<别名,生产线>图*/
-	private static Map<String,String> aliasmap=new HashMap<String,String>();
+	
+	/**Map<别名,标准生产线名称>图*/
+	private static Map<String,String> aliasplmap=new HashMap<String,String>();
+	
+	private static Map<String,String> prdzonemap=new HashMap<String,String>();
 
 	{
-		aliasmap.put("UV", "UV");
-		aliasmap.put("UV生产线/UV", "UV");
-		aliasmap.put("Final Assembly 1","Final Assembly 1");
-		aliasmap.put("Final Assembly 2","Final Assembly 2");
-		aliasmap.put("FA1", "Final Assembly 1");
-		aliasmap.put("FA2", "Final Assembly 2");
-	}
-	
-	@Override
-	public String getFA1Name() {
-		return "Final Assembly 1";
-	}
-
-	@Override
-	public String getFA2Name() {
-		return "Final Assembly 2";
+		//别名图初始化
+		aliasplmap.put("热成型焊接生产线HBF0031", STDNAME_DAMPER_RTA_HBF0031);
+		//生产线->生产区域图初始化
+		prdzonemap.put(STDNAME_DAMPER_FA_FA1, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_FA_FA2, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_RTA_HBF0031, STDNAME_DAMPER_RTA);
 	}
 
 	@Override
 	public String getStdProdlineNameByAlias(String alias) {
-		if(aliasmap.containsKey(alias)) return aliasmap.get(alias);
+		if(aliasplmap.containsKey(alias)) return aliasplmap.get(alias);
+		return null;
+	}
+	
+	@Override
+	public String getProdzoneByStdProdlineName(String StdProdlineName) {
+		if(prdzonemap.containsKey(StdProdlineName)) return prdzonemap.get(StdProdlineName);
 		return null;
 	}
 	

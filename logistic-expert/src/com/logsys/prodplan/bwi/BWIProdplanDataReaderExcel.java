@@ -1,4 +1,4 @@
-package com.logsys.prodplan;
+package com.logsys.prodplan.bwi;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,17 +18,18 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import com.logsys.prodplan.ProdplanContent;
 import com.logsys.setting.Settings;
 import com.logsys.setting.pd.bwi.BWIPLInfo;
 import com.logsys.setting.pp.bwi.BWIPPExcelInfo;
 
 /**
- * 生产计划数据读取类, Excel数据读取类
+ * BWI生产计划数据读取类, Excel数据读取类
  * @author lx8sn6
  */
-public class ProdplanDataReaderExcel {
+public class BWIProdplanDataReaderExcel {
 	
-	private static final Logger logger=Logger.getLogger(ProdplanDataReaderExcel.class);
+	private static final Logger logger=Logger.getLogger(BWIProdplanDataReaderExcel.class);
 	
 	private static BWIPPExcelInfo ppExcelInfo=Settings.BWISettings.ppExcelInfo;		//BWI的ExcelPP配置类
 	
@@ -110,7 +111,7 @@ public class ProdplanDataReaderExcel {
 						temp=new ProdplanContent();
 						temp.setDate(plandate);			//获取Date
 						temp.setPn(modelpn);
-						temp.setPrdline(plinfo.getFA1Name());
+						temp.setPrdline(plinfo.STDNAME_DAMPER_FA_FA1);
 						temp.setQty(cell.getNumericCellValue());
 						pplist.add(temp);
 					}
@@ -126,7 +127,7 @@ public class ProdplanDataReaderExcel {
 						//FA1和FA2日期轴相同
 						temp.setDate(plandate);	//获取Date
 						temp.setPn(modelpn);
-						temp.setPrdline(plinfo.getFA2Name());
+						temp.setPrdline(plinfo.STDNAME_DAMPER_FA_FA2);
 						temp.setQty(cell.getNumericCellValue());
 						pplist.add(temp);
 					}

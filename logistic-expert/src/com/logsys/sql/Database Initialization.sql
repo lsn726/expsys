@@ -98,7 +98,10 @@ CREATE TABLE `prodplan_backup` (
 
 CREATE TABLE `production` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `workcenter` char(20) NOT NULL COMMENT '工作中心',
+  `workcenter` char(30) NOT NULL COMMENT '工作中心',
+  `date` date NOT NULL COMMENT '产出日期',
+  `outputprd` char(20) NOT NULL COMMENT '产出产品',
+  `countablewkmin` int(5) NOT NULL COMMENT '时间段内可计数的工作时间',
   `operatorqty` int(5) NOT NULL COMMENT '操作工数量',
   `outputqty` double NOT NULL COMMENT '产出数量',
   `tfbegin` timestamp NOT NULL COMMENT 'Time Frame产出时间开始',

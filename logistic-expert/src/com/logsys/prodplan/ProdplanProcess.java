@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.logsys.prodplan.bwi.BWIProdplanDataReaderExcel;
 import com.logsys.util.DateInterval;
 
 /**
@@ -25,7 +26,7 @@ public class ProdplanProcess {
 	 */
 	public static int importProdplanFromExcel(String filepath, Date startdate, Date enddate, boolean resetPlanBeyondScope) {
 		//首先从Excel文件中读取计划
-		List<ProdplanContent> pplist=ProdplanDataReaderExcel.getFAPlanFromFileBWI(filepath, startdate, enddate);
+		List<ProdplanContent> pplist=BWIProdplanDataReaderExcel.getFAPlanFromFileBWI(filepath, startdate, enddate);
 		if(pplist==null) return -1;
 		//确认读取的计划区间
 		DateInterval dinterval=ProdplanUtils.getDataInterval(pplist);

@@ -73,7 +73,7 @@ public class MrpReportForExcel {
 		if(matorder_fin==null) return false;
 		bommap=BOMUtil.getRowBomMatrix(matset_fin);					//获取所有BOM集
 		if(bommap==null) return false;
-		pplist=ProdplanDataReaderDB.getProdplan(new DateInterval());//获取计划列表
+		pplist=ProdplanDataReaderDB.getProdplan(new DateInterval(null,null));//获取计划列表
 		if(pplist==null) return false;
 		return true;
 	}
