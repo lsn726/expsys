@@ -26,6 +26,10 @@ public abstract class BWIPLInfo {
 	//**************************生产线名称设置--RTA**************************	
 	/**标准名称: DAMPER->RTA->Hot Bottom Forming 0031*/
 	public static final String STDNAME_DAMPER_RTA_HBF0031="Damper Hot Bottom Forming 0031";
+	/**标准名称: DAMPER->RTA->Leak Test and Washing*/
+	public static final String STDNAME_DAMPER_RTA_LEAKTESTWASHING="Damper Leak Test and Washing";
+	/**标准名称: DAMPER->RTA->Hot Bottom Forming 0835*/
+	public static final String STDNAME_DAMPER_RTA_HBF0835="Damper Hot Bottom Forming 0835";
 	
 	/**
 	 * 通过别名获取标准生产线名称

@@ -19,64 +19,135 @@ import com.logsys.util.DateInterval;
 import com.logsys.util.Location;
 
 /**
- * 标准RTA生产Excel信息提取器，版本20140413
- * @author ShaonanLi
+ * 减震器RTA生产线的生产数据提取器
+ * @author lx8sn6
+ *
  */
-public class BWIProductionExcelInfoExtractor_STDRTA20140413 implements BWIProductionExcelInfoExtractor {
+public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtractor {
 	
-	private static final Logger logger=Logger.getLogger(BWIProductionExcelInfoExtractor_STDRTA20140413.class);
+	private static final Logger logger=Logger.getLogger(BWIPdExcelDataExtractor_DamperRTA.class);
 	
-	private static final BWIPLInfo plinfo=Settings.BWISettings.plinfo;
-	
-	/**Sheet内容验证器*/
-	private static final Map<Location,String> sheetValidator=new HashMap<Location,String>();
-	
-	/**Sheet产出位置->时间区间对照表*/
-	private static final Map<Location,DateInterval> outputlocdatemap=new HashMap<Location,DateInterval>();
-	
-	/**产品别名->标准名对照表*/
-	private static final Map<String,String> prdaliasmap=new HashMap<String,String>();
-	
-	/**Sheet的产出时间位置*/
-	private static final Location DATE_LOC=new Location(4,9);
+	/**生产线信息*/
+	protected static final BWIPLInfo plinfo=Settings.BWISettings.plinfo;
 	
 	/**每个生产时段有几个可输入行*/
-	private static final int SPAN_PER_INTERVAL=4;
+	protected static final int SPAN_PER_INTERVAL=4;
 	
 	/**早班产出数量所在列*/
-	private static final int SHIFTEARLY_OUTPUTQTYCOL=8;
+	protected static final int SHIFTEARLY_OUTPUTQTYCOL=8;
 	
 	/**中班产出数量所在列*/
-	private static final int SHIFTMIDDLE_OUTPUTQTYCOL=33;
+	protected static final int SHIFTMIDDLE_OUTPUTQTYCOL=33;
 	
 	/**夜班产出数量所在列*/
-	private static final int SHIFTNIGHT_OUTPUTQTYCOL=58;
+	protected static final int SHIFTNIGHT_OUTPUTQTYCOL=58;
 	
 	/**产出PN所在列相对于产出数量所在列的差值*/
-	private static final int RELATIVECAL_OUTPUTPN=-2;
+	protected static final int RELATIVECAL_OUTPUTPN=-2;
 	
 	/**工作工人所在列相对于产出数量所在列的差值*/
-	private static final int RELATIVECAL_OPERATORQTY=-3;
+	protected static final int RELATIVECAL_OPERATORQTY=-3;
 	
 	/**生产数据起始行*/
-	private static final int OUTPUTDATA_STARTROW=11;
+	protected static final int OUTPUTDATA_STARTROW=11;
+	
+	/**Sheet的产出时间位置*/
+	protected static final Location DATE_LOC=new Location(4,9);
 	
 	/**用于初始化的时间变量，初始化outputlocdatemap*/
-	private static final Calendar INIT_CALENDAR=Calendar.getInstance();
+	protected static final Calendar INIT_CALENDAR=Calendar.getInstance();
 	
-	{
-		//初始化别名信息
+	/**验证字符串枚举->验证字符串对照表*/
+	protected Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
+	
+	/**产品别名->标准名对照表*/
+	protected Map<String,String> prdaliasmap=new HashMap<String,String>();
+	
+	/**Sheet内容验证器:位置->识别字符串对翟表*/
+	protected Map<Location,String> sheetValidator=new HashMap<Location,String>();
+	
+	/**Sheet产出位置->时间区间对照表*/
+	protected Map<Location,DateInterval> outputlocdatemap=new HashMap<Location,DateInterval>();
+	
+	/*验证字符串枚举表*/
+	protected enum ValidatorStr {
+		Interval_0815_0900,
+		Interval_0900_1000,
+		Interval_1000_1100,
+		Interval_1100_1200,
+		Interval_1200_1300,
+		Interval_1300_1400,
+		Interval_1400_1500,
+		Interval_1500_1600,
+		Interval_1600_1645,
+		Interval_1645_1700,
+		Interval_1700_1800,
+		Interval_1800_1900,
+		Interval_1900_2000,
+		Interval_2000_2100,
+		Interval_2100_2200,
+		Interval_2200_2300,
+		Interval_2300_2400,
+		Interval_2400_2515,
+	}
+	
+	public BWIPdExcelDataExtractor_DamperRTA() {
+		initValidatorStr();
+		initPrdAliasMap();
+		initSheetValidator();
+		initOutputLocIntervalMap();
+	}
+	
+	/**
+	 * 验证字符串枚举->验证字符串表初始化
+	 */
+	protected void initValidatorStr() {
+		validatorStrMap.clear();
+		validatorStrMap.put(ValidatorStr.Interval_0815_0900, "8：15-9：00");
+		validatorStrMap.put(ValidatorStr.Interval_0900_1000, "9：00-10：00");
+		validatorStrMap.put(ValidatorStr.Interval_1000_1100, "10：00-11：00");
+		validatorStrMap.put(ValidatorStr.Interval_1100_1200, "11：00-12：00");
+		validatorStrMap.put(ValidatorStr.Interval_1200_1300, "12：00-13：00");
+		validatorStrMap.put(ValidatorStr.Interval_1300_1400, "13：00-14：00");
+		validatorStrMap.put(ValidatorStr.Interval_1400_1500, "14：00-15：00");
+		validatorStrMap.put(ValidatorStr.Interval_1500_1600, "15：00-16：00");
+		validatorStrMap.put(ValidatorStr.Interval_1600_1645, "16：00-16：45");
+		validatorStrMap.put(ValidatorStr.Interval_1645_1700, "16：45-17：00");
+		validatorStrMap.put(ValidatorStr.Interval_1700_1800, "17：00-18：00");
+		validatorStrMap.put(ValidatorStr.Interval_1800_1900, "18：00-19：00");
+		validatorStrMap.put(ValidatorStr.Interval_1900_2000, "19：00-20：00");
+		validatorStrMap.put(ValidatorStr.Interval_2000_2100, "20：00-21：00");
+		validatorStrMap.put(ValidatorStr.Interval_2100_2200, "21：00-22：00");
+		validatorStrMap.put(ValidatorStr.Interval_2200_2300, "22：00-23：00");
+		validatorStrMap.put(ValidatorStr.Interval_2300_2400, "23：00-24：00");
+		validatorStrMap.put(ValidatorStr.Interval_2400_2515, "00：00-01：15");
+	}
+	
+	/**
+	 * 初始化产品别名->标准名对照表
+	 */
+	protected void initPrdAliasMap() {
+		prdaliasmap.clear();
 		prdaliasmap.put("22261665 奥迪前长", "22261665");
 		prdaliasmap.put("22261664 奥迪前短", "22261664");
+		prdaliasmap.put("22258275 奥迪后长", "22258275");
+		prdaliasmap.put("22258280 奥迪后短", "22258280");
 		prdaliasmap.put("22265450 宝马前", "22265450");
+		prdaliasmap.put("22261401 宝马后", "22261401");
 		prdaliasmap.put("22262045 沃尔沃前", "22262045");
+		prdaliasmap.put("22262043 沃尔沃前", "22262043");
+		prdaliasmap.put("22261449 沃尔沃后", "22261449");
 		prdaliasmap.put("22272186 奇瑞前", "22272186");
-		//初始化验证与信息
-		Date begin;
-		Date end;
-		DateInterval dinterval;
+		prdaliasmap.put("22272003 奇瑞后", "22272003");
+	}
+	
+	/**
+	 * 初始化Sheet验证信息对照表
+	 * ！！注意！！如果修改对照信息需要同时修正产出图
+	 */
+	protected void initSheetValidator() {
+		sheetValidator.clear();
 		int rowindex=0;
-		//初始化验证信息 !!!!如果修改时间区间，需要同时修改《《下面》》的时间段产出位置图!!!!!!!!!!!!!!!!!!!!<<<<<<<<<<<<<<<<
 		sheetValidator.put(new Location(4,2), "班次/班组：\nShift/Group");
 		sheetValidator.put(new Location(4,27), "班次/班组：\nShift/group");
 		sheetValidator.put(new Location(4,52), "班次/班组：\nShift/group");
@@ -95,24 +166,24 @@ public class BWIProductionExcelInfoExtractor_STDRTA20140413 implements BWIProduc
 		sheetValidator.put(new Location(8,SHIFTEARLY_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
 		sheetValidator.put(new Location(8,SHIFTMIDDLE_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
 		sheetValidator.put(new Location(8,SHIFTNIGHT_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "8：15-9：00");			//起始行+每个区间的行数
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "16：45-17：00"); //起始行+每个区间的行数，而后区间+1，进入下一个区间
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "9：00-10：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "17：00-18：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "10：00-11：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "18：00-19：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "11：00-12：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "19：00-20:00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "12：00-13：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "20：00-21:00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "13：00-14：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "21：00-22：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "14：00-15：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "22：00-23：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "15：00-16：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "23：00-24：00");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), "16：00-16：45");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), "00：00-01：15");
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_0815_0900)); //起始行+每个区间的行数
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1645_1700)); //起始行+每个区间的行数，而后区间+1，进入下一个区间
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_0900_1000));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1700_1800));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1000_1100));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1800_1900));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1100_1200));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1900_2000));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1200_1300));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2000_2100));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1300_1400));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2100_2200));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1400_1500));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2200_2300));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1500_1600));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2300_2400));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1600_1645));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2400_2515));
 		sheetValidator.put(new Location(17,11), "F T Q");
 		sheetValidator.put(new Location(17,36), "F T Q");
 		sheetValidator.put(new Location(17,61), "F T Q");
@@ -149,6 +220,18 @@ public class BWIProductionExcelInfoExtractor_STDRTA20140413 implements BWIProduc
 		sheetValidator.put(new Location(19,20), "Remarks\n备注");
 		sheetValidator.put(new Location(19,45), "Remarks\n备注");
 		sheetValidator.put(new Location(19,70), "Remarks\n备注");
+	}
+	
+	/**
+	 * 初始化Sheet产出位置->时间区间对照表
+	 */
+	protected void initOutputLocIntervalMap() {
+		outputlocdatemap.clear();
+		//初始化验证与信息
+		Date begin;
+		Date end;
+		DateInterval dinterval;
+		int rowindex=0;
 		//设定时间段产出位置图
 		//初始化时间信息
 		INIT_CALENDAR.clear();
@@ -394,8 +477,6 @@ public class BWIProductionExcelInfoExtractor_STDRTA20140413 implements BWIProduc
 		outputlocdatemap.put(new Location(rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL), dinterval);
 	}
 	
-	public BWIProductionExcelInfoExtractor_STDRTA20140413() {}
-
 	@Override
 	public List<ProductionContent> extractOutputData(Sheet datasrc, String stdprodline) throws Throwable {
 		if(!validateDatasrc(datasrc,stdprodline)) return null;
@@ -458,20 +539,12 @@ public class BWIProductionExcelInfoExtractor_STDRTA20140413 implements BWIProduc
 		for(Location loc:sheetValidator.keySet()) {			//验证表格可信性
 			cell=datasrc.getRow(loc.row).getCell(loc.column);
 			if(!cell.getStringCellValue().equals(sheetValidator.get(loc))) {
-				logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:"+cell.getStringCellValue()+" 与验证器中的内容:"+sheetValidator.get(loc)+"不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
+				logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:["+cell.getStringCellValue()+"]与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
 				return false;
 			}
 			//System.out.println(cell.getStringCellValue()+"["+loc.row+"/"+loc.column+"]");
 		}
 		return true;
-	}
-
-	@Override
-	public Date getVersion() {
-		Calendar cal=Calendar.getInstance();
-		cal.clear();
-		cal.set(2014, Calendar.APRIL, 13);
-		return cal.getTime();
 	}
 
 }
