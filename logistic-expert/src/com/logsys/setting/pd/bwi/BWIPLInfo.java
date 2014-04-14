@@ -30,6 +30,14 @@ public abstract class BWIPLInfo {
 	public static final String STDNAME_DAMPER_RTA_LEAKTESTWASHING="Damper Leak Test and Washing";
 	/**标准名称: DAMPER->RTA->Hot Bottom Forming 0835*/
 	public static final String STDNAME_DAMPER_RTA_HBF0835="Damper Hot Bottom Forming 0835";
+	/**标准名称: DAMPER->RTA->Neck Down*/
+	public static final String STDNAME_DAMPER_RTA_NECKDOWN="Damper Neck Down";
+	/**标准名称: DAMPER->RTA->Front Welding Cell*/
+	public static final String STDNAME_DAMPER_RTA_FRONTWELDINGCELL="Damper Front Welding Cell";
+	/**标准名称: DAMPER->RTA->Rear Welding Cell*/
+	public static final String STDNAME_DAMPER_RTA_REARWELDINGCELL="Damper Rear Welding Cell";
+	/**标准名称: DAMPER->RTA->Chamfering and Washing*/
+	public static final String STDNAME_DAMPER_RTA_CHAMFER_WASH="Damper Rear Welding Cell";
 	
 	/**
 	 * 通过别名获取标准生产线名称

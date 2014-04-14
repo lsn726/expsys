@@ -38,7 +38,6 @@ public class ProductionDataReaderExcel_BWI {
 	 * @return 提取的生产数据
 	 */
 	public static List<ProductionContent> readDataFromFile(String filepath) {
-		File file=new File(filepath);			//由文件路径创建新文件
 		Workbook wb;
 		InputStream readstream;
 		try {
@@ -88,11 +87,17 @@ public class ProductionDataReaderExcel_BWI {
 	 */
 	private static BWIPdExcelDataExtractor getExtractorByStdPrdLine(String stdplname) {
 		if(stdplname==null) return null;
-		if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(plinfo.STDNAME_DAMPER_RTA))	//如果是RTA的表格
-			if(stdplname.equals(plinfo.STDNAME_DAMPER_RTA_LEAKTESTWASHING))		//侧漏清洗生产线
+		if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_RTA))	//如果是RTA的表格
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_LEAKTESTWASHING))		//侧漏清洗生产线
 				return new BWIPdExcelDataExtractor_DamperLeakTestWashing();
-			else if(stdplname.equals(plinfo.STDNAME_DAMPER_RTA_HBF0031)||stdplname.equals(plinfo.STDNAME_DAMPER_RTA_HBF0835))		//底部热成型0031生产线
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_HBF0031)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_HBF0835))		//底部热成型0031/0835生产线
 				return new BWIPdExcelDataExtractor_DamperHBF();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_NECKDOWN))		//缩口起鼓
+				return new BWIPdExcelDataExtractor_DamperNeckDown();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_FRONTWELDINGCELL))//机器人前焊接单元
+				return new BWIPdExcelDataExtractor_DamperFrontWeldingCell();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_REARWELDINGCELL))
+				return new BWIPdExcelDataExtractor_DamperRearWeldingCell();
 		return null;
 	}
 

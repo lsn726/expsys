@@ -136,6 +136,8 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		prdaliasmap.put("22261401 ±¦Âíºó", "22261401");
 		prdaliasmap.put("22262045 ÎÖ¶ûÎÖÇ°", "22262045");
 		prdaliasmap.put("22262043 ÎÖ¶ûÎÖÇ°", "22262043");
+		prdaliasmap.put("22262043 ÎÖ¶ûÎÖÇ°×ó","22262043");
+		prdaliasmap.put("22262044 ÎÖ¶ûÎÖÇ°ÓÒ", "22262044");
 		prdaliasmap.put("22261449 ÎÖ¶ûÎÖºó", "22261449");
 		prdaliasmap.put("22272186 ÆæÈğÇ°", "22272186");
 		prdaliasmap.put("22272003 ÆæÈğºó", "22272003");

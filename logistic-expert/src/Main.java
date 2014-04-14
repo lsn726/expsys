@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.logsys.production.ProductionContent;
 import com.logsys.production.bwi.BWIPdExcelDataExtractor;
-import com.logsys.production.bwi.BWIPdExcelDataExtractor_DamperHBF;
+import com.logsys.production.bwi.BWIPdExcelDataExtractor_DamperRTA;
 import com.logsys.setting.pd.bwi.BWIPLInfo;
 
 public class Main {
@@ -21,15 +21,15 @@ public class Main {
 		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\PP.xlsx", null, new Date("2014/4/20"),true));	//上传从下周一开始的计划
 		//new MrpReportForExcel().generate("123");								//生成MRP报告
 		try {
-			InputStream readstream = new FileInputStream("e:\\HBF0835.xls");
+			InputStream readstream = new FileInputStream("d:\\0027.xls");
 			Workbook wb=WorkbookFactory.create(readstream);
 			Sheet sheet=wb.getSheet("3");
 			//Row row=sheet.getRow(17);
 			//Cell cell=row.getCell(11);
 			//System.out.println(cell.getStringCellValue().equals("F T Q"));
 			//System.out.println(cell.getStringCellValue());
-			BWIPdExcelDataExtractor ppExcelInfoExactor=new BWIPdExcelDataExtractor_DamperHBF();
-			List<ProductionContent> prodlist=ppExcelInfoExactor.extractOutputData(sheet, BWIPLInfo.STDNAME_DAMPER_RTA_LEAKTESTWASHING);
+			BWIPdExcelDataExtractor ppExcelInfoExactor=new BWIPdExcelDataExtractor_DamperRTA();
+			List<ProductionContent> prodlist=ppExcelInfoExactor.extractOutputData(sheet, BWIPLInfo.STDNAME_DAMPER_RTA_NECKDOWN);
 			for(ProductionContent pcont:prodlist)
 				System.out.println(pcont);
 		} catch (Throwable e) {
