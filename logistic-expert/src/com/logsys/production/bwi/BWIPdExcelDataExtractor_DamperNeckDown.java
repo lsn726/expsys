@@ -1,8 +1,5 @@
 package com.logsys.production.bwi;
 
-import com.logsys.production.bwi.BWIPdExcelDataExtractor_DamperRTA.ValidatorStr;
-
-
 /**
  * Damper Neck Down数据提取器
  * @author lx8sn6
@@ -11,31 +8,25 @@ public class BWIPdExcelDataExtractor_DamperNeckDown extends BWIPdExcelDataExtrac
 
 	public BWIPdExcelDataExtractor_DamperNeckDown() {
 		super();
-	}
-	
-	/**
-	 * 使用自己的验证字符串枚举->验证字符串表
-	 */
-	protected void initValidatorStr() {
-		validatorStrMap.clear();
-		validatorStrMap.put(ValidatorStr.Interval_0815_0900, "8:15-9:00");
-		validatorStrMap.put(ValidatorStr.Interval_0900_1000, "9:00-10:00");
-		validatorStrMap.put(ValidatorStr.Interval_1000_1100, "10:00-11:00");
-		validatorStrMap.put(ValidatorStr.Interval_1100_1200, "11:00-12:00");
-		validatorStrMap.put(ValidatorStr.Interval_1200_1300, "12:00-13:00");
-		validatorStrMap.put(ValidatorStr.Interval_1300_1400, "13:00-14:00");
-		validatorStrMap.put(ValidatorStr.Interval_1400_1500, "14:00-15:00");
-		validatorStrMap.put(ValidatorStr.Interval_1500_1600, "15:00-16:00");
-		validatorStrMap.put(ValidatorStr.Interval_1600_1645, "16:00-16:45");
-		validatorStrMap.put(ValidatorStr.Interval_1645_1700, "16:45-17:00");
-		validatorStrMap.put(ValidatorStr.Interval_1700_1800, "17:00-18:00");
-		validatorStrMap.put(ValidatorStr.Interval_1800_1900, "18:00-19:00");
-		validatorStrMap.put(ValidatorStr.Interval_1900_2000, "19:00-20:00");
-		validatorStrMap.put(ValidatorStr.Interval_2000_2100, "20:00-21:00");
-		validatorStrMap.put(ValidatorStr.Interval_2100_2200, "21:00-22:00");
-		validatorStrMap.put(ValidatorStr.Interval_2200_2300, "22:00-23:00");
-		validatorStrMap.put(ValidatorStr.Interval_2300_2400, "23:00-24:00");
-		validatorStrMap.put(ValidatorStr.Interval_2400_2515, "0:00-01:15");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early1, "8:15-9:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early2, "9:00-10:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early3, "10:00-11:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early4, "11:00-12:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early5, "12:00-13:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early6, "13:00-14:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early7, "14:00-15:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early8, "15:00-16:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Early9, "16:00-16:45");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle1, "16:45-17:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle2, "17:00-18:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle3, "18:00-19:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle4, "19:00-20:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle5, "20:00-21:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle6, "21:00-22:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle7, "22:00-23:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle8, "23:00-24:00");
+		adjustValidatorStrMap(ValidatorStr.Interval_Middle9, "00:00-01:15");
+		refreshLocStrValidator();
 	}
 	
 }

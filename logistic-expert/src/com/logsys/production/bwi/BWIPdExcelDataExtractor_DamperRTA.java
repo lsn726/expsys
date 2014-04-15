@@ -48,6 +48,9 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 	/**工作工人所在列相对于产出数量所在列的差值*/
 	protected static final int RELATIVECAL_OPERATORQTY=-3;
 	
+	/**时间区间所在列相对于产出数量所在列的差值*/
+	protected static final int RELATIVECAL_INTERVAL=-6;
+	
 	/**生产数据起始行*/
 	protected static final int OUTPUTDATA_STARTROW=11;
 	
@@ -57,39 +60,23 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 	/**用于初始化的时间变量，初始化outputlocdatemap*/
 	protected static final Calendar INIT_CALENDAR=Calendar.getInstance();
 	
+	{
+		//初始化时间信息
+		INIT_CALENDAR.clear();
+		INIT_CALENDAR.set(1900, 1, 1);			//初始化为1900年1月1日
+	}
+	
 	/**验证字符串枚举->验证字符串对照表*/
-	protected Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
+	private Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
 	
 	/**产品别名->标准名对照表*/
-	protected Map<String,String> prdaliasmap=new HashMap<String,String>();
+	private Map<String,String> prdaliasmap=new HashMap<String,String>();
 	
-	/**Sheet内容验证器:位置->识别字符串对翟表*/
-	protected Map<Location,String> sheetValidator=new HashMap<Location,String>();
+	/**Sheet内容验证器:需要验证的位置->验证字符串对照表*/
+	private Map<Location,String> sheetValidator=new HashMap<Location,String>();
 	
 	/**Sheet产出位置->时间区间对照表*/
-	protected Map<Location,DateInterval> outputlocdatemap=new HashMap<Location,DateInterval>();
-	
-	/*验证字符串枚举表*/
-	protected enum ValidatorStr {
-		Interval_0815_0900,
-		Interval_0900_1000,
-		Interval_1000_1100,
-		Interval_1100_1200,
-		Interval_1200_1300,
-		Interval_1300_1400,
-		Interval_1400_1500,
-		Interval_1500_1600,
-		Interval_1600_1645,
-		Interval_1645_1700,
-		Interval_1700_1800,
-		Interval_1800_1900,
-		Interval_1900_2000,
-		Interval_2000_2100,
-		Interval_2100_2200,
-		Interval_2200_2300,
-		Interval_2300_2400,
-		Interval_2400_2515,
-	}
+	private Map<Location,DateInterval> outputlocdatemap=new HashMap<Location,DateInterval>();
 	
 	public BWIPdExcelDataExtractor_DamperRTA() {
 		initValidatorStr();
@@ -99,34 +86,59 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 	}
 	
 	/**
+	 * 用于修正验证期字符串的接口。！！注意，需要重新调用refreshPrdAliasMap()函数！！
+	 * @param enumstr 想要修改的枚举Str
+	 * @param value 修改为的值
+	 */
+	public void adjustValidatorStrMap(ValidatorStr enumstr, String value) {
+		validatorStrMap.put(enumstr, value);
+	}
+	
+	/**
+	 * 重新初始化位置字符串对照表
+	 */
+	public void refreshLocStrValidator() {
+		initSheetValidator();
+	}
+	
+	/**
 	 * 验证字符串枚举->验证字符串表初始化
 	 */
-	protected void initValidatorStr() {
+	private void initValidatorStr() {
 		validatorStrMap.clear();
-		validatorStrMap.put(ValidatorStr.Interval_0815_0900, "8：15-9：00");
-		validatorStrMap.put(ValidatorStr.Interval_0900_1000, "9：00-10：00");
-		validatorStrMap.put(ValidatorStr.Interval_1000_1100, "10：00-11：00");
-		validatorStrMap.put(ValidatorStr.Interval_1100_1200, "11：00-12：00");
-		validatorStrMap.put(ValidatorStr.Interval_1200_1300, "12：00-13：00");
-		validatorStrMap.put(ValidatorStr.Interval_1300_1400, "13：00-14：00");
-		validatorStrMap.put(ValidatorStr.Interval_1400_1500, "14：00-15：00");
-		validatorStrMap.put(ValidatorStr.Interval_1500_1600, "15：00-16：00");
-		validatorStrMap.put(ValidatorStr.Interval_1600_1645, "16：00-16：45");
-		validatorStrMap.put(ValidatorStr.Interval_1645_1700, "16：45-17：00");
-		validatorStrMap.put(ValidatorStr.Interval_1700_1800, "17：00-18：00");
-		validatorStrMap.put(ValidatorStr.Interval_1800_1900, "18：00-19：00");
-		validatorStrMap.put(ValidatorStr.Interval_1900_2000, "19：00-20：00");
-		validatorStrMap.put(ValidatorStr.Interval_2000_2100, "20：00-21：00");
-		validatorStrMap.put(ValidatorStr.Interval_2100_2200, "21：00-22：00");
-		validatorStrMap.put(ValidatorStr.Interval_2200_2300, "22：00-23：00");
-		validatorStrMap.put(ValidatorStr.Interval_2300_2400, "23：00-24：00");
-		validatorStrMap.put(ValidatorStr.Interval_2400_2515, "00：00-01：15");
+		validatorStrMap.put(ValidatorStr.Interval_Early1, "8：15-9：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early2, "9：00-10：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early3, "10：00-11：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early4, "11：00-12：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early5, "12：00-13：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early6, "13：00-14：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early7, "14：00-15：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early8, "15：00-16：00");
+		validatorStrMap.put(ValidatorStr.Interval_Early9, "16：00-16：45");
+		validatorStrMap.put(ValidatorStr.Interval_Middle1, "16：45-17：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle2, "17：00-18：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle3, "18：00-19：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle4, "19：00-20：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle5, "20：00-21：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle6, "21：00-22：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle7, "22：00-23：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle8, "23：00-24：00");
+		validatorStrMap.put(ValidatorStr.Interval_Middle9, "00：00-01：15");
+		validatorStrMap.put(ValidatorStr.Interval_Night1, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night2, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night3, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night4, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night5, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night6, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night7, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night8, EMPTYSTRVALUE);
+		validatorStrMap.put(ValidatorStr.Interval_Night9, EMPTYSTRVALUE);
 	}
 	
 	/**
 	 * 初始化产品别名->标准名对照表
 	 */
-	protected void initPrdAliasMap() {
+	private void initPrdAliasMap() {
 		prdaliasmap.clear();
 		prdaliasmap.put("22261665 奥迪前长", "22261665");
 		prdaliasmap.put("22261664 奥迪前短", "22261664");
@@ -140,6 +152,7 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		prdaliasmap.put("22262044 沃尔沃前右", "22262044");
 		prdaliasmap.put("22261449 沃尔沃后", "22261449");
 		prdaliasmap.put("22272186 奇瑞前", "22272186");
+		prdaliasmap.put("22272191 奇瑞前", "22272191");
 		prdaliasmap.put("22272003 奇瑞后", "22272003");
 	}
 	
@@ -147,7 +160,7 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 	 * 初始化Sheet验证信息对照表
 	 * ！！注意！！如果修改对照信息需要同时修正产出图
 	 */
-	protected void initSheetValidator() {
+	private void initSheetValidator() {
 		sheetValidator.clear();
 		int rowindex=0;
 		sheetValidator.put(new Location(4,2), "班次/班组：\nShift/Group");
@@ -168,24 +181,26 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		sheetValidator.put(new Location(8,SHIFTEARLY_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
 		sheetValidator.put(new Location(8,SHIFTMIDDLE_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
 		sheetValidator.put(new Location(8,SHIFTNIGHT_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_0815_0900)); //起始行+每个区间的行数
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1645_1700)); //起始行+每个区间的行数，而后区间+1，进入下一个区间
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_0900_1000));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1700_1800));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1000_1100));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1800_1900));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1100_1200));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_1900_2000));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1200_1300));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2000_2100));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1300_1400));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2100_2200));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1400_1500));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2200_2300));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1500_1600));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2300_2400));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,2), validatorStrMap.get(ValidatorStr.Interval_1600_1645));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,27), validatorStrMap.get(ValidatorStr.Interval_2400_2515));
+		//时间区间验证字符串
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early1)); //起始行+每个区间的行数
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle1)); //起始行+每个区间的行数，而后区间+1，进入下一个区间
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Night1));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early2));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle2));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early3));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle3));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early4));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle4));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early5));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle5));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early6));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle6));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early7));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle7));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early8));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle8));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early9));
+		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle9));
 		sheetValidator.put(new Location(17,11), "F T Q");
 		sheetValidator.put(new Location(17,36), "F T Q");
 		sheetValidator.put(new Location(17,61), "F T Q");
@@ -235,9 +250,6 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		DateInterval dinterval;
 		int rowindex=0;
 		//设定时间段产出位置图
-		//初始化时间信息
-		INIT_CALENDAR.clear();
-		INIT_CALENDAR.set(1900, 1, 1);			//初始化为1900年1月1日
 		Calendar cal=(Calendar)INIT_CALENDAR.clone();
 		//早班区间初始化
 		rowindex=OUTPUTDATA_STARTROW;			//行索引初始化
@@ -538,12 +550,16 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 			return false;
 		}
 		Cell cell;
+		String validstr;
 		for(Location loc:sheetValidator.keySet()) {			//验证表格可信性
 			cell=datasrc.getRow(loc.row).getCell(loc.column);
-			if(!cell.getStringCellValue().equals(sheetValidator.get(loc))) {
-				logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:["+cell.getStringCellValue()+"]与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
-				return false;
-			}
+			validstr=sheetValidator.get(loc);
+			//如果获取值不匹配，或者获取字符串为""的代理值EMPTYSTRVALUE时
+			if(!cell.getStringCellValue().equals(validstr))
+				if(!validstr.equals(EMPTYSTRVALUE)) {
+					logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:["+cell.getStringCellValue()+"]与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
+					return false;
+				}
 			//System.out.println(cell.getStringCellValue()+"["+loc.row+"/"+loc.column+"]");
 		}
 		return true;

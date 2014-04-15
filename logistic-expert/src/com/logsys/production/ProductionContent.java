@@ -16,8 +16,6 @@ public class ProductionContent {
 	
 	private String outputprd;
 	
-	private int countablewkmin;
-	
 	private int operatorqty;
 	
 	private double outputqty;
@@ -83,15 +81,7 @@ public class ProductionContent {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-
-	public int getCountablewkmin() {
-		return countablewkmin;
-	}
-
-	public void setCountablewkmin(int countablewkmin) {
-		this.countablewkmin = countablewkmin;
-	}
-
+	
 	public String getOutputprd() {
 		return outputprd;
 	}
@@ -104,7 +94,7 @@ public class ProductionContent {
 	public String toString() {
 		return "ProductionContent [id=" + id + ", workcenter=" + workcenter
 				+ ", date=" + date + ", outputprd=" + outputprd
-				+ ", countablewkmin=" + countablewkmin + ", operatorqty="
+				+ ", operatorqty="
 				+ operatorqty + ", outputqty=" + outputqty + ", tfbegin="
 				+ tfbegin + ", tfend=" + tfend + "]";
 	}

@@ -1,6 +1,5 @@
 package com.logsys.production.bwi;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -71,13 +70,18 @@ public class ProductionDataReaderExcel_BWI {
 			for(daycounter=1;;daycounter++) {					//从当月第一天开始遍历
 				sheet=wb.getSheet(String.valueOf(daycounter));	//按照日期便利天数的Sheet
 				if(sheet==null) break;							//当便利到没有Sheet时，说明本月已经遍历完成
-				
+				temp=extractor.extractOutputData(sheet, stdplname);	//提取数据到临时列表
+				if(temp==null) {
+					logger.error("Sheet["+sheet.getSheetName()+"]提取数据出现错误，提取过程终止.");
+					return null;
+				}
+				pcontlist.addAll(temp);							//将所有临时列表加入主列表 
 			}
+			return pcontlist;
 		} catch(Throwable ex) {
 			logger.error("从Excel表格中读取生产数据出现错误。",ex);
 			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -96,8 +100,10 @@ public class ProductionDataReaderExcel_BWI {
 				return new BWIPdExcelDataExtractor_DamperNeckDown();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_FRONTWELDINGCELL))//机器人前焊接单元
 				return new BWIPdExcelDataExtractor_DamperFrontWeldingCell();
-			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_REARWELDINGCELL))
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_REARWELDINGCELL))	//后焊接单元
 				return new BWIPdExcelDataExtractor_DamperRearWeldingCell();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_CHAMFER_WASH))	//倒角清洗
+				return new BWIPdExcelDataExtractor_DamperChamferWash();
 		return null;
 	}
 
