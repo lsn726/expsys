@@ -21,7 +21,6 @@ import com.logsys.util.Location;
 /**
  * 减震器RTA生产线的生产数据提取器
  * @author lx8sn6
- *
  */
 public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtractor {
 	
@@ -148,11 +147,14 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		prdaliasmap.put("22261401 宝马后", "22261401");
 		prdaliasmap.put("22262045 沃尔沃前", "22262045");
 		prdaliasmap.put("22262043 沃尔沃前", "22262043");
+		prdaliasmap.put("22262043 VOLVO前", "22262043");
 		prdaliasmap.put("22262043 沃尔沃前左","22262043");
 		prdaliasmap.put("22262044 沃尔沃前右", "22262044");
 		prdaliasmap.put("22261449 沃尔沃后", "22261449");
 		prdaliasmap.put("22272186 奇瑞前", "22272186");
+		prdaliasmap.put("22272186 CQAC前", "22272186");
 		prdaliasmap.put("22272191 奇瑞前", "22272191");
+		prdaliasmap.put("22272184 奇瑞前左", "22272184");
 		prdaliasmap.put("22272003 奇瑞后", "22272003");
 	}
 	

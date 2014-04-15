@@ -26,8 +26,6 @@ public abstract class BWIPLInfo {
 	//**************************生产线名称设置--RTA**************************	
 	/**标准名称: DAMPER->RTA->Hot Bottom Forming 0031*/
 	public static final String STDNAME_DAMPER_RTA_HBF0031="Damper Hot Bottom Forming 0031";
-	/**标准名称: DAMPER->RTA->Leak Test and Washing*/
-	public static final String STDNAME_DAMPER_RTA_LEAKTESTWASHING="Damper Leak Test and Washing";
 	/**标准名称: DAMPER->RTA->Hot Bottom Forming 0835*/
 	public static final String STDNAME_DAMPER_RTA_HBF0835="Damper Hot Bottom Forming 0835";
 	/**标准名称: DAMPER->RTA->Neck Down*/
@@ -38,6 +36,16 @@ public abstract class BWIPLInfo {
 	public static final String STDNAME_DAMPER_RTA_REARWELDINGCELL="Damper Rear Welding Cell";
 	/**标准名称: DAMPER->RTA->Chamfering and Washing*/
 	public static final String STDNAME_DAMPER_RTA_CHAMFER_WASH="Damper Chamfering and Washing";
+	/**标准名称: DAMPER->RTA->Leak Test and Washing*/
+	public static final String STDNAME_DAMPER_RTA_LEAKTEST_WASH="Damper Leak Test and Washing";
+	/**标准名称: DAMPER->RTA->Spring Seat/Bracket Welding Cell*/
+	public static final String STDNAME_DAMPER_RTA_SSEATBRACKET_WELD="Damper Seat Bracket Welding";
+	/**标准名称: DAMPER->RTA->Punching Cell*/
+	public static final String STDNAME_DAMPER_RTA_PUNCHING_CELL="Damper Punching Cell";
+	/**标准名称: DAMPER->RTA->KTL*/
+	public static final String STDNAME_DAMPER_RTA_KTL="Damper KTL";
+	/**标准名称: DAMPER->RTA->Punch Bushing Cell*/
+	public static final String STDNAME_DAMPER_RTA_PUNCHBUSHING_CELL="Damper Punch Bushing Cell";
 	
 	/**
 	 * 通过别名获取标准生产线名称

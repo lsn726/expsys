@@ -92,7 +92,7 @@ public class ProductionDataReaderExcel_BWI {
 	private static BWIPdExcelDataExtractor getExtractorByStdPrdLine(String stdplname) {
 		if(stdplname==null) return null;
 		if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_RTA))	//如果是RTA的表格
-			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_LEAKTESTWASHING))		//侧漏清洗生产线
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_LEAKTEST_WASH))		//侧漏清洗生产线
 				return new BWIPdExcelDataExtractor_DamperLeakTestWashing();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_HBF0031)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_HBF0835))		//底部热成型0031/0835生产线
 				return new BWIPdExcelDataExtractor_DamperHBF();
@@ -104,6 +104,14 @@ public class ProductionDataReaderExcel_BWI {
 				return new BWIPdExcelDataExtractor_DamperRearWeldingCell();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_CHAMFER_WASH))	//倒角清洗
 				return new BWIPdExcelDataExtractor_DamperChamferWash();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_SSEATBRACKET_WELD))	//弹簧座支架焊接
+				return new BWIPdExcelDataExtractor_DamperSSeatBracketWelding();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_PUNCHING_CELL))	//打孔单元
+				return new BWIPdExcelDataExtractor_DamperPunchCell();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_KTL))				//电泳线
+				return new BWIPdExcelDataExtractor_DamperKTL();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_PUNCHBUSHING_CELL))	//衬套压装
+				return new BWIPdExcelDataExtractor_DamperPunchBushing();
 		return null;
 	}
 
