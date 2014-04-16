@@ -1,4 +1,4 @@
-package com.logsys.production.bwi;
+package com.logsys.production.bwi.rta;
 
 /**
  * Damper Rear Welding Cell后焊接机的数据提取器

@@ -1,4 +1,4 @@
-package com.logsys.production.bwi;
+package com.logsys.production.bwi.rta;
 
 /**
  * Damper Punch Bushing³ÄÌ×Ñ¹×°

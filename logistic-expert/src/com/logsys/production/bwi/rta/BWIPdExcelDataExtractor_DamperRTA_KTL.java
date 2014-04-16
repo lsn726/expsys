@@ -1,4 +1,4 @@
-package com.logsys.production.bwi;
+package com.logsys.production.bwi.rta;
 
 /**
  * Damper KTL电泳线数据提取器

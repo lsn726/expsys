@@ -1,4 +1,4 @@
-package com.logsys.production.bwi;
+package com.logsys.production.bwi.rta;
 
 /**
  * Spring Seat and Bracket Welding弹簧座和支架焊接数据提取器

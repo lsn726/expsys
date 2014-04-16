@@ -1,11 +1,9 @@
-package com.logsys.production.bwi;
+package com.logsys.production.bwi.rta;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -13,7 +11,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.logsys.production.LostTimeContent;
 import com.logsys.production.ProductionContent;
-import com.logsys.setting.Settings;
+import com.logsys.production.bwi.BWIPdExcelDataExtractor;
 import com.logsys.setting.pd.bwi.BWIPLInfo;
 import com.logsys.util.DateInterval;
 import com.logsys.util.Location;
@@ -22,12 +20,9 @@ import com.logsys.util.Location;
  * 减震器RTA生产线的生产数据提取器
  * @author lx8sn6
  */
-public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtractor {
+public abstract class BWIPdExcelDataExtractor_DamperRTA extends BWIPdExcelDataExtractor {
 	
 	private static final Logger logger=Logger.getLogger(BWIPdExcelDataExtractor_DamperRTA.class);
-	
-	/**生产线信息*/
-	protected static final BWIPLInfo plinfo=Settings.BWISettings.plinfo;
 	
 	/**每个生产时段有几个可输入行*/
 	protected static final int SPAN_PER_INTERVAL=4;
@@ -65,45 +60,12 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		INIT_CALENDAR.set(1900, 1, 1);			//初始化为1900年1月1日
 	}
 	
-	/**验证字符串枚举->验证字符串对照表*/
-	private Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
-	
-	/**产品别名->标准名对照表*/
-	private Map<String,String> prdaliasmap=new HashMap<String,String>();
-	
-	/**Sheet内容验证器:需要验证的位置->验证字符串对照表*/
-	private Map<Location,String> sheetValidator=new HashMap<Location,String>();
-	
-	/**Sheet产出位置->时间区间对照表*/
-	private Map<Location,DateInterval> outputlocdatemap=new HashMap<Location,DateInterval>();
-	
 	public BWIPdExcelDataExtractor_DamperRTA() {
-		initValidatorStr();
-		initPrdAliasMap();
-		initSheetValidator();
-		initOutputLocIntervalMap();
+		super();
+		PRDZONE=BWIPLInfo.STDNAME_DAMPER_RTA;
 	}
 	
-	/**
-	 * 用于修正验证期字符串的接口。！！注意，需要重新调用refreshPrdAliasMap()函数！！
-	 * @param enumstr 想要修改的枚举Str
-	 * @param value 修改为的值
-	 */
-	public void adjustValidatorStrMap(ValidatorStr enumstr, String value) {
-		validatorStrMap.put(enumstr, value);
-	}
-	
-	/**
-	 * 重新初始化位置字符串对照表
-	 */
-	public void refreshLocStrValidator() {
-		initSheetValidator();
-	}
-	
-	/**
-	 * 验证字符串枚举->验证字符串表初始化
-	 */
-	private void initValidatorStr() {
+	protected void initValidatorStr() {
 		validatorStrMap.clear();
 		validatorStrMap.put(ValidatorStr.Interval_Early1, "8：15-9：00");
 		validatorStrMap.put(ValidatorStr.Interval_Early2, "9：00-10：00");
@@ -134,10 +96,7 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		validatorStrMap.put(ValidatorStr.Interval_Night9, EMPTYSTRVALUE);
 	}
 	
-	/**
-	 * 初始化产品别名->标准名对照表
-	 */
-	private void initPrdAliasMap() {
+	protected void initPrdAliasMap() {
 		prdaliasmap.clear();
 		prdaliasmap.put("22261665 奥迪前长", "22261665");
 		prdaliasmap.put("22261664 奥迪前短", "22261664");
@@ -158,11 +117,7 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		prdaliasmap.put("22272003 奇瑞后", "22272003");
 	}
 	
-	/**
-	 * 初始化Sheet验证信息对照表
-	 * ！！注意！！如果修改对照信息需要同时修正产出图
-	 */
-	private void initSheetValidator() {
+	protected void initLocValidatorStrMap() {
 		sheetValidator.clear();
 		int rowindex=0;
 		sheetValidator.put(new Location(4,2), "班次/班组：\nShift/Group");
@@ -241,9 +196,6 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 		sheetValidator.put(new Location(19,70), "Remarks\n备注");
 	}
 	
-	/**
-	 * 初始化Sheet产出位置->时间区间对照表
-	 */
 	protected void initOutputLocIntervalMap() {
 		outputlocdatemap.clear();
 		//初始化验证与信息
@@ -539,32 +491,6 @@ public class BWIPdExcelDataExtractor_DamperRTA implements BWIPdExcelDataExtracto
 	public List<LostTimeContent> extractLostTimeData(Sheet datasrc, String stdprodline) throws Throwable {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean validateDatasrc(Sheet datasrc, String stdprodline) throws Throwable {
-		if(datasrc==null||stdprodline==null) {
-			logger.error("验证RTA生产用Excel数据源失败：参数为空.");
-			return false;
-		}
-		if(plinfo.getProdzoneByStdProdlineName(stdprodline)!=BWIPLInfo.STDNAME_DAMPER_RTA) {
-			logger.error("验证RTA生产用Excel数据源失败：生产线"+stdprodline+"并非RTA标准生产线数据源.");
-			return false;
-		}
-		Cell cell;
-		String validstr;
-		for(Location loc:sheetValidator.keySet()) {			//验证表格可信性
-			cell=datasrc.getRow(loc.row).getCell(loc.column);
-			validstr=sheetValidator.get(loc);
-			//如果获取值不匹配，或者获取字符串为""的代理值EMPTYSTRVALUE时
-			if(!cell.getStringCellValue().equals(validstr))
-				if(!validstr.equals(EMPTYSTRVALUE)) {
-					logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:["+cell.getStringCellValue()+"]与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
-					return false;
-				}
-			//System.out.println(cell.getStringCellValue()+"["+loc.row+"/"+loc.column+"]");
-		}
-		return true;
 	}
 
 }

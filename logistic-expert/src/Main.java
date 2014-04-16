@@ -14,7 +14,7 @@ public class Main {
 		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\PP.xlsx", null, new Date("2014/4/20"),true));	//上传从下周一开始的计划
 		//new MrpReportForExcel().generate("123");								//生成MRP报告
 		try {
-			List<ProductionContent> prodlist=ProductionDataReaderExcel_BWI.readDataFromFile("W:\\PPC.xls");
+			List<ProductionContent> prodlist=ProductionDataReaderExcel_BWI.readDataFromFile("e:\\GL.xls");
 			System.out.println(prodlist.size());
 			//System.out.println(ProductionDataWriterDB.writeDataToDB(prodlist));
 		} catch (Throwable e) {

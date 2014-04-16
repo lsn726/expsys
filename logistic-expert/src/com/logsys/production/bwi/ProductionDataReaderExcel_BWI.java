@@ -11,6 +11,20 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.logsys.production.ProductionContent;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CoarseGrinding;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CrPlating;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_Grinding;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_Hardening;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_ChamferWash;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_FrontWeldingCell;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_HBF;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_KTL;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_LeakTestWashing;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_NeckDown;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_PunchBushing;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_PunchCell;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_RearWeldingCell;
+import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_SSeatBracketWelding;
 import com.logsys.setting.Settings;
 import com.logsys.setting.pd.bwi.BWIPLInfo;
 import com.logsys.util.Location;
@@ -91,7 +105,7 @@ public class ProductionDataReaderExcel_BWI {
 	 */
 	private static BWIPdExcelDataExtractor getExtractorByStdPrdLine(String stdplname) {
 		if(stdplname==null) return null;
-		if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_RTA))	//如果是RTA的表格
+		if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_RTA))	{ //RTA区域
 			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_LEAKTEST_WASH))		//侧漏清洗生产线
 				return new BWIPdExcelDataExtractor_DamperRTA_LeakTestWashing();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_HBF0031)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_HBF0835))		//底部热成型0031/0835生产线
@@ -112,6 +126,15 @@ public class ProductionDataReaderExcel_BWI {
 				return new BWIPdExcelDataExtractor_DamperRTA_KTL();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_PUNCHBUSHING_CELL))	//衬套压装
 				return new BWIPdExcelDataExtractor_DamperRTA_PunchBushing();
+		} else if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_PR))	//PR区域
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_COARSE_GRINDING))		//粗磨生产线
+				return new BWIPdExcelDataExtractor_DamperPR_CoarseGrinding();
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_HARDENING))				//淬火生产线
+				return new BWIPdExcelDataExtractor_DamperPR_Hardening();
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CRPLATING))				//电镀生产线
+				return new BWIPdExcelDataExtractor_DamperPR_CrPlating();
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_GRINDING))				//镀前研磨线
+				return new BWIPdExcelDataExtractor_DamperPR_Grinding();
 		return null;
 	}
 
