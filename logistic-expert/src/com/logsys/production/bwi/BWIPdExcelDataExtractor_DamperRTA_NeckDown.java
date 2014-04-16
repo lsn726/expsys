@@ -4,9 +4,9 @@ package com.logsys.production.bwi;
  * Damper Neck Down数据提取器
  * @author lx8sn6
  */
-public class BWIPdExcelDataExtractor_DamperNeckDown extends BWIPdExcelDataExtractor_DamperRTA {
+public class BWIPdExcelDataExtractor_DamperRTA_NeckDown extends BWIPdExcelDataExtractor_DamperRTA {
 
-	public BWIPdExcelDataExtractor_DamperNeckDown() {
+	public BWIPdExcelDataExtractor_DamperRTA_NeckDown() {
 		super();
 		adjustValidatorStrMap(ValidatorStr.Interval_Early1, "8:15-9:00");
 		adjustValidatorStrMap(ValidatorStr.Interval_Early2, "9:00-10:00");

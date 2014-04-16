@@ -5,9 +5,9 @@ package com.logsys.production.bwi;
  * Damper Chamfering and Washing倒角清洗数据提取器
  * @author lx8sn6
  */
-public class BWIPdExcelDataExtractor_DamperChamferWash extends BWIPdExcelDataExtractor_DamperRTA {
+public class BWIPdExcelDataExtractor_DamperRTA_ChamferWash extends BWIPdExcelDataExtractor_DamperRTA {
 
-	public BWIPdExcelDataExtractor_DamperChamferWash() {
+	public BWIPdExcelDataExtractor_DamperRTA_ChamferWash() {
 		super();
 		this.adjustValidatorStrMap(ValidatorStr.Interval_Middle1, "17：00-18：00");
 		this.adjustValidatorStrMap(ValidatorStr.Interval_Middle2, "18：00-19：00");
