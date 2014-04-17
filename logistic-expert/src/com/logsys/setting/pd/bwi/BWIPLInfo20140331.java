@@ -32,12 +32,29 @@ public class BWIPLInfo20140331 extends BWIPLInfo {
 		aliasplmap.put("衬套压装生产线Punching Press Cell", STDNAME_DAMPER_RTA_PUNCHBUSHING_CELL);
 		//别名图初始化 PR
 		aliasplmap.put("粗磨生产线/Coarse grinding", STDNAME_DAMPER_PR_COARSE_GRINDING);
-		aliasplmap.put("淬火生产线 Hardening line", STDNAME_DAMPER_PR_HARDENING);
+		aliasplmap.put("淬火生产线 Hardening line 1", STDNAME_DAMPER_PR_HARDENING1);
+		aliasplmap.put("淬火生产线 Hardening line 2", STDNAME_DAMPER_PR_HARDENING2);
 		aliasplmap.put("电镀生产线 Cr-Plating line", STDNAME_DAMPER_PR_CRPLATING);
-		aliasplmap.put("镀前研磨生产线/Grinding Line", STDNAME_DAMPER_PR_GRINDING);
-		//生产线->生产区域图初始化 FA
-		prdzonemap.put(STDNAME_DAMPER_FA_FA1, STDNAME_DAMPER_FA);
-		prdzonemap.put(STDNAME_DAMPER_FA_FA2, STDNAME_DAMPER_FA);
+		aliasplmap.put("镀前研磨生产线/Grinding Line 1", STDNAME_DAMPER_PR_GRINDING1);
+		aliasplmap.put("镀前研磨生产线/Grinding Line 2", STDNAME_DAMPER_PR_GRINDING2);
+		aliasplmap.put("镀后超精生产线 Superfinished after Cr-Plating 1", STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE1);
+		aliasplmap.put("镀后超精生产线 Superfinished after Cr-Plating 2", STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE2);
+		aliasplmap.put("摩擦焊生产线 Frication Welding Line", STDNAME_DAMPER_PR_FRICATION_WELD1);
+		aliasplmap.put("摩擦焊生产线 Frication Welding Line", STDNAME_DAMPER_PR_FRICATION_WELD2);
+		aliasplmap.put("机加工CNC 0007生产线", STDNAME_DAMPER_PR_CNC0007);
+		aliasplmap.put("机加工CNC 0008生产线", STDNAME_DAMPER_PR_CNC0008);
+		aliasplmap.put("机加工CNC 0009生产线", STDNAME_DAMPER_PR_CNC0009);
+		aliasplmap.put("机加工CNC 0806生产线", STDNAME_DAMPER_PR_CNC0806);
+		aliasplmap.put("机加工CNC 0807生产线", STDNAME_DAMPER_PR_CNC0807);
+		aliasplmap.put("机加工CNC 0808生产线", STDNAME_DAMPER_PR_CNC0808);
+		aliasplmap.put("机加工CNC 0809生产线", STDNAME_DAMPER_PR_CNC0809);
+		//别名图初始化FA
+		aliasplmap.put("组装生产线/Assy-1", STDNAME_DAMPER_FA_FA1);
+		aliasplmap.put("组装生产线/Assy-2", STDNAME_DAMPER_FA_FA2);
+		aliasplmap.put("组装生产线-module", STDNAME_DAMPER_FA_MODULE);
+		aliasplmap.put("UV生产线/UV", STDNAME_DAMPER_FA_UV);
+		aliasplmap.put("止动环生产线/Rebound Stop BF-0020-21-22", STDNAME_DAMPER_FA_REBSTP202122);
+		aliasplmap.put("止动环生产线/Rebound StopBF-0023", STDNAME_DAMPER_FA_REBSTP23);
 		//生产线->生产区域图初始化 RTA
 		prdzonemap.put(STDNAME_DAMPER_RTA_HBF0031, STDNAME_DAMPER_RTA);
 		prdzonemap.put(STDNAME_DAMPER_RTA_HBF0835, STDNAME_DAMPER_RTA);
@@ -52,9 +69,29 @@ public class BWIPLInfo20140331 extends BWIPLInfo {
 		prdzonemap.put(STDNAME_DAMPER_RTA_PUNCHBUSHING_CELL, STDNAME_DAMPER_RTA);
 		//生产线->生产区域图初始化 PR
 		prdzonemap.put(STDNAME_DAMPER_PR_COARSE_GRINDING, STDNAME_DAMPER_PR);
-		prdzonemap.put(STDNAME_DAMPER_PR_HARDENING, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_HARDENING1, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_HARDENING2, STDNAME_DAMPER_PR);
 		prdzonemap.put(STDNAME_DAMPER_PR_CRPLATING, STDNAME_DAMPER_PR);
-		prdzonemap.put(STDNAME_DAMPER_PR_GRINDING, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_GRINDING1, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_GRINDING2, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE1, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE2, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_FRICATION_WELD1, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_FRICATION_WELD2, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0007, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0008, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0009, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0806, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0807, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0808, STDNAME_DAMPER_PR);
+		prdzonemap.put(STDNAME_DAMPER_PR_CNC0809, STDNAME_DAMPER_PR);
+		//生产线->生产区域图初始化FA
+		prdzonemap.put(STDNAME_DAMPER_FA_FA1, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_FA_FA2, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_FA_MODULE, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_FA_UV, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_FA_REBSTP202122, STDNAME_DAMPER_FA);
+		prdzonemap.put(STDNAME_DAMPER_FA_REBSTP23, STDNAME_DAMPER_FA);
 	}
 
 	@Override

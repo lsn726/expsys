@@ -1,9 +1,11 @@
-package com.logsys.production.bwi.rta;
+package com.logsys.production.bwi.fa;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,21 +22,133 @@ import com.logsys.util.Location;
  * 减震器RTA生产线的生产数据提取器
  * @author lx8sn6
  */
-public abstract class BWIPdExcelDataExtractor_DamperRTA extends BWIPdExcelDataExtractor {
+public abstract class BWIPdExcelDataExtractor_DamperFA extends BWIPdExcelDataExtractor {
 	
-	private static final Logger logger=Logger.getLogger(BWIPdExcelDataExtractor_DamperRTA.class);
+	private static final Logger logger=Logger.getLogger(BWIPdExcelDataExtractor_DamperFA.class);
+	
+	/*FA验证区间枚举表*/
+	public static enum IntervalValidator {
+		/**早班区间1起始*/
+		Interval_Early1_Begin,
+		/**早班区间1结束*/
+		Interval_Early1_End,
+		/**早班区间2开始*/
+		Interval_Early2_Begin,
+		/**早班区间2结束*/
+		Interval_Early2_End,
+		/**早班区间3开始*/
+		Interval_Early3_Begin,
+		/**早班区间3结束*/
+		Interval_Early3_End,
+		/**早班区间4开始*/
+		Interval_Early4_Begin,
+		/**早班区间4结束*/
+		Interval_Early4_End,
+		/**早班区间5开始*/
+		Interval_Early5_Begin,
+		/**早班区间5结束*/
+		Interval_Early5_End,
+		/**早班区间6开始*/
+		Interval_Early6_Begin,
+		/**早班区间6结束*/
+		Interval_Early6_End,
+		/**早班区间7开始*/
+		Interval_Early7_Begin,
+		/**早班区间7结束*/
+		Interval_Early7_End,
+		/**早班区间8开始*/
+		Interval_Early8_Begin,
+		/**早班区间8结束*/
+		Interval_Early8_End,
+		/**早班区间9开始*/
+		Interval_Early9_Begin,
+		/**早班区间9结束*/
+		Interval_Early9_End,
+		/**中班区间1开始*/
+		Interval_Middle1_Begin,
+		/**中班区间1结束*/
+		Interval_Middle1_End,
+		/**中班区间2开始*/
+		Interval_Middle2_Begin,
+		/**中班区间2结束*/
+		Interval_Middle2_End,
+		/**中班区间3开始*/
+		Interval_Middle3_Begin,
+		/**中班区间3结束*/
+		Interval_Middle3_End,
+		/**中班区间4开始*/
+		Interval_Middle4_Begin,
+		/**中班区间4结束*/
+		Interval_Middle4_End,
+		/**中班区间5开始*/
+		Interval_Middle5_Begin,
+		/**中班区间5结束*/
+		Interval_Middle5_End,
+		/**中班区间6开始*/
+		Interval_Middle6_Begin,
+		/**中班区间6结束*/
+		Interval_Middle6_End,
+		/**中班区间7开始*/
+		Interval_Middle7_Begin,
+		/**中班区间7结束*/
+		Interval_Middle7_End,
+		/**中班区间8开始*/
+		Interval_Middle8_Begin,
+		/**中班区间8结束*/
+		Interval_Middle8_End,
+		/**中班区间9开始*/
+		Interval_Middle9_Begin,
+		/**中班区间9结束*/
+		Interval_Middle9_End,
+		/**晚班区间1开始*/
+		Interval_Night1_Begin,
+		/**晚班区间1结束*/
+		Interval_Night1_End,
+		/**晚班区间2开始*/
+		Interval_Night2_Begin,
+		/**晚班区间2结束*/
+		Interval_Night2_End,
+		/**晚班区间3开始*/
+		Interval_Night3_Begin,
+		/**晚班区间3结束*/
+		Interval_Night3_End,
+		/**晚班区间4开始*/
+		Interval_Night4_Begin,
+		/**晚班区间4结束*/
+		Interval_Night4_End,
+		/**晚班区间5开始*/
+		Interval_Night5_Begin,
+		/**晚班区间5结束*/
+		Interval_Night5_End,
+		/**晚班区间6开始*/
+		Interval_Night6_Begin,
+		/**晚班区间6结束*/
+		Interval_Night6_End,
+		/**晚班区间7开始*/
+		Interval_Night7_Begin,
+		/**晚班区间7结束*/
+		Interval_Night7_End,
+		/**晚班区间8开始*/
+		Interval_Night8_Begin,
+		/**晚班区间8结束*/
+		Interval_Night8_End,
+		/**晚班区间9开始*/
+		Interval_Night9_Begin,
+		/**晚班区间9结束*/
+		Interval_Night9_End
+	}
 	
 	/**每个生产时段有几个可输入行*/
 	protected static final int SPAN_PER_INTERVAL=4;
 	
 	/**早班产出数量所在列*/
-	protected static final int SHIFTEARLY_OUTPUTQTYCOL=8;
+	protected static final int SHIFTEARLY_OUTPUTQTYCOL=10;
 	
 	/**中班产出数量所在列*/
-	protected static final int SHIFTMIDDLE_OUTPUTQTYCOL=33;
+	protected static final int SHIFTMIDDLE_OUTPUTQTYCOL=37;
 	
 	/**夜班产出数量所在列*/
-	protected static final int SHIFTNIGHT_OUTPUTQTYCOL=58;
+	protected static final int SHIFTNIGHT_OUTPUTQTYCOL=64;
 	
 	/**产出PN所在列相对于产出数量所在列的差值*/
 	protected static final int RELATIVECAL_OUTPUTPN=-2;
@@ -43,7 +157,10 @@ public abstract class BWIPdExcelDataExtractor_DamperRTA extends BWIPdExcelDataEx
 	protected static final int RELATIVECAL_OPERATORQTY=-3;
 	
 	/**时间区间所在列相对于产出数量所在列的差值*/
-	protected static final int RELATIVECAL_INTERVAL=-6;
+	protected static final int RELATIVECAL_INTERVAL_BEGIN=-8;
+	
+	/**时间区间所在列相对于产出数量所在列的差值*/
+	protected static final int RELATIVECAL_INTERVAL_END=-6;
 	
 	/**生产数据起始行*/
 	protected static final int OUTPUTDATA_STARTROW=11;
@@ -55,86 +172,293 @@ public abstract class BWIPdExcelDataExtractor_DamperRTA extends BWIPdExcelDataEx
 	protected static final int FTQ_LT_HEADER_STARTROW=19;
 	
 	/**Sheet的产出时间位置*/
-	protected static final Location DATE_LOC=new Location(4,9);
+	protected static final Location DATE_LOC=new Location(4,11);
 	
 	/**用于初始化的时间变量，初始化outputlocdatemap*/
 	protected static final Calendar INIT_CALENDAR=Calendar.getInstance();
+	
+	/**用于核对FA特殊的时间区间标示方法*/
+	protected static final Map<IntervalValidator,Date> intervalValidator=new HashMap<IntervalValidator,Date>();
 	
 	{
 		//初始化时间信息
 		INIT_CALENDAR.clear();
 		INIT_CALENDAR.set(1900, 1, 1);			//初始化为1900年1月1日
+		
 	}
 	
-	public BWIPdExcelDataExtractor_DamperRTA() {
+	public BWIPdExcelDataExtractor_DamperFA() {
 		super();
-		PRDZONE=BWIPLInfo.STDNAME_DAMPER_RTA;
+		PRDZONE=BWIPLInfo.STDNAME_DAMPER_FA;
 	}
 	
 	protected void initValidatorStr() {
 		validatorStrMap.clear();
-		validatorStrMap.put(ValidatorStr.Interval_Early1, "8：15-9：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early2, "9：00-10：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early3, "10：00-11：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early4, "11：00-12：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early5, "12：00-13：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early6, "13：00-14：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early7, "14：00-15：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early8, "15：00-16：00");
-		validatorStrMap.put(ValidatorStr.Interval_Early9, "16：00-16：45");
-		validatorStrMap.put(ValidatorStr.Interval_Middle1, "16：45-17：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle2, "17：00-18：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle3, "18：00-19：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle4, "19：00-20：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle5, "20：00-21：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle6, "21：00-22：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle7, "22：00-23：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle8, "23：00-24：00");
-		validatorStrMap.put(ValidatorStr.Interval_Middle9, "00：00-01：15");
-		validatorStrMap.put(ValidatorStr.Interval_Night1, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night2, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night3, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night4, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night5, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night6, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night7, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night8, EMPTYSTRVALUE);
-		validatorStrMap.put(ValidatorStr.Interval_Night9, EMPTYSTRVALUE);
+		//FA使用与RTA和PR不同的标记时间区间方式
+	}
+	
+	/**
+	 * 初始化区间验证器
+	 */
+	protected void initIntervalValidator() {
+		Calendar cal=Calendar.getInstance();
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 8);
+		cal.set(Calendar.MINUTE, 15);
+		intervalValidator.put(IntervalValidator.Interval_Early1_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 9);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early1_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 9);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early2_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 10);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early2_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 10);
+		cal.set(Calendar.MINUTE, 10);
+		intervalValidator.put(IntervalValidator.Interval_Early3_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 11);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early3_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 11);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early4_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 12);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early4_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 12);
+		cal.set(Calendar.MINUTE, 30);
+		intervalValidator.put(IntervalValidator.Interval_Early5_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 13);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early5_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 13);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early6_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 14);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early6_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 14);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early7_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 15);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early7_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 15);
+		cal.set(Calendar.MINUTE, 10);
+		intervalValidator.put(IntervalValidator.Interval_Early8_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 16);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early8_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 16);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early9_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 17);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Early9_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 17);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle1_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 18);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle1_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 18);
+		cal.set(Calendar.MINUTE, 30);
+		intervalValidator.put(IntervalValidator.Interval_Middle2_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 19);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle2_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 19);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle3_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 20);
+		cal.set(Calendar.MINUTE, 15);
+		intervalValidator.put(IntervalValidator.Interval_Middle3_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 20);
+		cal.set(Calendar.MINUTE, 15);
+		intervalValidator.put(IntervalValidator.Interval_Middle4_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 21);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle4_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 21);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle5_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 22);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle5_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 22);
+		cal.set(Calendar.MINUTE, 10);
+		intervalValidator.put(IntervalValidator.Interval_Middle6_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 23);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle6_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 23);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle7_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 1);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle7_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 30);
+		intervalValidator.put(IntervalValidator.Interval_Middle8_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 1);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle8_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 1);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle9_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 2);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Middle9_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 2);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night1_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 3);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night1_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 3);
+		cal.set(Calendar.MINUTE, 10);
+		intervalValidator.put(IntervalValidator.Interval_Night2_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 4);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night2_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 4);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night3_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 5);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night3_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 5);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night4_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 6);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night4_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 6);
+		cal.set(Calendar.MINUTE, 30);
+		intervalValidator.put(IntervalValidator.Interval_Night5_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 7);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night5_End, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 7);
+		cal.set(Calendar.MINUTE, 0);
+		intervalValidator.put(IntervalValidator.Interval_Night6_Begin, cal.getTime());
+		cal.clear();
+		cal.set(1900, 1, 0);
+		cal.set(Calendar.HOUR, 8);
+		cal.set(Calendar.MINUTE, 15);
+		intervalValidator.put(IntervalValidator.Interval_Night6_End, cal.getTime());
 	}
 	
 	protected void initPrdAliasMap() {
 		prdaliasmap.clear();
 		prdaliasmap.put("22261665 奥迪前长", "22261665");
-		prdaliasmap.put("22261664 奥迪前短", "22261664");
-		prdaliasmap.put("22258275 奥迪后长", "22258275");
-		prdaliasmap.put("22258280 奥迪后短", "22258280");
-		prdaliasmap.put("22265450 宝马前", "22265450");
-		prdaliasmap.put("22261401 宝马后", "22261401");
-		prdaliasmap.put("22262045 沃尔沃前", "22262045");
-		prdaliasmap.put("22262043 沃尔沃前", "22262043");
-		prdaliasmap.put("22262043 VOLVO前", "22262043");
-		prdaliasmap.put("22262043 沃尔沃前左","22262043");
-		prdaliasmap.put("22262044 沃尔沃前右", "22262044");
-		prdaliasmap.put("22261449 沃尔沃后", "22261449");
-		prdaliasmap.put("22272186 奇瑞前", "22272186");
-		prdaliasmap.put("22272186 CQAC前", "22272186");
-		prdaliasmap.put("22272191 奇瑞前", "22272191");
-		prdaliasmap.put("22272184 奇瑞前左", "22272184");
-		prdaliasmap.put("22272003 奇瑞后", "22272003");
 	}
 	
 	protected void initLocValidatorStrMap() {
-		sheetValidator.clear();
-		int rowindex=0;
-		sheetValidator.put(new Location(4,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), "班次/班组：\nShift/Group");
-		sheetValidator.put(new Location(4,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), "班次/班组：\nShift/group");
-		sheetValidator.put(new Location(4,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), "班次/班组：\nShift/group");
+		sheetValidator.put(new Location(4,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL_BEGIN), "班次/班组：\nShift/Group");
+		sheetValidator.put(new Location(4,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL_BEGIN), "班次/班组：\nShift/group");
+		sheetValidator.put(new Location(4,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_INTERVAL_BEGIN), "班次/班组：\nShift/group");
 		sheetValidator.put(new Location(4,8), "日期\nDate");
 		sheetValidator.put(new Location(4,33), "日期\nDate");
 		sheetValidator.put(new Location(4,58), "日期\nDate");
-		sheetValidator.put(new Location(8,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), "时段\nHour");
-		sheetValidator.put(new Location(8,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), "时段\nHour");
-		sheetValidator.put(new Location(8,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), "时段\nHour");
+		sheetValidator.put(new Location(8,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL_BEGIN), "时段\nHour");
+		sheetValidator.put(new Location(8,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL_BEGIN), "时段\nHour");
+		sheetValidator.put(new Location(8,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_INTERVAL_BEGIN), "时段\nHour");
 		sheetValidator.put(new Location(8,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_OPERATORQTY), "上班人数");			//产出数量列+上班人数所在列的差值
 		sheetValidator.put(new Location(8,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_OPERATORQTY), "上班人数");
 		sheetValidator.put(new Location(8,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_OPERATORQTY), "上班人数");
@@ -144,62 +468,43 @@ public abstract class BWIPdExcelDataExtractor_DamperRTA extends BWIPdExcelDataEx
 		sheetValidator.put(new Location(8,SHIFTEARLY_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
 		sheetValidator.put(new Location(8,SHIFTMIDDLE_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
 		sheetValidator.put(new Location(8,SHIFTNIGHT_OUTPUTQTYCOL), "小时\n产出\nHourly Count");
-		//时间区间验证字符串
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early1)); //起始行+每个区间的行数
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle1)); //起始行+每个区间的行数，而后区间+1，进入下一个区间
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTNIGHT_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Night1));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early2));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle2));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early3));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle3));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early4));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle4));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early5));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle5));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early6));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle6));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early7));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle7));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early8));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle8));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex,SHIFTEARLY_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Early9));
-		sheetValidator.put(new Location(OUTPUTDATA_STARTROW+SPAN_PER_INTERVAL*rowindex++,SHIFTMIDDLE_OUTPUTQTYCOL+RELATIVECAL_INTERVAL), validatorStrMap.get(ValidatorStr.Interval_Middle9));
-		sheetValidator.put(new Location(FTQ_LT_STARTROW,11), "F T Q");
-		sheetValidator.put(new Location(FTQ_LT_STARTROW,36), "F T Q");
-		sheetValidator.put(new Location(FTQ_LT_STARTROW,61), "F T Q");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,11), "Part No\n零件号");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,36), "Part No\n零件号");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,61), "Part No\n零件号");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,12), "Failure Mode\n失效模式");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,37), "Failure Mode\n失效模式");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,62), "Failure Mode\n失效模式");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,13), "Rework\n返工");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,38), "Rework\n返工");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,63), "Rework\n返工");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,14), "Scrap\n报废");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,39), "Scrap\n报废");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,64), "Scrap\n报废");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,15), "Remarks\n备注");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,40), "Remarks\n备注");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,65), "Remarks\n备注");
-		sheetValidator.put(new Location(FTQ_LT_STARTROW,16), "Lost time");
-		sheetValidator.put(new Location(FTQ_LT_STARTROW,41), "Lost time");
-		sheetValidator.put(new Location(FTQ_LT_STARTROW,66), "Lost time");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,16), "Time\n时段");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,41), "Time\n时段");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,66), "Time\n时段");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,17), "Lost time\n损失时间");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,42), "Lost time\n损失时间");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,67), "Lost time\n损失时间");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,18), "LT mode\n损失类型");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,43), "LT mode\n损失类型");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,68), "LT mode\n损失类型");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,19), "Cause\n原因");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,44), "Cause\n原因");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,69), "Cause\n原因");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,20), "Remarks\n备注");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,45), "Remarks\n备注");
-		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,70), "Remarks\n备注");
+		//时间区间验证字符串不适用于FA
+		sheetValidator.put(new Location(FTQ_LT_STARTROW,13), "F T Q");
+		sheetValidator.put(new Location(FTQ_LT_STARTROW,40), "F T Q");
+		sheetValidator.put(new Location(FTQ_LT_STARTROW,67), "F T Q");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,13), "Part No\n零件号");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,40), "Part No\n零件号");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,67), "Part No\n零件号");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,14), "Failure Mode\n失效模式");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,41), "Failure Mode\n失效模式");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,68), "Failure Mode\n失效模式");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,15), "Rework\n返工");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,42), "Rework\n返工");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,69), "Rework\n返工");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,16), "Scrap\n报废");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,43), "Scrap\n报废");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,70), "Scrap\n报废");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,17), "Remarks\n备注");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,44), "Remarks\n备注");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,71), "Remarks\n备注");
+		sheetValidator.put(new Location(FTQ_LT_STARTROW,18), "Lost time");
+		sheetValidator.put(new Location(FTQ_LT_STARTROW,45), "Lost time");
+		sheetValidator.put(new Location(FTQ_LT_STARTROW,72), "Lost time");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,18), "Time\n时段");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,45), "Time\n时段");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,72), "Time\n时段");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,19), "Lost time\n损失时间");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,46), "Lost time\n损失时间");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,73), "Lost time\n损失时间");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,20), "LT mode\n损失类型");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,47), "LT mode\n损失类型");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,74), "LT mode\n损失类型");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,21), "Cause\n原因");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,48), "Cause\n原因");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,75), "Cause\n原因");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,22), "Remarks\n备注");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,49), "Remarks\n备注");
+		sheetValidator.put(new Location(FTQ_LT_HEADER_STARTROW,76), "Remarks\n备注");
 	}
 	
 	protected void initOutputLocIntervalMap() {

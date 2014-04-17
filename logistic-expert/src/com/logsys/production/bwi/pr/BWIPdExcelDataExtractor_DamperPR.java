@@ -39,6 +39,7 @@ public abstract class BWIPdExcelDataExtractor_DamperPR extends BWIPdExcelDataExt
 	protected void initPrdAliasMap() {
 		prdaliasmap.clear();
 		prdaliasmap.put("22271386 C7 前长", "22271386");
+		prdaliasmap.put("22261386 C7前长奥迪", "22271386");
 		prdaliasmap.put("22271387  C7 前短", "22271387");
 		prdaliasmap.put("22271402 C7 后长", "22271402");
 		prdaliasmap.put("22271403 C7 后短", "22271403");
@@ -50,7 +51,5 @@ public abstract class BWIPdExcelDataExtractor_DamperPR extends BWIPdExcelDataExt
 		prdaliasmap.put("222261455 VOLVO后", "22261455");
 		prdaliasmap.put("22261455 VOLVO后", "22261455");
 	}
-	
-	
 
 }

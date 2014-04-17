@@ -11,10 +11,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.logsys.production.ProductionContent;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CNC;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CoarseGrinding;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CrPlating;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_FricationWeld;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_Grinding;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_Hardening;
+import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_SupFin;
 import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_ChamferWash;
 import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_FrontWeldingCell;
 import com.logsys.production.bwi.rta.BWIPdExcelDataExtractor_DamperRTA_HBF;
@@ -129,12 +132,27 @@ public class ProductionDataReaderExcel_BWI {
 		} else if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_PR))	//PR区域
 			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_COARSE_GRINDING))		//粗磨生产线
 				return new BWIPdExcelDataExtractor_DamperPR_CoarseGrinding();
-			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_HARDENING))				//淬火生产线
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_HARDENING1))		//淬火生产线1
 				return new BWIPdExcelDataExtractor_DamperPR_Hardening();
-			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CRPLATING))				//电镀生产线
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_HARDENING2))		//淬火生产线2
+				return new BWIPdExcelDataExtractor_DamperPR_Hardening();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CRPLATING))		//电镀生产线
 				return new BWIPdExcelDataExtractor_DamperPR_CrPlating();
-			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_GRINDING))				//镀前研磨线
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_GRINDING1))		//镀前研磨线1
 				return new BWIPdExcelDataExtractor_DamperPR_Grinding();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_GRINDING2))		//镀前研磨线2
+				return new BWIPdExcelDataExtractor_DamperPR_Grinding();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE1))	//渡后超精1
+				return new BWIPdExcelDataExtractor_DamperPR_SupFin();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE2))	//渡后超精2
+				return new BWIPdExcelDataExtractor_DamperPR_SupFin();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_FRICATION_WELD1))	//摩擦焊1
+				return new BWIPdExcelDataExtractor_DamperPR_FricationWeld();
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_FRICATION_WELD2))	//摩擦焊2
+				return new BWIPdExcelDataExtractor_DamperPR_FricationWeld();
+			//CNC * 7
+			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0007)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0008)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0009)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0806)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0807)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0808)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0809))
+				return new BWIPdExcelDataExtractor_DamperPR_CNC();
 		return null;
 	}
 

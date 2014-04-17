@@ -1,6 +1,5 @@
 package com.logsys.prodplan.bwi;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,8 +32,6 @@ public class BWIProdplanDataReaderExcel {
 	
 	private static BWIPPExcelInfo ppExcelInfo=Settings.BWISettings.ppExcelInfo;		//BWI的ExcelPP配置类
 	
-	private static BWIPLInfo plinfo=Settings.BWISettings.plinfo;					//BWI的生产线配置类
-	
 	/**
 	 * 从Excel文件中获取总装计划，计划Sheet名称必须为UploadPlan，用于BWI的FA计划文件。
 	 * @param filepath 文件路径，计划Sheet名称必须为UploadPlan
@@ -43,7 +40,6 @@ public class BWIProdplanDataReaderExcel {
 	 * @return 读取的计划表
 	 */
 	public static List<ProdplanContent> getFAPlanFromFileBWI(String filepath, Date startdate, Date enddate) {
-		File file=new File(filepath);			//由文件路径创建新文件
 		Workbook wb;
 		InputStream readstream;
 		try {
@@ -111,7 +107,7 @@ public class BWIProdplanDataReaderExcel {
 						temp=new ProdplanContent();
 						temp.setDate(plandate);			//获取Date
 						temp.setPn(modelpn);
-						temp.setPrdline(plinfo.STDNAME_DAMPER_FA_FA1);
+						temp.setPrdline(BWIPLInfo.STDNAME_DAMPER_FA_FA1);
 						temp.setQty(cell.getNumericCellValue());
 						pplist.add(temp);
 					}
@@ -127,7 +123,7 @@ public class BWIProdplanDataReaderExcel {
 						//FA1和FA2日期轴相同
 						temp.setDate(plandate);	//获取Date
 						temp.setPn(modelpn);
-						temp.setPrdline(plinfo.STDNAME_DAMPER_FA_FA2);
+						temp.setPrdline(BWIPLInfo.STDNAME_DAMPER_FA_FA2);
 						temp.setQty(cell.getNumericCellValue());
 						pplist.add(temp);
 					}

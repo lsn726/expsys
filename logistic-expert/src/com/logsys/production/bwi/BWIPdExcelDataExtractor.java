@@ -90,9 +90,6 @@ public abstract class BWIPdExcelDataExtractor {
 		Interval_Night9
 	}
 	
-	/**验证字符串枚举->验证字符串对照表*/
-	protected Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
-	
 	/**产品别名->标准名对照表*/
 	protected Map<String,String> prdaliasmap=new HashMap<String,String>();
 	
@@ -102,6 +99,8 @@ public abstract class BWIPdExcelDataExtractor {
 	/**Sheet产出位置->时间区间对照表*/
 	protected Map<Location,DateInterval> outputlocdatemap=new HashMap<Location,DateInterval>();
 	
+	/**验证字符串枚举->验证字符串对照表，用于验证PR和RTA的表格格式*/
+	protected Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
 	
 	public BWIPdExcelDataExtractor() {
 		initValidatorStr();		//首先初始化验证字符串

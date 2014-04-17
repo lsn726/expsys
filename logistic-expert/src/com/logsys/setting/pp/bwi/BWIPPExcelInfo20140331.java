@@ -48,7 +48,7 @@ public class BWIPPExcelInfo20140331 implements BWIPPExcelInfo {
 	public Date getVersion() {
 		Calendar cal=Calendar.getInstance();
 		cal.clear();
-		cal.set(2014, cal.MARCH, 31);
+		cal.set(2014, Calendar.MARCH, 31);
 		return cal.getTime();
 	}
 

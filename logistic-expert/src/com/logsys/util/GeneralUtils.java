@@ -3,8 +3,6 @@ package com.logsys.util;
 import java.io.File;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * 通用工具类

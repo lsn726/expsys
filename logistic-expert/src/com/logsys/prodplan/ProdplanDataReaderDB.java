@@ -44,7 +44,7 @@ public class ProdplanDataReaderDB {
 			Calendar cal=Calendar.getInstance();
 			int week=cal.get(Calendar.WEEK_OF_YEAR)+1;
 			int year=cal.get(Calendar.YEAR);
-			cal.setWeekDate(year, week, cal.MONDAY);
+			cal.setWeekDate(year, week, Calendar.MONDAY);
 			hql+=" and date>=:begindate";
 			dinterval.begindate=new Date(year+"/"+cal.get(Calendar.MONTH)+"/"+cal.get(cal.DAY_OF_MONTH));
 		}

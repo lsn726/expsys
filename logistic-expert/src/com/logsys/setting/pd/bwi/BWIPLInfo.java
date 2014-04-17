@@ -20,9 +20,16 @@ public abstract class BWIPLInfo {
 	//**************************生产线名称设置--FA**************************
 	/**标准名称: DAMPER->FA->Final Assembly 1*/
 	public static final String STDNAME_DAMPER_FA_FA1="DamperFA Final Assembly 1";
-	
 	/**标准名称: DAMPER->FA->Final Assembly 2*/
 	public static final String STDNAME_DAMPER_FA_FA2="DamperFA Final Assembly 2";
+	/**标准名称: DAMPER->FA->Module*/
+	public static final String STDNAME_DAMPER_FA_MODULE="DamperFA Module";
+	/**标准名称: DAMPER->FA->UV*/
+	public static final String STDNAME_DAMPER_FA_UV="DamperFA UV";
+	/**标准名称: DAMPER->FA->Rebound Stop BF 20/21/22*/
+	public static final String STDNAME_DAMPER_FA_REBSTP202122="DamperFA Rebound Stop 202122";
+	/**标准名称: DAMPER->FA->Rebound Stop BF 23*/
+	public static final String STDNAME_DAMPER_FA_REBSTP23="DamperFA Rebound Stop 23";
 	//**************************生产线名称设置--RTA**************************	
 	/**标准名称: DAMPER->RTA->Hot Bottom Forming 0031*/
 	public static final String STDNAME_DAMPER_RTA_HBF0031="DamperRTA Hot Bottom Forming 0031";
@@ -49,14 +56,38 @@ public abstract class BWIPLInfo {
 	//**************************生产线名称设置--PR**************************
 	/**标准名称: DAMPER->PR->Coarse Grinding*/
 	public static final String STDNAME_DAMPER_PR_COARSE_GRINDING="DamperPR Coarse Grinding";
-	/**标准名称: DAMPER->PR->Hardening Line*/
-	public static final String STDNAME_DAMPER_PR_HARDENING="DamperPR Hardening Line";
+	/**标准名称: DAMPER->PR->Hardening Line 1*/
+	public static final String STDNAME_DAMPER_PR_HARDENING1="DamperPR Hardening Line 1";
+	/**标准名称: DAMPER->PR->Hardening Line 2*/
+	public static final String STDNAME_DAMPER_PR_HARDENING2="DamperPR Hardening Line 2";
 	/**标准名称: DAMPER->PR->Cr Plating Line*/
 	public static final String STDNAME_DAMPER_PR_CRPLATING="DamperPR Cr Plating Line";
-	/**标准名称: DAMPER->PR->Grinding Line*/
-	public static final String STDNAME_DAMPER_PR_GRINDING="DamperPR Grinding Line";
+	/**标准名称: DAMPER->PR->Grinding Line 1*/
+	public static final String STDNAME_DAMPER_PR_GRINDING1="DamperPR Grinding Line 1";
 	/**标准名称: DAMPER->PR->Grinding Line 2*/
 	public static final String STDNAME_DAMPER_PR_GRINDING2="DamperPR Grinding Line 2";
+	/**标准名称: DAMPER->PR->Superfinished after Cr-Plating 1*/
+	public static final String STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE1="DamperPR Super Finish 1";
+	/**标准名称: DAMPER->PR->Superfinished after Cr-Plating 2*/
+	public static final String STDNAME_DAMPER_PR_SUPFIN_AFTER_CRPLATE2="DamperPR Super Finish 2";
+	/**标准名称: DAMPER->PR->Frication Welding Line 1*/
+	public static final String STDNAME_DAMPER_PR_FRICATION_WELD1="DamperPR Frication Welding 1";
+	/**标准名称: DAMPER->PR->Frication Welding Line 2*/
+	public static final String STDNAME_DAMPER_PR_FRICATION_WELD2="DamperPR Frication Welding 2";
+	/**标准名称: DAMPER->PR->CNC0007*/
+	public static final String STDNAME_DAMPER_PR_CNC0007="DamperPR CNC0007";
+	/**标准名称: DAMPER->PR->CNC0008*/
+	public static final String STDNAME_DAMPER_PR_CNC0008="DamperPR CNC0008";
+	/**标准名称: DAMPER->PR->CNC0008*/
+	public static final String STDNAME_DAMPER_PR_CNC0009="DamperPR CNC0009";
+	/**标准名称: DAMPER->PR->CNC0806*/
+	public static final String STDNAME_DAMPER_PR_CNC0806="DamperPR CNC0806";
+	/**标准名称: DAMPER->PR->CNC0807*/
+	public static final String STDNAME_DAMPER_PR_CNC0807="DamperPR CNC0807";
+	/**标准名称: DAMPER->PR->CNC0808*/
+	public static final String STDNAME_DAMPER_PR_CNC0808="DamperPR CNC0808";
+	/**标准名称: DAMPER->PR->CNC0809*/
+	public static final String STDNAME_DAMPER_PR_CNC0809="DamperPR CNC0809";
 	
 	/**
 	 * 通过别名获取标准生产线名称
