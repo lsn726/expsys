@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.logsys.production.ProductionContent;
+import com.logsys.production.bwi.fa.BWIPdExcelDataExtractor_DamperFA_Module;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CNC;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CoarseGrinding;
 import com.logsys.production.bwi.pr.BWIPdExcelDataExtractor_DamperPR_CrPlating;
@@ -129,7 +130,7 @@ public class ProductionDataReaderExcel_BWI {
 				return new BWIPdExcelDataExtractor_DamperRTA_KTL();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_RTA_PUNCHBUSHING_CELL))	//衬套压装
 				return new BWIPdExcelDataExtractor_DamperRTA_PunchBushing();
-		} else if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_PR))	//PR区域
+		} else if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_PR)) { //PR区域
 			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_COARSE_GRINDING))		//粗磨生产线
 				return new BWIPdExcelDataExtractor_DamperPR_CoarseGrinding();
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_HARDENING1))		//淬火生产线1
@@ -153,6 +154,10 @@ public class ProductionDataReaderExcel_BWI {
 			//CNC * 7
 			else if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0007)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0008)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0009)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0806)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0807)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0808)||stdplname.equals(BWIPLInfo.STDNAME_DAMPER_PR_CNC0809))
 				return new BWIPdExcelDataExtractor_DamperPR_CNC();
+		} else if(plinfo.getProdzoneByStdProdlineName(stdplname).equals(BWIPLInfo.STDNAME_DAMPER_FA)) {
+			if(stdplname.equals(BWIPLInfo.STDNAME_DAMPER_FA_MODULE))	//粗磨生产线
+				return new BWIPdExcelDataExtractor_DamperFA_Module();
+		}
 		return null;
 	}
 

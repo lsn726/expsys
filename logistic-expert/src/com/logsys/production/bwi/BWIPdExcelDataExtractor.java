@@ -1,5 +1,6 @@
 package com.logsys.production.bwi;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,6 +103,9 @@ public abstract class BWIPdExcelDataExtractor {
 	/**验证字符串枚举->验证字符串对照表，用于验证PR和RTA的表格格式*/
 	protected Map<ValidatorStr,String> validatorStrMap=new HashMap<ValidatorStr,String>();
 	
+	/**用于核对FA特殊的位置<->时间标示法*/
+	protected static final Map<Location,Date> FALocDateValidator=new HashMap<Location,Date>();
+	
 	public BWIPdExcelDataExtractor() {
 		initValidatorStr();		//首先初始化验证字符串
 		initPrdAliasMap();		//初始化别名->标准名对照表
@@ -166,14 +170,40 @@ public abstract class BWIPdExcelDataExtractor {
 		for(Location loc:sheetValidator.keySet()) {			//验证表格可信性
 			cell=datasrc.getRow(loc.row).getCell(loc.column);
 			validstr=sheetValidator.get(loc);
-			//如果获取值不匹配，或者获取字符串为""的代理值EMPTYSTRVALUE时
-			if(!cell.getStringCellValue().equals(validstr))
-				if(!validstr.equals(EMPTYSTRVALUE)) {		//如果验证字符串是指定的空字符串
-					logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:["+cell.getStringCellValue()+"]与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
-					return false;
-				}
+			try {
+				//如果获取值不匹配，或者获取字符串为""的代理值EMPTYSTRVALUE时
+				if(!cell.getStringCellValue().equals(validstr))
+					if(!validstr.equals(EMPTYSTRVALUE)) {		//如果验证字符串是指定的空字符串
+						logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容:["+cell.getStringCellValue()+"]与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
+						return false;
+					}
+			} catch(Throwable ex) {
+				logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的内容与验证器中的内容:["+sheetValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
+				return false;
+			}
 			//System.out.println(cell.getStringCellValue()+"["+loc.row+"/"+loc.column+"]");
 		}
+		Date validdate;
+		if(PRDZONE.equals(BWIPLInfo.STDNAME_DAMPER_FA))		//如果是FA区域，则需要通过FA特别的方式核实区间
+			for(Location loc:FALocDateValidator.keySet()) {
+				cell=datasrc.getRow(loc.row).getCell(loc.column);
+				if(cell==null) {
+					logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的单元为空.");
+					return false;
+				}
+				try {
+					validdate=cell.getDateCellValue();
+					if(validdate.equals(FALocDateValidator.get(loc)))		//只有时间相等才算验证通过	
+						continue;
+					else {
+						logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的时间:["+cell.getDateCellValue()+"]与验证器中的时间:["+FALocDateValidator.get(loc)+"]不相符。请检查表格内容是否正确，或者验证器内容是否过期.");
+						return false;
+					}
+				} catch(Throwable ex) {
+					logger.error("Sheet:"+datasrc.getSheetName()+" "+"位置行:"+loc.row+" 列:"+loc.column+" 的单元不能被验证时间区间。",ex);
+					return false;
+				}
+			}
 		return true;
 	}
 	
