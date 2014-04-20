@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import com.logsys.prodplan.ProdplanContent;
 import com.logsys.setting.Settings;
 import com.logsys.setting.pd.bwi.BWIPLInfo;
+import com.logsys.setting.pd.bwi.BWIPLInfo.ProdLine;
 import com.logsys.setting.pp.bwi.BWIPPExcelInfo;
 
 /**
@@ -107,7 +108,7 @@ public class BWIProdplanDataReaderExcel {
 						temp=new ProdplanContent();
 						temp.setDate(plandate);			//获取Date
 						temp.setPn(modelpn);
-						temp.setPrdline(BWIPLInfo.STDNAME_DAMPER_FA_FA1);
+						temp.setPrdline(BWIPLInfo.getStdNameByLineEnum(ProdLine.DAMPER_FA_FA1));
 						temp.setQty(cell.getNumericCellValue());
 						pplist.add(temp);
 					}
@@ -123,7 +124,7 @@ public class BWIProdplanDataReaderExcel {
 						//FA1和FA2日期轴相同
 						temp.setDate(plandate);	//获取Date
 						temp.setPn(modelpn);
-						temp.setPrdline(BWIPLInfo.STDNAME_DAMPER_FA_FA2);
+						temp.setPrdline(BWIPLInfo.getStdNameByLineEnum(ProdLine.DAMPER_FA_FA2));
 						temp.setQty(cell.getNumericCellValue());
 						pplist.add(temp);
 					}

@@ -14,15 +14,17 @@ public class ProductionContent {
 	
 	private Date date;
 	
-	private String outputprd;
+	private String output;
 	
-	private int operatorqty;
+	private int operqty;
 	
-	private double outputqty;
+	private double qty;
 	
 	private Date tfbegin;
 	
 	private Date tfend;
+	
+	private int effmin;
 
 	public ProductionContent() {}
 	
@@ -42,20 +44,36 @@ public class ProductionContent {
 		this.workcenter = workcenter;
 	}
 
-	public int getOperatorqty() {
-		return operatorqty;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setOperatorqty(int operatorqty) {
-		this.operatorqty = operatorqty;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
-	public double getOutputqty() {
-		return outputqty;
+	public String getOutput() {
+		return output;
 	}
 
-	public void setOutputqty(double outputqty) {
-		this.outputqty = outputqty;
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
+	public int getOperqty() {
+		return operqty;
+	}
+
+	public void setOperqty(int operqty) {
+		this.operqty = operqty;
+	}
+
+	public double getQty() {
+		return qty;
+	}
+
+	public void setQty(double qty) {
+		this.qty = qty;
 	}
 
 	public Date getTfbegin() {
@@ -74,29 +92,20 @@ public class ProductionContent {
 		this.tfend = tfend;
 	}
 
-	public Date getDate() {
-		return date;
+	public int getEffmin() {
+		return effmin;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
-	public String getOutputprd() {
-		return outputprd;
-	}
-
-	public void setOutputprd(String outputprd) {
-		this.outputprd = outputprd;
+	public void setEffmin(int effmin) {
+		this.effmin = effmin;
 	}
 
 	@Override
 	public String toString() {
 		return "ProductionContent [id=" + id + ", workcenter=" + workcenter
-				+ ", date=" + date + ", outputprd=" + outputprd
-				+ ", operatorqty="
-				+ operatorqty + ", outputqty=" + outputqty + ", tfbegin="
-				+ tfbegin + ", tfend=" + tfend + "]";
+				+ ", date=" + date + ", output=" + output + ", operqty="
+				+ operqty + ", qty=" + qty + ", tfbegin=" + tfbegin
+				+ ", tfend=" + tfend + ", effmin=" + effmin + "]";
 	}
 	
 }

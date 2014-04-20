@@ -100,10 +100,11 @@ CREATE TABLE `production` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `workcenter` char(50) NOT NULL COMMENT '工作中心',
   `date` date NOT NULL COMMENT '产出日期',
-  `outputprd` char(20) NOT NULL COMMENT '产出产品',
-  `operatorqty` int(5) NOT NULL COMMENT '操作工数量',
-  `outputqty` double NOT NULL COMMENT '产出数量',
+  `output` char(20) NOT NULL COMMENT '产出产品',
+  `operqty` int(5) NOT NULL COMMENT '操作工数量',
+  `qty` double NOT NULL COMMENT '产出数量',
   `tfbegin` timestamp NOT NULL COMMENT 'Time Frame产出时间开始',
   `tfend` timestamp NOT NULL COMMENT 'Time Frame产出时间结束',
+  `effmin` timestamp NOT NULL COMMENT '有效生产时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='生产表'

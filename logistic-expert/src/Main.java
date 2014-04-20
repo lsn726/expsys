@@ -1,4 +1,7 @@
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -13,13 +16,8 @@ public class Main {
 		//BOMProcess.uploadBOMFromExcel_SAPCS12("e:\\CS12_22271372.xlsx");		//上传BOM
 		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\PP.xlsx", null, new Date("2014/4/20"),true));	//上传从下周一开始的计划
 		//new MrpReportForExcel().generate("123");								//生成MRP报告
-		try {
-			List<ProductionContent> prodlist=ProductionDataReaderExcel_BWI.readDataFromFile("e:\\FAM.xls");
-			System.out.println(prodlist.size());
-			//System.out.println(ProductionDataWriterDB.writeDataToDB(prodlist));
-		} catch (Throwable e) {
-			Logger.getLogger(Main.class).error("错误",e);
-		}
+		List<ProductionContent> prodlist=ProductionDataReaderExcel_BWI.readDataFromFile("d:\\WASH.xls",0);
+		ProductionDataReaderExcel_BWI.debugInfoStastistics(prodlist);
 	}
 
 }

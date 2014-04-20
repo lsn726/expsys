@@ -10,12 +10,13 @@
 			<generator class="increment" />
 		</id>
 		<property name="date" type="date" column="date" />
-		<property name="outputprd" type="string" column="outputprd" />
+		<property name="output" type="string" column="output" />
 		<property name="workcenter" type="string" column="workcenter" />
-		<property name="operatorqty" type="int" column="operatorqty" />
-		<property name="outputqty" type="double" column="outputqty" />
+		<property name="operqty" type="int" column="operqty" />
+		<property name="qty" type="double" column="qty" />
 		<property name="tfbegin" type="timestamp" column="tfbegin" />
 		<property name="tfend" type="timestamp" column="tfend" />
+		<property name="effmin" type="int" column="effmin" />
 	</class>
 	
 </hibernate-mapping>

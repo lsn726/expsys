@@ -40,6 +40,8 @@ public class BWIPLInfo {
 		DAMPER_RTA_HBF0835,
 		/**减震器--RTA--Neck Down*/
 		DAMPER_RTA_NECKDOWN,
+		/**减震器--RTA--Washing After Neck Down*/
+		DAMPER_RTA_WASH_POSTNK,
 		/**减震器--RTA--Front Welding Cell*/
 		DAMPER_RTA_FRONTWELDCELL,
 		/**减震器--RTA--Rear Welding Cell*/
@@ -101,11 +103,12 @@ public class BWIPLInfo {
 	/**别名->生产线枚举 映射图*/
 	private static Map<String,ProdLine> ALIAS_LINE_MAP=new HashMap<String,ProdLine>();
 	
-	{
+	static {
 		//**************减震器生产区域枚举->标准名称初始化***************
 		STDNAME_MAP.put(ProdLine.DAMPER_ZONE_FA, "DamperFA");
 		STDNAME_MAP.put(ProdLine.DAMPER_ZONE_RTA, "DamperRTA");
 		STDNAME_MAP.put(ProdLine.DAMPER_ZONE_PR, "DamperPR");
+		
 		//**************FA区域枚举->标准名称初始化***************
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FA1, "DamperFA FA 1");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FA2, "DamperFA FA 2");
@@ -117,6 +120,7 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_HBF0031, "DamperRTA HBF 0031");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_HBF0835, "DamperRTA HBF 0835");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_NECKDOWN, "DamperRTA Neck Down");
+		STDNAME_MAP.put(ProdLine.DAMPER_RTA_WASH_POSTNK, "DamperRTA Wash After ND");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_FRONTWELDCELL, "DamperRTA FrontWeldCell");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_REARWELDCELL, "DamperRTA RearWeldCell");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_WASH, "DamperRTA Chemfer Wash");
@@ -155,6 +159,7 @@ public class BWIPLInfo {
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_HBF0031, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_HBF0835, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_NECKDOWN, ProdLine.DAMPER_ZONE_RTA);
+		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_WASH_POSTNK, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_FRONTWELDCELL, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_REARWELDCELL, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_WASH, ProdLine.DAMPER_ZONE_RTA);
@@ -211,6 +216,7 @@ public class BWIPLInfo {
 		ALIAS_LINE_MAP.put("热成型焊接生产线HBF0031", ProdLine.DAMPER_RTA_HBF0031);
 		ALIAS_LINE_MAP.put("热成型焊接生产线HBF0835", ProdLine.DAMPER_RTA_HBF0835);
 		ALIAS_LINE_MAP.put("起鼓&缩口生产线Neck Down", ProdLine.DAMPER_RTA_NECKDOWN);
+		ALIAS_LINE_MAP.put("缩口后清洗 After Neck Down Washing", ProdLine.DAMPER_RTA_WASH_POSTNK);
 		ALIAS_LINE_MAP.put("前焊接生产线Front Welding Cell", ProdLine.DAMPER_RTA_FRONTWELDCELL);
 		ALIAS_LINE_MAP.put("后焊接生产线Rear Welding Cell", ProdLine.DAMPER_RTA_REARWELDCELL);
 		ALIAS_LINE_MAP.put("倒角清洗 Chamfering&Washing", ProdLine.DAMPER_RTA_CHAMFER_WASH);
@@ -222,21 +228,31 @@ public class BWIPLInfo {
 	}
 	
 	/**
-	 * 通过别名获取标准生产线名称
+	 * 通过别名获取生产线枚举
 	 * @param alias 别名
 	 * @return 生产线枚举/ProdLine.INVALID
 	 */
-	public static ProdLine getStdLineNameByAlias(String alias) {
+	public static ProdLine getStdLineByAlias(String alias) {
 		if(ALIAS_LINE_MAP.containsKey(alias)) return ALIAS_LINE_MAP.get(alias);
 		else return ProdLine.INVALID;
 	}
 	
 	/**
-	 * 通过标准生产线获取标准生产区域
+	 * 通过生产线枚举获取生产线标准名称
+	 * @param alias 别名
+	 * @return 生产线名称/null
+	 */
+	public static String getStdNameByLineEnum(ProdLine line) {
+		if(STDNAME_MAP.containsKey(line)) return STDNAME_MAP.get(line);
+		else return null;
+	}
+	
+	/**
+	 * 通过生产线枚举获取生产区域枚举
 	 * @param stdline 标准生产线
 	 * @return 生产区域/ProdLine.INVALID
 	 */
-	public static ProdLine getStdZoneByStdLine(ProdLine stdline) {
+	public static ProdLine getProdZoneByProdLine(ProdLine stdline) {
 		if(LINE_ZONE_MAP.containsKey(stdline)) return LINE_ZONE_MAP.get(stdline);
 		else return ProdLine.INVALID;
 	}
