@@ -1,9 +1,4 @@
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 import com.logsys.production.ProductionContent;
 import com.logsys.production.bwi.ProductionDataReaderExcel_BWI;
