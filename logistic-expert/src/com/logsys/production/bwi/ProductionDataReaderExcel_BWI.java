@@ -21,6 +21,9 @@ import com.logsys.setting.pd.bwi.BWIPLInfo;
 import com.logsys.setting.pd.bwi.BWIPLInfo.ProdLine;
 import com.logsys.setting.pd.bwi.BWIPdExcelInfo;
 import com.logsys.setting.pd.bwi.fa.BWIPdExcelInfoFA;
+import com.logsys.setting.pd.bwi.fa.BWIPdExcelInfoFA_Module;
+import com.logsys.setting.pd.bwi.fa.BWIPdExcelInfoFA_ReboundStop;
+import com.logsys.setting.pd.bwi.fa.BWIPdExcelInfoFA_UV;
 import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR;
 import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_CNC0009;
 import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_CoarseGrinding;
@@ -139,7 +142,14 @@ public class ProductionDataReaderExcel_BWI {
 			else												//其他生产线使用PR标准提取器
 				return new BWIPdExcelInfoPR();
 		} else if(BWIPLInfo.getProdZoneByProdLine(pline).equals(ProdLine.DAMPER_ZONE_FA)) {	//FA区域
-			return new BWIPdExcelInfoFA();
+			if(pline.equals(ProdLine.DAMPER_FA_MODULE))			//Module压装
+				return new BWIPdExcelInfoFA_Module();
+			else if(pline.equals(ProdLine.DAMPER_FA_UV))		//UV线
+				return new BWIPdExcelInfoFA_UV();
+			else if(pline.equals(ProdLine.DAMPER_FA_REBOUND_STOP_202122)||pline.equals(ProdLine.DAMPER_FA_REBOUND_STOP_23))	//制动换线
+				return new BWIPdExcelInfoFA_ReboundStop();
+			else
+				return new BWIPdExcelInfoFA();
 		}
 		return null;
 	}
@@ -211,7 +221,7 @@ public class ProductionDataReaderExcel_BWI {
 		for(Location loc:outputmap.keySet()) {					//开始遍历产出位置
 			cell=sheet.getRow(loc.row).getCell(loc.column);
 			if(cell==null) {
-				logger.error("不能提取生产数据：Sheet["+sheet.getSheetName()+"]Row["+loc.row+"]Column["+loc.column+"]单元格为空。");
+				logger.error("不能提取生产数据：应该存在生产数据的Sheet["+sheet.getSheetName()+"]Row["+loc.row+"]Column["+loc.column+"]单元格为空。");
 				return null;
 			}
 			if(cell.getNumericCellValue()==0) continue;			//如果产出为0，则跳过这个单元格
