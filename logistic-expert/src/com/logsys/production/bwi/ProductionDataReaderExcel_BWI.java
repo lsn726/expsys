@@ -20,9 +20,17 @@ import com.logsys.production.ProductionInterval;
 import com.logsys.setting.pd.bwi.BWIPLInfo;
 import com.logsys.setting.pd.bwi.BWIPLInfo.ProdLine;
 import com.logsys.setting.pd.bwi.BWIPdExcelInfo;
-import com.logsys.setting.pd.bwi.BWIPdExcelInfoRTA;
-import com.logsys.setting.pd.bwi.BWIPdExcelInfoRTA_KTL;
-import com.logsys.setting.pd.bwi.BWIPdExcelInfoRTA_NeckDown;
+import com.logsys.setting.pd.bwi.fa.BWIPdExcelInfoFA;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_CNC0009;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_CoarseGrinding;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_CrPlating;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_FricationWeld;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_Grinding;
+import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_Hardening;
+import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA;
+import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_KTL;
+import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_NeckDown;
 import com.logsys.util.Location;
 
 /**
@@ -63,6 +71,8 @@ public class ProductionDataReaderExcel_BWI {
 			}
 			//根据生产线获取Excel信息类
 			excelinfo=getExcelInfoByPrdLine(pline);
+			//wb.getSheet("1").getRow(15).getCell(4).setCellType(Cell.CELL_TYPE_STRING);
+			//System.out.println(wb.getSheet("1").getRow(15).getCell(4).getStringCellValue());
 			if(excelinfo==null) {
 				logger.error("从Excel读取生产信息错误！没有合适当前生产线：["+plname+"]的信息类。");
 				return null;
@@ -78,7 +88,7 @@ public class ProductionDataReaderExcel_BWI {
 			}
 			List<ProductionContent> pcontlist=new ArrayList<ProductionContent>();
 			List<ProductionContent> temp;						//临时变量
-			for(daycounter=1;daycounter<=maxday;daycounter++) {	//开始遍历
+			for(;daycounter<=maxday;daycounter++) {	//开始遍历
 				sheet=wb.getSheet(String.valueOf(daycounter));	//按照日期便利天数的Sheet
 				if(sheet==null) break;							//当便利到没有Sheet时，说明本月已经遍历完成
 				if(!verifySheet(sheet,excelinfo)) {				//验证Sheet
@@ -112,7 +122,24 @@ public class ProductionDataReaderExcel_BWI {
 			else if(pline.equals(ProdLine.DAMPER_RTA_KTL)||pline.equals(ProdLine.DAMPER_RTA_CHAMFER_WASH)||pline.equals(ProdLine.DAMPER_RTA_WASH_POSTNK))		//[电泳线]/[切割倒角]/[缩口前清洗]采用KTL的单独配置
 				return new BWIPdExcelInfoRTA_KTL();
 			else
-				return new BWIPdExcelInfoRTA();
+				return new BWIPdExcelInfoRTA();					//其他生产线使用RTA标准提取器
+		} else if(BWIPLInfo.getProdZoneByProdLine(pline).equals(ProdLine.DAMPER_ZONE_PR)) {	//PR线
+			if(pline.equals(ProdLine.DAMPER_PR_COARSE_GRIND))	//粗磨线
+				return new BWIPdExcelInfoPR_CoarseGrinding();
+			else if(pline.equals(ProdLine.DAMPER_PR_CR_PLATING))//电镀线
+				return new BWIPdExcelInfoPR_CrPlating();
+			else if(pline.equals(ProdLine.DAMPER_PR_HARDENING1)||pline.equals(ProdLine.DAMPER_PR_HARDENING2))//淬火线
+				return new BWIPdExcelInfoPR_Hardening();
+			else if(pline.equals(ProdLine.DAMPER_PR_GRINDING_PRECR1)||pline.equals(ProdLine.DAMPER_PR_GRINDING_PRECR2))//研磨线
+				return new BWIPdExcelInfoPR_Grinding();
+			else if(pline.equals(ProdLine.DAMPER_PR_FRICATION_WELD1)||pline.equals(ProdLine.DAMPER_PR_FRICATION_WELD2))//摩擦焊
+				return new BWIPdExcelInfoPR_FricationWeld();
+			else if(pline.equals(ProdLine.DAMPER_PR_CNC0009))	//CNC0009
+				return new BWIPdExcelInfoPR_CNC0009();
+			else												//其他生产线使用PR标准提取器
+				return new BWIPdExcelInfoPR();
+		} else if(BWIPLInfo.getProdZoneByProdLine(pline).equals(ProdLine.DAMPER_ZONE_FA)) {	//FA区域
+			return new BWIPdExcelInfoFA();
 		}
 		return null;
 	}
