@@ -2,12 +2,17 @@ package com.logsys.production.bwi;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -224,6 +229,7 @@ public class ProductionDataReaderExcel_BWI {
 				logger.error("不能提取生产数据：应该存在生产数据的Sheet["+sheet.getSheetName()+"]Row["+loc.row+"]Column["+loc.column+"]单元格为空。");
 				return null;
 			}
+			//System.out.println("Sheet:"+sheet.getSheetName()+" Row:"+loc.row+" Col:"+loc.column);
 			if(cell.getNumericCellValue()==0) continue;			//如果产出为0，则跳过这个单元格
 			tempcont=new ProductionContent();
 			try {
@@ -258,14 +264,15 @@ public class ProductionDataReaderExcel_BWI {
 	}
 	
 	/**
-	 * 调试用信息接口，显示提取后数据的统计信息
+	 * 获取统计信息
 	 * @param prodlist 提取的信息列表
 	 */
-	public static void debugInfoStastistics(List<ProductionContent> prodlist) {
+	public static String getStastisticsInfo(List<ProductionContent> prodlist) {
 		if(prodlist==null) {
 			logger.error("错误！参数为空。");
-			return;
+			return null;
 		}
+		String info="提取数据的按小时排序信息如下：\n";
 		try {
 			Map<Date,Double> count=new HashMap<Date,Double>();
 			Double temp;
@@ -274,18 +281,27 @@ public class ProductionDataReaderExcel_BWI {
 				if(count.containsKey(pc.getDate()))
 					temp+=count.get(pc.getDate());
 				count.put(pc.getDate(), temp);
-				System.out.println(pc);
 			}
+			//重新排序开始
+			List<Entry<Date, Double>> mapentlist=new ArrayList<Entry<Date, Double>>(count.entrySet());
+			Collections.sort(mapentlist, new Comparator<Entry<Date,Double>>(){
+				public int compare(Entry<Date, Double> e1, Entry<Date, Double> e2) {      
+			        return e1.getKey().compareTo(e2.getKey());
+			    }
+			});
+			//重新排序结束
+			DateFormat dateformat=new SimpleDateFormat("YYYY-MM-dd");
 			Double sum=0.0;
-			for(Date date:count.keySet()) {
-				System.out.println("Date["+date+"]"+"Qty["+count.get(date)+"]");
-				sum+=count.get(date);
+			for(int i=0;i<mapentlist.size();i++) {
+				info+="Date [ "+dateformat.format(mapentlist.get(i).getKey())+" ] "+"--------> OutputQty ["+mapentlist.get(i).getValue()+"]       \n";
+				sum+=mapentlist.get(i).getValue();
 			}
-			System.out.println("Total:"+sum);
-			//System.out.println(ProductionDataWriterDB.writeDataToDB(prodlist));
+			info+="总计产出："+sum+"\n";
 		} catch (Throwable e) {
-			logger.error("错误：",e);
+			logger.error("统计产出信息错误：",e);
+			return null;
 		}
+		return info;
 	}
 	
 }
