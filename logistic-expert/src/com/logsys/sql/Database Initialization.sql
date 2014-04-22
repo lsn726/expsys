@@ -105,6 +105,6 @@ CREATE TABLE `production` (
   `qty` double NOT NULL COMMENT '产出数量',
   `tfbegin` timestamp NOT NULL COMMENT 'Time Frame产出时间开始',
   `tfend` timestamp NOT NULL COMMENT 'Time Frame产出时间结束',
-  `effmin` timestamp NOT NULL COMMENT '有效生产时间',
+  `effmin` int NOT NULL COMMENT '有效生产时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='生产表'

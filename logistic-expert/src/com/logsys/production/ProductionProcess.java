@@ -63,10 +63,7 @@ public class ProductionProcess {
 		}
 		//获取昨天在月份中的天数开始
 		Calendar cal=Calendar.getInstance();
-		cal.clear();
-		cal.set(2014, 3, 1);
-		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)-1);
-		cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)-1);
+		cal.setTimeInMillis(cal.getTimeInMillis()-24*3600*1000);
 		int dayofmonth=cal.get(Calendar.DAY_OF_MONTH);
 		//获取昨天在月份中的天数结束
 		List<ProductionContent> prodlist;
