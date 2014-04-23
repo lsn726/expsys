@@ -84,6 +84,10 @@ public class BWIPdExcelInfoPR_CrPlating extends BWIPdExcelInfoPR {
 		PRODMAP_LOC_INTERVAL.put(new Location(44,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
 		PRODMAP_LOC_INTERVAL.put(new Location(45,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
 		PRODMAP_LOC_INTERVAL.put(new Location(46,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(11,58), new ProductionInterval(PdInterval.Night1,26,15,27,0,45));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(12,58), new ProductionInterval(PdInterval.Night1,26,15,27,0,45));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(13,58), new ProductionInterval(PdInterval.Night1,26,15,27,0,45));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(14,58), new ProductionInterval(PdInterval.Night1,26,15,27,0,45));	//需要目视验证！
 	}
 	
 }

@@ -229,8 +229,12 @@ public class ProductionDataReaderExcel_BWI {
 				logger.error("不能提取生产数据：应该存在生产数据的Sheet["+sheet.getSheetName()+"]Row["+loc.row+"]Column["+loc.column+"]单元格为空。");
 				return null;
 			}
-			//System.out.println("Sheet:"+sheet.getSheetName()+" Row:"+loc.row+" Col:"+loc.column);
-			if(cell.getNumericCellValue()==0) continue;			//如果产出为0，则跳过这个单元格
+			try {
+				if(cell.getNumericCellValue()==0) continue;			//如果产出为0，则跳过这个单元格
+			} catch(Throwable ex) {
+				logger.error("不能提取生产数据：应该存在生产数据的Sheet["+sheet.getSheetName()+"]Row["+loc.row+"]Column["+loc.column+"]单元格提取数据错误!",ex);
+				return null;
+			}
 			tempcont=new ProductionContent();
 			try {
 				oripn=sheet.getRow(loc.row).getCell(loc.column+BWIPdExcelInfo.RELCOL_PARTNUM_OUTPUTQTY).getStringCellValue();	//提取产出产品

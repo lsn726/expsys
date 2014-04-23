@@ -184,6 +184,10 @@ public class BWIPdExcelInfoPR extends BWIPdExcelInfo {
 		PRODMAP_LOC_INTERVAL.put(new Location(40,33), new ProductionInterval(PdInterval.Middle8,24,0,25,15,75));
 		PRODMAP_LOC_INTERVAL.put(new Location(41,33), new ProductionInterval(PdInterval.Middle8,24,0,25,15,75));
 		PRODMAP_LOC_INTERVAL.put(new Location(42,33), new ProductionInterval(PdInterval.Middle8,24,0,25,15,75));
+		PRODMAP_LOC_INTERVAL.put(new Location(43,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(44,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(45,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
+		PRODMAP_LOC_INTERVAL.put(new Location(46,33), new ProductionInterval(PdInterval.Middle9,25,15,26,15,60));	//需要目视验证！
 	}
 
 	@Override
