@@ -194,6 +194,34 @@ public class BWIPdExcelInfoRTA extends BWIPdExcelInfo {
 		PRODMAP_LOC_INTERVAL.put(new Location(44,33), new ProductionInterval(PdInterval.Middle9,24,0,25,15,75));
 		PRODMAP_LOC_INTERVAL.put(new Location(45,33), new ProductionInterval(PdInterval.Middle9,24,0,25,15,75));
 		PRODMAP_LOC_INTERVAL.put(new Location(46,33), new ProductionInterval(PdInterval.Middle9,24,0,25,15,75));
+		PRODMAP_LOC_INTERVAL.put(new Location(11,58), new ProductionInterval(PdInterval.Night1,25,15,26,0,45));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(12,58), new ProductionInterval(PdInterval.Night1,25,15,26,0,45));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(13,58), new ProductionInterval(PdInterval.Night1,25,15,26,0,45));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(14,58), new ProductionInterval(PdInterval.Night1,25,15,26,0,45));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(15,58), new ProductionInterval(PdInterval.Night2,26,0,27,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(16,58), new ProductionInterval(PdInterval.Night2,26,0,27,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(17,58), new ProductionInterval(PdInterval.Night2,26,0,27,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(18,58), new ProductionInterval(PdInterval.Night2,26,0,27,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(19,58), new ProductionInterval(PdInterval.Night3,27,0,28,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(20,58), new ProductionInterval(PdInterval.Night3,27,0,28,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(21,58), new ProductionInterval(PdInterval.Night3,27,0,28,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(22,58), new ProductionInterval(PdInterval.Night3,27,0,28,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(23,58), new ProductionInterval(PdInterval.Night4,28,0,29,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(24,58), new ProductionInterval(PdInterval.Night4,28,0,29,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(25,58), new ProductionInterval(PdInterval.Night4,28,0,29,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(26,58), new ProductionInterval(PdInterval.Night4,28,0,29,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(27,58), new ProductionInterval(PdInterval.Night5,29,0,30,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(28,58), new ProductionInterval(PdInterval.Night5,29,0,30,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(29,58), new ProductionInterval(PdInterval.Night5,29,0,30,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(30,58), new ProductionInterval(PdInterval.Night5,29,0,30,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(31,58), new ProductionInterval(PdInterval.Night6,30,30,31,0,30));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(32,58), new ProductionInterval(PdInterval.Night6,30,30,31,0,30));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(33,58), new ProductionInterval(PdInterval.Night6,30,30,31,0,30));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(34,58), new ProductionInterval(PdInterval.Night6,30,30,31,0,30));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(35,58), new ProductionInterval(PdInterval.Night7,31,30,32,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(36,58), new ProductionInterval(PdInterval.Night7,31,30,32,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(37,58), new ProductionInterval(PdInterval.Night7,31,30,32,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(38,58), new ProductionInterval(PdInterval.Night7,31,30,32,0,60));		//需要目视确认
 	}
 
 	@Override
