@@ -16,6 +16,7 @@ import com.logsys.model.ModelUtil;
 import com.logsys.prodplan.ProdplanContent;
 import com.logsys.prodplan.ProdplanDataReaderDB;
 import com.logsys.util.DateInterval;
+import com.logsys.util.Matrixable;
 
 /**
  * 创建Mrp报告
@@ -77,5 +78,10 @@ public class MrpReportForExcel {
 		if(pplist==null) return false;
 		return true;
 	}
+	
+	
+	//public Matrixable genMatrix() {
+		
+	//}
 	
 }

@@ -51,7 +51,6 @@ public class MaterialDataReaderDB {
 				hql+=(" and makebuy='"+makebuy+"'");//如果makebuy有限制
 		if(orderedlist)								//是否需要进行排序
 			hql+=" order by description,makebuy,buyer,provider,pn";
-		MaterialContent matcontent;
 		List<MaterialContent> matlist;
 		Query query;
 		try {

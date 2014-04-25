@@ -214,14 +214,17 @@ public class BWIPLInfo {
 		ALIAS_LINE_MAP.put("机加工CNC 0809生产线", ProdLine.DAMPER_PR_CNC0809);
 		//**************RTA生产线别名->生产线枚举 映射图初始化*************
 		ALIAS_LINE_MAP.put("热成型焊接生产线HBF0031", ProdLine.DAMPER_RTA_HBF0031);
+		ALIAS_LINE_MAP.put("热成型焊接生产线HBF（0031）", ProdLine.DAMPER_RTA_HBF0031);
 		ALIAS_LINE_MAP.put("热成型焊接生产线HBF0835", ProdLine.DAMPER_RTA_HBF0835);
 		ALIAS_LINE_MAP.put("起鼓&缩口生产线Neck Down", ProdLine.DAMPER_RTA_NECKDOWN);
 		ALIAS_LINE_MAP.put("缩口后清洗 After Neck Down Washing", ProdLine.DAMPER_RTA_WASH_POSTNK);
 		ALIAS_LINE_MAP.put("前焊接生产线Front Welding Cell", ProdLine.DAMPER_RTA_FRONTWELDCELL);
+		ALIAS_LINE_MAP.put("机器人焊生产线Front Welding Cell", ProdLine.DAMPER_RTA_FRONTWELDCELL);
+		ALIAS_LINE_MAP.put("机器人生产线Front Welding Cell", ProdLine.DAMPER_RTA_FRONTWELDCELL);
 		ALIAS_LINE_MAP.put("后焊接生产线Rear Welding Cell", ProdLine.DAMPER_RTA_REARWELDCELL);
 		ALIAS_LINE_MAP.put("倒角清洗 Chamfering&Washing", ProdLine.DAMPER_RTA_CHAMFER_WASH);
 		ALIAS_LINE_MAP.put("测漏清洗Leak test&Washing", ProdLine.DAMPER_RTA_LEAKTEST_WASH);
-		ALIAS_LINE_MAP.put("弹簧盘（支架）焊接生产线S/Seat(Bracket) Welding Cell", ProdLine.DAMPER_RTA_LEAKTEST_WASH);
+		ALIAS_LINE_MAP.put("弹簧盘（支架）焊接生产线S/Seat(Bracket) Welding Cell", ProdLine.DAMPER_RTA_SEATBRACKET_WELD);
 		ALIAS_LINE_MAP.put("打孔生产线Punching Cell", ProdLine.DAMPER_RTA_PUNCHING);
 		ALIAS_LINE_MAP.put("电泳生产线KTL", ProdLine.DAMPER_RTA_KTL);
 		ALIAS_LINE_MAP.put("衬套压装生产线Punching Press Cell", ProdLine.DAMPER_RTA_BUSHINGPRESS);
