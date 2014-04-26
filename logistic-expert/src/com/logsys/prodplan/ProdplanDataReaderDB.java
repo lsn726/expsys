@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.logsys.hibernate.HibernateSessionFactory;
+import com.logsys.setting.pd.bwi.BWIPLInfo;
+import com.logsys.setting.pd.bwi.BWIPLInfo.ProdLine;
 import com.logsys.util.DateInterval;
 
 /**
@@ -64,4 +67,51 @@ public class ProdplanDataReaderDB {
 		}
 	}
 
+	/**
+	 * 从数据库中读取按周的生产计划数量
+	 * @param plset 计划所包含的生产线,null不限制生产线
+	 * @param dinterval 时间区间，begin为null则不限起始时间,end为null则不限制结束时间,整体为null对时间不进行限制
+	 * @return 按周的计划列表/null
+	 */
+	public static List<ProdplanContent_Week> getOnWeekProdplanDataFromDB(Set<ProdLine> plset, DateInterval dinterval) {
+		if(plset!=null)
+			if(plset.size()==0) return new ArrayList<ProdplanContent_Week>();
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.getTransaction().begin();
+		} catch(Throwable ex) {
+			logger.error("创建Session错误:",ex);
+			return null;
+		}
+		String hql="select new com.logsys.prodplan.ProdplanContent_Week(pn,year(date),week(date,3),sum(qty)) from ProdplanContent where 1=1";
+		if(dinterval!=null) {
+			if(dinterval.begindate!=null) hql+=" and date>=:begin";
+			if(dinterval.enddate!=null) hql+=" and date<=:end";
+		}
+		if(plset!=null) {
+			hql+=" and (";
+			for(ProdLine pl:plset)
+				hql+=" prdline='"+BWIPLInfo.getStdNameByLineEnum(pl)+"' or";
+			hql=hql.substring(0, hql.length()-3);
+			hql+=")";
+		}
+		hql+=" group by year(date),week(date,3),pn";
+		Query query;
+		try {
+			query=session.createQuery(hql);
+			if(dinterval!=null) {
+				if(dinterval.begindate!=null) query.setDate("begin", dinterval.begindate);
+				if(dinterval.enddate!=null) query.setDate("end", dinterval.enddate);
+			}
+			List<ProdplanContent_Week> ppwklist=query.list();
+			session.close();
+			return ppwklist;
+		} catch(Throwable ex) {
+			logger.error("从数据库中读取按周的生产计划数据时出现错误：",ex);
+			session.close();
+			return null;
+		}
+	}
+	
 }

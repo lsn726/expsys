@@ -59,5 +59,11 @@ public class ProdplanContent {
 	public void setPrdline(String prdline) {
 		this.prdline = prdline;
 	}
+
+	@Override
+	public String toString() {
+		return "ProdplanContent [id=" + id + ", pn=" + pn + ", prdline="
+				+ prdline + ", qty=" + qty + ", date=" + date + "]";
+	}
 	
 }

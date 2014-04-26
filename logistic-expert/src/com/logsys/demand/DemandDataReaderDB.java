@@ -79,4 +79,51 @@ public class DemandDataReaderDB {
 		return demlist;
 	}
 	
+	/**
+	 * 从数据库中读取按周需求数据
+	 * @param pnset 需求型号列表，null不限制型号
+	 * @param begin 开始日期，null不限制起始日期
+	 * @param end 结束日期，null不限制结束日期
+	 * @return 按周需求/null
+	 */
+	public static List<DemandContent_Week> getOnWeekDemandDataFromDB(Set<String> pnset, Date begin, Date end) {
+		if(begin!=null&&end!=null) 
+			if(begin.after(end)) {
+				logger.error("起始时间晚于结束时间。");
+				return null;
+			}
+		if(pnset!=null)
+			if(pnset.size()==0) return new ArrayList<DemandContent_Week>();
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.getTransaction().begin();
+		} catch(Throwable ex) {
+			logger.error("创建Session错误:",ex);
+			return null;
+		}
+		String hql="select new com.logsys.demand.DemandContent_Week(pn,year(date),week(date,3),sum(qty) as qty) from DemandContent where 1=1";
+		if(begin!=null) hql+=" and date>=:begindate";
+		if(end!=null) hql+=" and date<=:enddate";
+		if(pnset!=null) {
+			hql+=" and (";
+			for(String pn:pnset) hql+=" pn='"+pn+"' or";
+			hql=hql.substring(0,hql.length()-3);
+			hql+=")";
+		}
+		hql+=" group by year(date),week(date,3),pn";
+		Query query;
+		try {
+			query=session.createQuery(hql);
+			if(begin!=null) query.setDate("begindate", begin);
+			if(end!=null) query.setDate("enddate", end);
+			List<DemandContent_Week> dwlist=query.list();
+			session.close();
+			return dwlist;
+		} catch(Throwable ex) {
+			logger.error("从数据库读取按周需求数据时错误：",ex);
+			return null;
+		}
+	}
+	
 }

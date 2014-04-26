@@ -37,15 +37,15 @@ public class MaterialUtil {
 	/**
 	 * 获取经过排序的物料图
 	 * @param pnset 物料集
-	 * @return Map<pn,顺序>对象
+	 * @return Map<位置,pn>对象
 	 */
-	public static Map<String,Integer> getOrderedMatMap(Set<String> pnset) {
+	public static Map<Integer,String> getOrderedMatMap(Set<String> pnset) {
 		List<MaterialContent> orderedlist=MaterialDataReaderDB.getDataFromDB(pnset, "buy", true, true);
 		if(orderedlist==null) return null;
-		Map<String,Integer> orderedmap=new HashMap<String,Integer>();
+		Map<Integer,String> orderedmap=new HashMap<Integer,String>();
 		int counter=1;
 		for(MaterialContent mcont:orderedlist)		//将orderedslist转化为orderedmap
-			orderedmap.put(mcont.getPn(), counter++);
+			orderedmap.put(counter++, mcont.getPn());
 		return orderedmap;
 	}
 	
