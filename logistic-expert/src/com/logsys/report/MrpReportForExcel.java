@@ -88,7 +88,7 @@ public class MrpReportForExcel {
 	 * @param weeknum 出现在矩阵中需求的周数，必须大于0
 	 * @return 需求矩阵
 	 */
-	public Matrixable getDemandMatrix(int weeknum) {
+	public Matrixable<Double> getDemandMatrix(int weeknum) {
 		init();
 		if(weeknum<=0) {
 			logger.error("不能产生需求矩阵，需求周数必须大于0。");
@@ -126,7 +126,6 @@ public class MrpReportForExcel {
 			demandMatrix.putRowHeaderCell(matorder_fin.get(fertpn)+1, fertpn);
 		begin=GeneralUtils.getValidCalendar();
 		begin.setFirstDayOfWeek(Calendar.MONDAY);				//周一为每周第一天
-		int initweek=begin.get(Calendar.WEEK_OF_YEAR);			//获取本周的周数
 		for(int index=0;index<weeknum;index++)	{				//将年和周数写入列表头
 			demandMatrix.putColHeaderCell(index+1, String.format("%dwk%02d", begin.get(Calendar.YEAR) ,begin.get(Calendar.WEEK_OF_YEAR)));
 			begin.add(Calendar.WEEK_OF_YEAR, 1);
@@ -142,13 +141,41 @@ public class MrpReportForExcel {
 			}
 			colindex=demandMatrix.getColPosByColHeader(String.format("%dwk%02d",wkdem.getYear(),wkdem.getWeek()));	//根据年和周数确定列索引
 			if(colindex==null) {
-				logger.warn("不能产生需求矩阵，周需求对象中的年/周数组合["+String.format("%dwk%02d",wkdem.getYear(),wkdem.getWeek())+"]不能在列表头中定位。对象明细："+wkdem.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
+				logger.warn("周需求对象中的年/周数组合["+String.format("%dwk%02d",wkdem.getYear(),wkdem.getWeek())+"]不能在列表头中定位。对象明细："+wkdem.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
 				continue;
 			}
 			demandMatrix.setData(rowindex, colindex, wkdem.getQty());	//根据位置写入数据
 		}
-		//TODO:加入Prodplan的判断
-		//TODO:扣除Production
+		//写入矩阵数据：Prodplan代替Demand
+		for(ProdplanContent_Week wkpp:ppwklist) {
+			rowindex=demandMatrix.getRowPosByRowHeader(wkpp.getPn());	//根据成品号获取行索引
+			if(rowindex==null) {
+				logger.error("不能产生需求矩阵，周计划对象中的成品号码["+wkpp.getPn()+"]不能在表头中定位。对象明细："+wkpp.toString());
+				return null;
+			}
+			colindex=demandMatrix.getColPosByColHeader(String.format("%dwk%02d",wkpp.getYear(),wkpp.getWeek()));	//根据年和周数确定列索引
+			if(colindex==null) {
+				logger.warn("周计划对象中的年/周数组合["+String.format("%dwk%02d",wkpp.getYear(),wkpp.getWeek())+"]不能在列表头中定位。对象明细："+wkpp.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
+				continue;
+			}
+			demandMatrix.setData(rowindex, colindex, wkpp.getQty());
+		}
+		//写入矩阵数据：扣除实际生产数量
+		for(ProductionContent_Week wkprod:pdwklist) {
+			rowindex=demandMatrix.getRowPosByRowHeader(wkprod.getOutput());	//根据成品号获取行索引
+			if(rowindex==null) {
+				logger.error("不能产生需求矩阵，周生产对象中的成品号码["+wkprod.getOutput()+"]不能在表头中定位。对象明细："+wkprod.toString());
+				return null;
+			}
+			colindex=demandMatrix.getColPosByColHeader(String.format("%dwk%02d",wkprod.getYear(),wkprod.getWeek()));	//根据年和周数确定列索引
+			if(colindex==null) {
+				logger.warn("周生产对象中的年/周数组合["+String.format("%dwk%02d",wkprod.getYear(),wkprod.getWeek())+"]不能在列表头中定位。对象明细："+wkprod.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
+				continue;
+			}
+			Double ori=demandMatrix.getData(rowindex, colindex);	//先获取原先的数据
+			if(ori==null) ori=0.0;									//如果没有原数据则初始化为0
+			demandMatrix.setData(rowindex, colindex, ori-wkprod.getQty());	//将新值设置为旧值
+		}
 		return demandMatrix;
 	}
 	

@@ -61,11 +61,9 @@ public class ProductionProcess {
 			logger.error("停止从文件夹["+folderpath+"]中提取昨天的产出数据。路径不是文件夹。");
 			return -1;
 		}
-		//获取昨天在月份中的天数开始
 		Calendar cal=Calendar.getInstance();
-		cal.setTimeInMillis(cal.getTimeInMillis()-24*3600*1000);
+		cal.add(Calendar.DAY_OF_YEAR, -1);
 		int dayofmonth=cal.get(Calendar.DAY_OF_MONTH);
-		//获取昨天在月份中的天数结束
 		List<ProductionContent> prodlist;
 		for(File file:pdfolder.listFiles()) {
 			if(!file.isFile()) {
