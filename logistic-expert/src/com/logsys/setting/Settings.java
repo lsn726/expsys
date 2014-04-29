@@ -1,5 +1,7 @@
 package com.logsys.setting;
 
+import com.logsys.setting.pp.MRPSettings;
+import com.logsys.setting.pp.bwi.BWIMRPSettings;
 import com.logsys.setting.pp.bwi.BWIPPExcelInfo;
 import com.logsys.setting.pp.bwi.BWIPPExcelInfo20140410;
 
@@ -19,5 +21,8 @@ public class Settings {
 		public static final BWIPPExcelInfo ppExcelInfo=new BWIPPExcelInfo20140410();
 		
 	}
+	
+	/**MRP…Ë÷√¿‡*/
+	public static final MRPSettings mrpSetting=new BWIMRPSettings();
 	
 }

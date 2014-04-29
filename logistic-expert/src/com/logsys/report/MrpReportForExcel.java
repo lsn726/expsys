@@ -2,7 +2,6 @@ package com.logsys.report;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,21 +10,19 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.logsys.bom.BOMUtil;
-import com.logsys.demand.DemandContent;
 import com.logsys.demand.DemandContent_Week;
 import com.logsys.demand.DemandDataReaderDB;
-import com.logsys.demand.DemandUtil;
 import com.logsys.material.MaterialContent;
 import com.logsys.material.MaterialDataReaderDB;
 import com.logsys.material.MaterialUtil;
 import com.logsys.model.ModelContent;
 import com.logsys.model.ModelDataReaderDB;
 import com.logsys.model.ModelUtil;
-import com.logsys.prodplan.ProdplanContent;
 import com.logsys.prodplan.ProdplanContent_Week;
 import com.logsys.prodplan.ProdplanDataReaderDB;
 import com.logsys.production.ProductionContent_Week;
 import com.logsys.production.ProductionDataReaderDB;
+import com.logsys.setting.Settings;
 import com.logsys.setting.pd.bwi.BWIPLInfo.ProdLine;
 import com.logsys.util.DateInterval;
 import com.logsys.util.GeneralUtils;
@@ -133,6 +130,8 @@ public class MrpReportForExcel {
 		//写入矩阵数据：首先写入按周需求
 		Integer rowindex;			//行索引
 		Integer colindex;			//列索引
+		Float scarpRate;			//报废率
+		Integer ceilValue;			//向上取整数
 		for(DemandContent_Week wkdem:demwklist) {
 			rowindex=demandMatrix.getRowPosByRowHeader(wkdem.getPn());	//根据成品号获取行索引
 			if(rowindex==null) {
@@ -144,7 +143,18 @@ public class MrpReportForExcel {
 				logger.warn("周需求对象中的年/周数组合["+String.format("%dwk%02d",wkdem.getYear(),wkdem.getWeek())+"]不能在列表头中定位。对象明细："+wkdem.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
 				continue;
 			}
-			demandMatrix.setData(rowindex, colindex, wkdem.getQty());	//根据位置写入数据
+			scarpRate=Settings.mrpSetting.getScarpRateByPN(wkdem.getPn());//获取报废率
+			if(scarpRate==null) {
+				logger.error("不能产生需求矩阵，写入周需求时，成品号码["+wkdem.getPn()+"]没有报废率。请确认号码是否正确，或者在MRPSettings中添加报废率。");
+				return null;
+			}
+			ceilValue=Settings.mrpSetting.getCeilingValueByPN(wkdem.getPn());//获取向上取整值
+			if(ceilValue==null) {
+				logger.error("不能产生需求矩阵，写入周需求时，成品号码["+wkdem.getPn()+"]没有向上取整数。请确认号码是否正确，或者在MRPSettings中添加向上取整数。");
+				return null;
+			}
+			//System.out.println(wkdem.getPn()+"["+rowindex+"]/["+colindex+"]/["+wkdem.getQty()+"]");
+			demandMatrix.setData(rowindex, colindex, Math.ceil(wkdem.getQty()*(1+scarpRate)/ceilValue)*ceilValue);	//根据位置写入数据
 		}
 		//写入矩阵数据：Prodplan代替Demand
 		for(ProdplanContent_Week wkpp:ppwklist) {
@@ -158,7 +168,17 @@ public class MrpReportForExcel {
 				logger.warn("周计划对象中的年/周数组合["+String.format("%dwk%02d",wkpp.getYear(),wkpp.getWeek())+"]不能在列表头中定位。对象明细："+wkpp.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
 				continue;
 			}
-			demandMatrix.setData(rowindex, colindex, wkpp.getQty());
+			scarpRate=Settings.mrpSetting.getScarpRateByPN(wkpp.getPn());//获取报废率
+			if(scarpRate==null) {
+				logger.error("不能产生需求矩阵，写入周生产计划时，成品号码["+wkpp.getPn()+"]没有报废率。请确认号码是否正确，或者在MRPSettings中添加报废率。");
+				return null;
+			}
+			ceilValue=Settings.mrpSetting.getCeilingValueByPN(wkpp.getPn());//获取向上取整值
+			if(ceilValue==null) {
+				logger.error("不能产生需求矩阵，写入周生产计划时，成品号码["+wkpp.getPn()+"]没有向上取整数。请确认号码是否正确，或者在MRPSettings中添加向上取整数。");
+				return null;
+			}
+			demandMatrix.setData(rowindex, colindex, Math.ceil(wkpp.getQty()*(1+scarpRate)/ceilValue)*ceilValue);
 		}
 		//写入矩阵数据：扣除实际生产数量
 		for(ProductionContent_Week wkprod:pdwklist) {
@@ -172,9 +192,19 @@ public class MrpReportForExcel {
 				logger.warn("周生产对象中的年/周数组合["+String.format("%dwk%02d",wkprod.getYear(),wkprod.getWeek())+"]不能在列表头中定位。对象明细："+wkprod.toString()+".可能超越了规定的需求矩阵周数。将跳过这个对象。");
 				continue;
 			}
+			scarpRate=Settings.mrpSetting.getScarpRateByPN(wkprod.getOutput());//获取报废率
+			if(scarpRate==null) {
+				logger.error("不能产生需求矩阵，写入周生产数据时，成品号码["+wkprod.getOutput()+"]没有报废率。请确认号码是否正确，或者在MRPSettings中添加报废率。");
+				return null;
+			}
+			ceilValue=Settings.mrpSetting.getCeilingValueByPN(wkprod.getOutput());//获取向上取整值
+			if(ceilValue==null) {
+				logger.error("不能产生需求矩阵，写入周生产数据时，成品号码["+wkprod.getOutput()+"]没有向上取整数。请确认号码是否正确，或者在MRPSettings中添加向上取整数。");
+				return null;
+			}
 			Double ori=demandMatrix.getData(rowindex, colindex);	//先获取原先的数据
 			if(ori==null) ori=0.0;									//如果没有原数据则初始化为0
-			demandMatrix.setData(rowindex, colindex, ori-wkprod.getQty());	//将新值设置为旧值
+			demandMatrix.setData(rowindex, colindex, Math.ceil((ori-wkprod.getQty())*(1+scarpRate)/ceilValue)*ceilValue);	//将新值设置为旧值
 		}
 		return demandMatrix;
 	}

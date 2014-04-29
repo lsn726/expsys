@@ -12,13 +12,13 @@ public interface MRPSettings {
 	 * @param fertpn 成品号
 	 * @return 报废率
 	 */
-	public float getScarpRateByPN(String fertpn);
+	public Float getScarpRateByPN(String fertpn);
 	
 	/**
 	 * 获取向上取整数值
 	 * @param fertpn 成品号
 	 * @return 向上取整值
 	 */
-	public int getCeilingValueByPN(String pn);
+	public int getCeilingValueByPN(String fertpn);
 	
 }

@@ -20,7 +20,7 @@ public class Location {
 	public Location() {}
 	
 	public int hashCode() {
-		final int prime=31;
+		final int prime=10007;
 		int result=1;
 		result=result*prime+column;
 		result=result*prime+row;

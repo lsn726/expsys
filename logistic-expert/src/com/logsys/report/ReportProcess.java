@@ -45,7 +45,7 @@ public class ReportProcess {
 		Sheet demsheet=wb.createSheet("DemandMatrix");				//创建sheet
 		demmatrix.writeToExcelSheet(demsheet, new Location(0,0));	//需求矩阵写入sheet，起始位置0,0
 		try {
-			FileOutputStream fileOut=new FileOutputStream("d:\\test.xlsx");
+			FileOutputStream fileOut=new FileOutputStream(filepath);
 			wb.write(fileOut);
 			fileOut.close();
 			logger.info("成功生成需求矩阵并写入文件["+filepath+"]");
