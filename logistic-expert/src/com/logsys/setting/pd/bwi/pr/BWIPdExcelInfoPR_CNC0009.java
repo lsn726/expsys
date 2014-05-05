@@ -81,7 +81,7 @@ public class BWIPdExcelInfoPR_CNC0009 extends BWIPdExcelInfoPR {
 		VERIFYMAP_LOC_STR.put(new Location(27,2), "12:00-13:00");
 		VERIFYMAP_LOC_STR.put(new Location(27,27), "21:00-22:00");
 		VERIFYMAP_LOC_STR.put(new Location(27,52), EMPTY_STR);
-		VERIFYMAP_LOC_STR.put(new Location(31,2), "13:00-14:0");
+		VERIFYMAP_LOC_STR.put(new Location(31,2), "13:00-14:00");
 		VERIFYMAP_LOC_STR.put(new Location(31,27), "22:00-23:00");
 		VERIFYMAP_LOC_STR.put(new Location(31,52), EMPTY_STR);
 		VERIFYMAP_LOC_STR.put(new Location(35,2), "14:00-15:00");
