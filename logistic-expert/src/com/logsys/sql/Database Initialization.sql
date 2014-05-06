@@ -108,3 +108,14 @@ CREATE TABLE `production` (
   `effmin` int NOT NULL COMMENT '有效生产时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='生产表'
+
+CREATE TABLE `cycletime` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `workcenter` char(50) NOT NULL COMMENT '工作中心',
+  `output` char(30) NOT NULL COMMENT '产出产品',
+  `operqty` int(5) NOT NULL COMMENT '操作工数量',
+  `cycletime` double NOT NULL COMMENT '周期时间',
+  `effbegin` date NOT NULL COMMENT '有效时间-起始时间',
+  `effend` date NOT NULL COMMENT '有效时间-结束时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Design Cycle Time'
