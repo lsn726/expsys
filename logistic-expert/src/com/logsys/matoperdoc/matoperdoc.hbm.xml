@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.logsys.matoperdoc">
+
+	<class name="MatOperDocContent" table="matoperdoc">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<property name="pn" type="string" column="pn" />
+		<property name="sloc" type="string" column="sloc" />
+		<property name="mvtype" type="string" column="mvtype" />
+		<property name="docnum" type="string" column="docnum" />
+		<property name="postdate" type="date" column="postdate" />
+		<property name="qty" type="double" column="qty" />
+		<property name="plant" type="string" column="plant" />
+		<property name="order" type="string" column="order" />
+		<property name="header" type="string" column="header" />
+	</class>
+	
+</hibernate-mapping>

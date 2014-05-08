@@ -119,3 +119,20 @@ CREATE TABLE `cycletime` (
   `effend` date NOT NULL COMMENT '有效时间-结束时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Design Cycle Time'
+
+CREATE TABLE `matoperdoc` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '物料号码',
+  `pn` char(30) NOT NULL COMMENT '物料号',
+  `sloc` char(5) COMMENT '存储位置',
+  `mvtype` char(5) NOT NULL COMMENT '物料移动类型',
+  `docnum` char(15) NOT NULL COMMENT '操作文档号码',
+  `postdate` date NOT NULL COMMENT '账目日期',
+  `qty` double NOT NULL COMMENT '操作数量',
+  `uom` char(5) NOT NULL COMMENT '计量单位',
+  `plant` char(5) NOT NULL COMMENT '操作工厂',
+  `order` char(15) COMMENT '订单号码',
+  `customer` char(10) COMMENT '客户号',
+  `vendor` char(10) COMMENT '供应商号',
+  `header` char(40) COMMENT '操作记录表头',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物料操作记录表'
