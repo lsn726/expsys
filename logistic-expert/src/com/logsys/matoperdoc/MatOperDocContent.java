@@ -26,7 +26,7 @@ public class MatOperDocContent {
 	
 	private String plant;
 	
-	private String order;
+	private String ordernum;
 	
 	private String customer;
 	
@@ -90,12 +90,12 @@ public class MatOperDocContent {
 		this.plant = plant;
 	}
 
-	public String getOrder() {
-		return order;
+	public String getOrdernum() {
+		return ordernum;
 	}
 
-	public void setOrder(String order) {
-		this.order = order;
+	public void setOrdernum(String ordernum) {
+		this.ordernum = ordernum;
 	}
 
 	public String getHeader() {
@@ -143,7 +143,7 @@ public class MatOperDocContent {
 		return "MatOperDocContent [id=" + id + ", pn=" + pn + ", sloc=" + sloc
 				+ ", mvtype=" + mvtype + ", docnum=" + docnum + ", postdate="
 				+ postdate + ", qty=" + qty + ", uom=" + uom + ", plant="
-				+ plant + ", order=" + order + ", customer=" + customer
+				+ plant + ", ordernum=" + ordernum + ", customer=" + customer
 				+ ", vendor=" + vendor + ", header=" + header + "]";
 	}
 	

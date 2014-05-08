@@ -15,8 +15,11 @@
 		<property name="docnum" type="string" column="docnum" />
 		<property name="postdate" type="date" column="postdate" />
 		<property name="qty" type="double" column="qty" />
+		<property name="uom" type="string" column="uom" />
 		<property name="plant" type="string" column="plant" />
-		<property name="order" type="string" column="order" />
+		<property name="ordernum" type="string" column="ordernum" />
+		<property name="customer" type="string" column="customer" />
+		<property name="vendor" type="string" column="vendor" />
 		<property name="header" type="string" column="header" />
 	</class>
 	

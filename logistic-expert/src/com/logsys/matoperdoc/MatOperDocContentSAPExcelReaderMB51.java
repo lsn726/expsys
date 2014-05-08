@@ -19,15 +19,18 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import com.logsys.util.Location;
 
 /**
- * SAP倒出的物料操作文档Excel数据读取器
+ * SAP倒出的物料操作文档Excel数据读取器--MB51的倒出数据读取器
  * @author lx8sn6
  */
-public class MatOperDocContentSAPExcelReader {
+public class MatOperDocContentSAPExcelReaderMB51 {
 
-	private static final Logger logger=Logger.getLogger(MatOperDocContentSAPExcelReader.class);
+	private static final Logger logger=Logger.getLogger(MatOperDocContentSAPExcelReaderMB51.class);
 	
 	/**Excel的验证图：位置->字符串*/
-	private static Map<Location,String> excelValidatorMap=new HashMap<Location,String>();
+	private static final Map<Location,String> excelValidatorMap=new HashMap<Location,String>();
+	
+	/**Excel表中的日期格式转换器*/
+	private static final DateFormat dateformat=new SimpleDateFormat("yyyy.MM.dd");
 	
 	/**正式记录开始行数*/
 	private static final int ROW_BEGIN=3;
@@ -40,6 +43,9 @@ public class MatOperDocContentSAPExcelReader {
 	
 	/**Plant列*/
 	private static final int COL_PLANT=10;
+	
+	/**订单号列*/
+	private static final int COL_ORDER=10;
 	
 	/**文档号列*/
 	private static final int COL_DOCNUM=4;
@@ -55,9 +61,6 @@ public class MatOperDocContentSAPExcelReader {
 	
 	/**计量单位列*/
 	private static final int COL_UOM=9;
-	
-	/**订单号列*/
-	private static final int COL_ORDER=10;
 	
 	/**客户列*/
 	private static final int COL_CUSTOMER=12;
@@ -106,68 +109,39 @@ public class MatOperDocContentSAPExcelReader {
 		String plant=null;	//工厂
 		List<MatOperDocContent> doclist;	//文档列表对象
 		MatOperDocContent doctemp;
-		String datevalue;
 		int lastrow=0;		//记录上一行行数
-		DateFormat dformat=new SimpleDateFormat("yyyy.MM.dd");	//日期格式
 		try {
 			sheet=wb.getSheetAt(0);
 			if(!validateSheet(sheet)) return null;
 			doclist=new ArrayList<MatOperDocContent>();
 			for(Row row:sheet) {			//开始遍历sheet表单
+				//System.out.println("正在处理第"+row.getRowNum()+"行");
 				if(row.getRowNum()<ROW_BEGIN) continue;		//如果行数小于起始行，则继续
-				if(row.getCell(COL_PN)==null) {		//如果Cell没有内容,则说明要提取新一种物料,将物料pn设置为空
-					matpn=null;
-					lastrow=row.getRowNum();
-					continue;
-				} else {
-					row.getCell(COL_PN).setCellType(Cell.CELL_TYPE_STRING);
-					//如果单元格中没有值，则将pn设置为空，并跳过这一行
-					if(row.getCell(COL_PN).getStringCellValue()==null||row.getCell(COL_PN).getStringCellValue().equals("")) {		//如果pn号为空
+				if(row.getRowNum()-lastrow>1) {				//如果前一次出现跳行，则说明前一个物料操作记录结束，新的物料操作记录开始
+					if(row.getCell(COL_PLANT)!=null) {		//跳行后如果有工厂更新，则更新工厂
+						row.getCell(COL_PLANT).setCellType(Cell.CELL_TYPE_STRING);
+						plant=row.getCell(COL_PLANT).getStringCellValue();
+					} else
+						plant=null;
+					if(row.getCell(COL_PN)!=null) {			//跳行后如果有PN更新，则更新PN
+						row.getCell(COL_PN).setCellType(Cell.CELL_TYPE_STRING);
+						matpn=row.getCell(COL_PN).getStringCellValue();
+					} else
 						matpn=null;
-						lastrow=row.getRowNum();
-						continue;
-					}
+					lastrow=row.getRowNum();
+					continue;								//跳行后的第一行为物料和工厂信息，因此跳过
 				}
-				if(matpn==null||row.getRowNum()-lastrow>1) {			//如果matpn为null,或现在行数与上一行差距大于1,则说明上一行为空行，且这一行有值，且第一个有值行一定为pn值
-					row.getCell(COL_PN).setCellType(Cell.CELL_TYPE_STRING);
-					matpn=row.getCell(COL_PN).getStringCellValue();		//读取pn值
-					System.out.println(row.getRowNum()+"/"+lastrow);
-					plant=row.getCell(COL_PLANT).getStringCellValue();	//读取工厂值
+				if(row.getCell(COL_MVMTYPE)!=null) {		//如果MVMCell不为null，则需要沿用上一行的matpn和plant，并提取数据
+					doctemp=extractMatOperDoc(row);
+					if(doctemp==null) return null;			//提取失败则返回null;
+					doctemp.setPn(matpn);
+					doctemp.setPlant(plant);
+					doclist.add(doctemp);
 					lastrow=row.getRowNum();
 					continue;
 				}
-				System.out.println("Now Processing Row["+row.getRowNum()+"]");
-				//如果matpn为空，则说明这个位置为库位
-				doctemp=new MatOperDocContent();
-				doctemp.setPn(new String(matpn));
-				doctemp.setPlant(new String(plant));
-				row.getCell(COL_SLOC).setCellType(Cell.CELL_TYPE_STRING);
-				doctemp.setSloc(row.getCell(COL_SLOC).getStringCellValue());
-				row.getCell(COL_MVMTYPE).setCellType(Cell.CELL_TYPE_STRING);
-				doctemp.setMvtype(row.getCell(COL_MVMTYPE).getStringCellValue());
-				row.getCell(COL_DOCNUM).setCellType(Cell.CELL_TYPE_STRING);
-				doctemp.setDocnum(row.getCell(COL_DOCNUM).getStringCellValue());
-				datevalue=row.getCell(COL_PSTDATE).getStringCellValue();
-				doctemp.setPostdate(dformat.parse(datevalue));
-				doctemp.setQty(row.getCell(COL_QTY).getNumericCellValue());
-				doctemp.setUom(row.getCell(COL_UOM).getStringCellValue());
-				if(row.getCell(COL_ORDER)!=null) {
-					row.getCell(COL_ORDER).setCellType(Cell.CELL_TYPE_STRING);
-					doctemp.setOrder(row.getCell(COL_ORDER).getStringCellValue());
-				}
-				if(row.getCell(COL_CUSTOMER)!=null) {
-					row.getCell(COL_CUSTOMER).setCellType(Cell.CELL_TYPE_STRING);
-					doctemp.setCustomer(row.getCell(COL_CUSTOMER).getStringCellValue());
-				}
-				if(row.getCell(COL_VENDOR)!=null) {
-					row.getCell(COL_VENDOR).setCellType(Cell.CELL_TYPE_STRING);
-					doctemp.setVendor(row.getCell(COL_VENDOR).getStringCellValue());
-				}
-				if(row.getCell(COL_HEADER)!=null)
-					doctemp.setHeader(row.getCell(COL_HEADER).getStringCellValue());
-				//System.out.println(doctemp);
-				doclist.add(doctemp);
-				lastrow=row.getRowNum();
+				logger.error("不能继续从Excel中提取操作记录文档数据，在没有出现跳行的情况下，发现了MVMType为空的情况：位于行["+row.getRowNum()+"]");
+				return null;
 			}
 			return doclist;
 		} catch(Throwable ex) {
@@ -176,6 +150,56 @@ public class MatOperDocContentSAPExcelReader {
 		}
 		
 	}
+	
+	/**
+	 * 从Excel行中提取Content信息
+	 * @param row 行对象
+	 * @param pn 操作物料
+	 * @return 提取的对象/null
+	 */
+	private static MatOperDocContent extractMatOperDoc(Row row) {
+		if(row==null) {
+			logger.error("不能从行对象中提取物料操作记录，行对象为空。");
+			return null;
+		}
+		try {
+			MatOperDocContent operdoc=new MatOperDocContent();
+			if(row.getCell(COL_SLOC)!=null) {
+				row.getCell(COL_SLOC).setCellType(Cell.CELL_TYPE_STRING);
+				operdoc.setSloc(row.getCell(COL_SLOC).getStringCellValue());
+			}
+			row.getCell(COL_MVMTYPE).setCellType(Cell.CELL_TYPE_STRING);
+			operdoc.setMvtype(row.getCell(COL_MVMTYPE).getStringCellValue());
+			row.getCell(COL_DOCNUM).setCellType(Cell.CELL_TYPE_STRING);
+			operdoc.setDocnum(row.getCell(COL_DOCNUM).getStringCellValue());
+			operdoc.setPostdate(dateformat.parse(row.getCell(COL_PSTDATE).getStringCellValue()));
+			if(row.getCell(COL_QTY)!=null)
+				operdoc.setQty(row.getCell(COL_QTY).getNumericCellValue());
+			if(row.getCell(COL_UOM)!=null)
+				operdoc.setUom(row.getCell(COL_UOM).getStringCellValue());
+			if(row.getCell(COL_ORDER)!=null) {
+				row.getCell(COL_ORDER).setCellType(Cell.CELL_TYPE_STRING);
+				operdoc.setOrdernum(row.getCell(COL_ORDER).getStringCellValue());
+			}
+			if(row.getCell(COL_CUSTOMER)!=null) {
+				row.getCell(COL_CUSTOMER).setCellType(Cell.CELL_TYPE_STRING);
+				operdoc.setCustomer(row.getCell(COL_CUSTOMER).getStringCellValue());
+			}
+			if(row.getCell(COL_VENDOR)!=null) {
+				row.getCell(COL_VENDOR).setCellType(Cell.CELL_TYPE_STRING);
+				operdoc.setVendor(row.getCell(COL_VENDOR).getStringCellValue());
+			}
+			if(row.getCell(COL_HEADER)!=null) {
+				row.getCell(COL_HEADER).setCellType(Cell.CELL_TYPE_STRING);
+				operdoc.setHeader(row.getCell(COL_HEADER).getStringCellValue());
+			}
+			return operdoc;
+		} catch(Throwable ex) {
+			logger.error("不能从行对象中提取物料操作记录:",ex);
+			return null;
+		}
+	}
+	
 	
 	/**
 	 * 验证Excel的Sheet是否是正确的物料操作文档读取器表格
