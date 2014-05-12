@@ -18,7 +18,7 @@ public class MatOperDocContentProcess {
 	 * @return 写入条数
 	 */
 	public static int importSAPMb51ExcelFileIntoDB(String filepath) {
-		List<MatOperDocContent> doclist=MatOperDocContentSAPExcelReaderMB51.readDataFromSAPExcel("d:\\201401.xlsx");
+		List<MatOperDocContent> doclist=MatOperDocContentSAPExcelReaderMB51.readDataFromSAPExcel(filepath);
 		int qtywrited=MatOperDocContentDataWriterDB.writeToDB(doclist);
 		logger.info("物料操作数据成功写入数据库。物料导出["+doclist.size()+"]条,物料写入["+qtywrited+"]条。");
 		return qtywrited;

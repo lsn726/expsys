@@ -136,3 +136,16 @@ CREATE TABLE `matoperdoc` (
   `header` char(40) COMMENT '操作记录表头',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='物料操作记录表'
+
+CREATE TABLE `stock` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `pn` char(30) NOT NULL COMMENT '物料号',
+  `plant` char(10) NOT NULL COMMENT '工厂',
+  `sloc` char(5) NOT NULL COMMENT '存储位置',
+  `wkcenter` char(50) NOT NULL COMMENT '工作中心',
+  `qtyuns` double NOT NULL COMMENT '非限制区数量',
+  `uom` char(10) NOT NULL COMMENT '计量单位',
+  `qtyqi` double NOT NULL COMMENT 'Quality Inspection Quantity',
+  `qtyblk` double NOT NULL COMMENT 'Block Quantity',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
