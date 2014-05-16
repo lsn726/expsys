@@ -22,6 +22,8 @@ public class BWIPLInfo {
 		DAMPER_ZONE_RTA,
 		/**减震器--区域--PR*/
 		DAMPER_ZONE_PR,
+		/**减震器--FA--终检*/
+		DAMPER_FA_FINAL_CHECK,
 		/**减震器--FA--FA1*/
 		DAMPER_FA_FA1,
 		/**减震器--FA--FA2*/
@@ -110,6 +112,7 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_ZONE_PR, "DamperPR");
 		
 		//**************FA区域枚举->标准名称初始化***************
+		STDNAME_MAP.put(ProdLine.DAMPER_FA_FINAL_CHECK, "DamperFA Final Check");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FA1, "DamperFA FA 1");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FA2, "DamperFA FA 2");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_MODULE, "DamperFA Module");
@@ -149,6 +152,7 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_SUPERFINISH2, "DamperPR SuperFinish 2");
 		
 		//**************FA生产线->生产区域初始化*************
+		LINE_ZONE_MAP.put(ProdLine.DAMPER_FA_FINAL_CHECK, ProdLine.DAMPER_ZONE_FA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_FA_FA1, ProdLine.DAMPER_ZONE_FA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_FA_FA2, ProdLine.DAMPER_ZONE_FA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_FA_MODULE, ProdLine.DAMPER_ZONE_FA);

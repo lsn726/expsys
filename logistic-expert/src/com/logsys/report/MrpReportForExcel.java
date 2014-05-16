@@ -104,7 +104,9 @@ public class MrpReportForExcel {
 			pdwklist=new ArrayList<ProductionContent_Week>();
 		else {													//如果不是周一
 			begin.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);	//需要先将开始时间设置为周一
-			pdwklist=ProductionDataReaderDB.getOnWeekProductionDataFromDB(plset, new DateInterval(begin.getTime(),null));
+			Set<ProdLine> outputplset=new HashSet<ProdLine>();
+			outputplset.add(ProdLine.DAMPER_FA_FINAL_CHECK);
+			pdwklist=ProductionDataReaderDB.getOnWeekProductionDataFromDB(outputplset, new DateInterval(begin.getTime(),null));
 			if(pdwklist==null) return null;
 		}
 		//按周需求列表初始化
