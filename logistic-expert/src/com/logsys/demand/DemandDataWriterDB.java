@@ -134,7 +134,7 @@ public class DemandDataWriterDB {
 			logger.error("起始时间晚于结束时间。");
 			return -1;
 		}
-		List<DemandContent> orilist=DemandDataReaderDB.getDataFromDB(pnset, begin, end);	//读取需要处理的数据
+		List<DemandContent> orilist=DemandDataReaderDB.getDemandDataFromDB_OnDay(pnset, begin, end);	//读取需要处理的数据
 		if(orilist==null) {
 			logger.error("备份原始数据读取错误。");
 			return -1;

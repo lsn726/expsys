@@ -85,7 +85,7 @@ public class MrpReportForExcel {
 	 * @param weeknum 出现在矩阵中需求的周数，必须大于0
 	 * @return 需求矩阵
 	 */
-	public Matrixable<Double> getDemandMatrix(int weeknum) {
+	public Matrixable getDemandMatrix(int weeknum) {
 		init();
 		if(weeknum<=0) {
 			logger.error("不能产生需求矩阵，需求周数必须大于0。");
@@ -114,12 +114,12 @@ public class MrpReportForExcel {
 		begin.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);		//设置需求开始时间为本周周一
 		end.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		end.add(Calendar.WEEK_OF_YEAR, weeknum);				//末尾日期为weeknum周后的周末
-		demwklist=DemandDataReaderDB.getOnWeekDemandDataFromDB(null, begin.getTime(), end.getTime());
+		demwklist=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, begin.getTime(), end.getTime());
 		if(demwklist==null) return null;
 		//按周生产计划列表初始化
 		ppwklist=ProdplanDataReaderDB.getOnWeekProdplanDataFromDB(plset, new DateInterval(begin.getTime(),null));
 		if(ppwklist==null) return null;
-		Matrixable<Double> demandMatrix=new Matrixable<Double>();//需求矩阵对象
+		Matrixable demandMatrix=new Matrixable();//需求矩阵对象
 		//初始化表头
 		for(String fertpn:matorder_fin.keySet())				//将成品的顺序写入行表头
 			demandMatrix.putRowHeaderCell(matorder_fin.get(fertpn)+1, fertpn);
@@ -204,7 +204,7 @@ public class MrpReportForExcel {
 				logger.error("不能产生需求矩阵，写入周生产数据时，成品号码["+wkprod.getOutput()+"]没有向上取整数。请确认号码是否正确，或者在MRPSettings中添加向上取整数。");
 				return null;
 			}
-			Double ori=demandMatrix.getData(rowindex, colindex);	//先获取原先的数据
+			Double ori=(Double)demandMatrix.getData(rowindex, colindex);	//先获取原先的数据
 			if(ori==null) ori=0.0;									//如果没有原数据则初始化为0
 			demandMatrix.setData(rowindex, colindex, Math.ceil((ori-wkprod.getQty())*(1+scarpRate)/ceilValue)*ceilValue);	//将新值设置为旧值
 		}

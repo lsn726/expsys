@@ -5,9 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import com.logsys.util.DateInterval;
 
 /***
  * 需求数据工具类
@@ -170,6 +171,26 @@ public class DemandUtil {
 		return counter;
 	}
 	
+	/**
+	 * 获取List<DemandContent>中时间的最小值和最大值的区间对象
+	 * @param demlist 需求内容列表对象
+	 * @return 时间最小值和最大值的去见对象/null
+	 */
+	public static DateInterval getMinMaxDateInDemandList(List<DemandContent> demlist) {
+		if(demlist==null) {
+			logger.error("不能在需求内容列表中获取时间最小值，列表为空。");
+			return null;
+		}
+		if(demlist.size()==0) return null;
+		Date mindate=demlist.get(0).getDate();
+		Date maxdate=demlist.get(0).getDate();
+		for(DemandContent demcont:demlist) {
+			if(mindate.after(demcont.getDate()))
+				mindate=demcont.getDate();
+			if(maxdate.before(demcont.getDate()))
+				maxdate=demcont.getDate();
+		}
+		return new DateInterval(mindate,maxdate);
+	}
 	
-
 }

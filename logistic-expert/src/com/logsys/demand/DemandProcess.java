@@ -24,7 +24,7 @@ public class DemandProcess {
 	 * @return 成功/true,失败/false
 	 */
 	public static boolean exportDemandToExcel(String exportfilepath,Set<String> pnset, Date begin, Date end) {
-		List<DemandContent> demlist=DemandDataReaderDB.getDataFromDB(pnset, begin, end);	//首先从数据库里读取数据
+		List<DemandContent> demlist=DemandDataReaderDB.getDemandDataFromDB_OnDay(pnset, begin, end);	//首先从数据库里读取数据
 		if(demlist==null) return false;
 		Map<String,Map<Date,DemandContent>> demmap=DemandUtil.demListToMapByPn(demlist);	//从读取的List转换成按照型号和时间分类的格式
 		if(demmap==null) return false;

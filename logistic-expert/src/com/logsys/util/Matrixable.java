@@ -14,9 +14,8 @@ import com.google.common.collect.HashBiMap;
 /**
  * 可矩阵化的数据单元
  * @author lx8sn6
- * @param <DataType> 表中的数据类型
  */
-public class Matrixable<DataType> {
+public class Matrixable {
 	
 	private static final Logger logger=Logger.getLogger(Matrixable.class);
 
@@ -27,10 +26,10 @@ public class Matrixable<DataType> {
 	private BiMap<Integer,String> colHeader;
 	
 	/**位置->数据 映射图*/
-	private Map<Location,DataType> datamap;
+	private Map<Location, Object> datamap;
 	
 	public Matrixable() {
-		datamap=new HashMap<Location,DataType>();
+		datamap=new HashMap<Location, Object>();
 		rowHeader=HashBiMap.create();
 		colHeader=HashBiMap.create();
 	}
@@ -74,13 +73,41 @@ public class Matrixable<DataType> {
 	}
 
 	/**
-	 * 将row/col位置的数据设置为data,row/col如果重复则覆盖
+	 * 将row/col位置的数据设置为data,如果该文职已存在数据则覆盖
 	 * @param row 行数
 	 * @param col 列数
 	 * @param data 数据
 	 */
-	public void setData(int row,int col,DataType data) {
-		datamap.put(new Location(row,col), data);
+	public void setData(int row,int col,Object data) {
+		Location keyloc=new Location(row,col);
+		if(datamap.containsKey(keyloc))
+			logger.warn("数据矩阵中已经存在位置对象["+keyloc+"],原有数据将被覆盖。");
+		datamap.put(keyloc, data);
+	}
+	
+	/**
+	 * 将行表头为rowheader，列表头为colheader的数据设置为data,如果数据已存在则覆盖
+	 * @param rowheader 行表头
+	 * @param colheader 列表头
+	 * @param data 数据
+	 * @return true成功写入/null没有相应的行或者列表头，无法定位
+	 */
+	public boolean setData(String rowheader,String colheader, Object data) {
+		Integer rowindex=getRowPosByRowHeader(rowheader);
+		if(rowindex==null) {
+			logger.error("无法设置矩阵数据["+data+"],因为行表头+["+rowheader+"]无法在行表头图中定位.");
+			return false;
+		}
+		Integer colindex=getColPosByColHeader(colheader);
+		if(colindex==null) {
+			logger.error("无法设置矩阵数据["+data+"],因为列表头["+colheader+"]无法在列表头图中定位.");
+			return false;
+		}
+		Location keyloc=new Location(rowindex,colindex);
+		if(datamap.containsKey(keyloc))
+			logger.warn("数据矩阵中已经存在位置对象["+keyloc+"],原有数据将被覆盖。");
+		datamap.put(keyloc, data);
+		return true;
 	}
 	
 	/**
@@ -89,7 +116,7 @@ public class Matrixable<DataType> {
 	 * @param col 指定列
 	 * @return 指定位置数据/null
 	 */
-	public DataType getData(int row,int col) {
+	public Object getData(int row,int col) {
 		return datamap.get(new Location(row,col));
 	}
 	

@@ -31,5 +31,10 @@ public class Location {
 		if(this.hashCode()==obj.hashCode()) return true;
 		else return false;
 	}
+
+	@Override
+	public String toString() {
+		return "Location [column=" + column + ", row=" + row + "]";
+	}
 	
 }
