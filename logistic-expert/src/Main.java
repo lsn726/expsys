@@ -1,4 +1,3 @@
-import com.logsys.report.DemandReportForExcel;
 
 
 
@@ -12,12 +11,10 @@ public class Main {
 		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\组装线FA1生产线日报表2014.5.xls", 12);	//将生产日报导入数据库。《《将导入所有数据》》
 		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\201404.xlsx");	//将SAP的mb51命令倒出的物料操作数据写入数据库	
 		
-		//ReportProcess.genDemandMatrixToExcel("d:\\DemandMatrix.xlsx", 33);	//生成需求矩阵报表，矩阵长度(周数)25
-		try {
-			new DemandReportForExcel().writeReportToFile("e:\\test123.xlsx");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		//ReportProcess.genMRPMatrixToExcel("d:\\DemandMatrix.xlsx", 33);	//生成MRP矩阵报表，矩阵长度(周数)为第二参数
+		//ReportProcess.genDemandMatrixToExcel("d:\\Demand.xlsx");			//生成需求矩阵报表
+		//TODO:删除model表格的clinet列
+		//TODO:将model表格里面的L421驱动改为dual/qurd,去掉drive
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.logsys.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -28,6 +30,22 @@ public class ModelUtil {
 		for(ModelContent mcont:modellist)
 			modelset.add(mcont.getModel());
 		return modelset;
+	}
+	
+	/**
+	 * 将List<ModelContent>转化为Map<pn,ModelContent>
+	 * @param modellist List<ModelContent>对象
+	 * @return Map<pn,ModelContent>对象/null
+	 */
+	public static Map<String,ModelContent> convModelListToModelMap(List<ModelContent> modellist) {
+		if(modellist==null) {
+			logger.error("不能模型列表转换为模型图。参数为空");
+			return null;
+		}
+		HashMap<String,ModelContent> modelmap=new HashMap<String,ModelContent>();
+		for(ModelContent modelcont:modellist)
+			modelmap.put(modelcont.getModel(), modelcont);
+		return modelmap;
 	}
 	
 }

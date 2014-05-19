@@ -11,8 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.logsys.demand.DemandContent;
@@ -41,6 +46,9 @@ public class DemandReportForExcel {
 	
 	/**产成品列表*/
 	private List<ModelContent> matlist_fin;
+	
+	/**产成品图*/
+	private Map<String,ModelContent> matmap_fin;
 	
 	/**产成品集*/
 	private Set<String> matset_fin;
@@ -77,6 +85,8 @@ public class DemandReportForExcel {
 		if(matset_fin==null) return false;
 		matorder_fin=ModelDataReaderDB.sortModels(matset_fin);		//初始化成品顺序图
 		if(matorder_fin==null) return false;
+		matmap_fin=ModelUtil.convModelListToModelMap(matlist_fin);
+		if(matmap_fin==null) return false;
 		Calendar begindate=GeneralUtils.getValidCalendar();
 		Calendar now=GeneralUtils.getValidCalendar();
 		begindate.clear();
@@ -106,8 +116,8 @@ public class DemandReportForExcel {
 		}
 		Matrixable demmat_onday=new Matrixable();		//声明按天需求矩阵
 		if(demlist_onday.size()==0) return demmat_onday;
-		for(String pn:matorder_fin.keySet())		//将成品号写入行表头
-			demmat_onday.putRowHeaderCell(matorder_fin.get(pn), pn);
+		for(String pn:matorder_fin.keySet())			//将成品号写入行表头
+			demmat_onday.putRowHeaderCell(matorder_fin.get(pn)+2, pn);
 		DateFormat dateconv=new SimpleDateFormat("yyyy/MM/dd");	//日期格式
 		DateInterval interval=DemandUtil.getMinMaxDateInDemandList(demlist_onday);	//获取时间最小值和最大值
 		Calendar begin=GeneralUtils.getValidCalendar();
@@ -199,8 +209,7 @@ public class DemandReportForExcel {
 			return false;
 		}
 		Workbook wb=new XSSFWorkbook();								//创建工作簿
-		Sheet ondaysheet=wb.createSheet(SHEETNAME_DEM_ONDAY);		//创建按天sheet
-		dematrix_onday.writeToExcelSheet(ondaysheet, new Location(0,0));	//写入天列表
+		writeOnDayDemandToWorkbook(wb);								//写入按天需求数据
 		Sheet onweeksheet=wb.createSheet(SHEETNAME_DEM_ONWEEK);		//创建按周sheet
 		dematrix_onweek.writeToExcelSheet(onweeksheet, new Location(0,0));	//写入周列表
 		Sheet onmonthsheet=wb.createSheet(SHEETNAME_DEM_ONMONTH);	//创建按月sheet
@@ -215,6 +224,111 @@ public class DemandReportForExcel {
 			logger.error("不能产生需求报告并写入Excel，出现错误：",ex);
 			return false;
 		}
+	}
+	
+	/**
+	 * 将按天需求写入Excel工作簿对象
+	 * @param wb Excel工作簿对象
+	 */
+	private void writeOnDayDemandToWorkbook(Workbook wb) {
+		if(wb==null) {
+			logger.error("不能在工作簿中写入按天需求数据，工作簿对象为空。");
+			return;
+		}
+		final int startrow=1;			//矩阵起始行
+		final int startcol=2;			//矩阵起始咧
+		final int colwidth=12;			//列宽度，12字符
+		Sheet ondaysheet=wb.createSheet(SHEETNAME_DEM_ONDAY);								//创建按天sheet
+		//开始配置单元格格式
+		CellStyle weekdaystyle = wb.createCellStyle();		//一周七天单元格格式
+		CellStyle datestyle = wb.createCellStyle();			//日期单元格格式
+		CellStyle weekstyle = wb.createCellStyle();			//日期单元格格式
+		CellStyle clientstyle = wb.createCellStyle();		//客户单元格格式
+		CreationHelper createHelper = wb.getCreationHelper();
+		weekdaystyle.setDataFormat(createHelper.createDataFormat().getFormat("aaaa"));		//配置一周七天单元格格式
+		weekdaystyle.setAlignment(CellStyle.ALIGN_CENTER);
+		weekdaystyle.setBorderTop(CellStyle.BORDER_THIN);
+		weekdaystyle.setBorderBottom(CellStyle.BORDER_THIN);
+		weekdaystyle.setBorderLeft(CellStyle.BORDER_THIN);
+		weekdaystyle.setBorderRight(CellStyle.BORDER_THIN);
+		datestyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy/mm/dd"));	//配置日期单元格格式
+		datestyle.setAlignment(CellStyle.ALIGN_CENTER);
+		datestyle.setBorderTop(CellStyle.BORDER_THIN);
+		datestyle.setBorderBottom(CellStyle.BORDER_THIN);
+		datestyle.setBorderLeft(CellStyle.BORDER_THIN);
+		datestyle.setBorderRight(CellStyle.BORDER_THIN);
+		weekstyle.setAlignment(CellStyle.ALIGN_CENTER);										//配置日期单元格格式
+		weekstyle.setBorderLeft(CellStyle.BORDER_THIN);
+		weekstyle.setBorderRight(CellStyle.BORDER_THIN);
+		clientstyle.setAlignment(CellStyle.ALIGN_CENTER);									//配置客户单元格格式
+		clientstyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		clientstyle.setWrapText(true);		//允许换行
+		//完毕配置单元格格式
+		dematrix_onday.writeToExcelSheet(ondaysheet, new Location(startrow,startcol));		//写入天列表
+		Row daterow=ondaysheet.getRow(startrow);			//获取日期列所在行
+		Row weekdayrow=ondaysheet.createRow(startrow+1);	//创建一周7天列所在行
+		Row weekrow=ondaysheet.createRow(startrow-1);		//创建周数列所在行
+		Cell weekdaycell;		//weekday单元格
+		Cell datecell;			//日期单元格
+		Cell weekcell;			//周数单元格
+		Calendar itcal=GeneralUtils.getValidCalendar();		//正在遍历的日期
+		for(int counter=startcol+1;daterow.getCell(counter)!=null;counter++) {	//遍历日期行,写入星期几和周数据
+			datecell=daterow.getCell(counter);
+			itcal.setTime(new Date(datecell.getStringCellValue()));
+			weekdaycell=weekdayrow.createCell(counter);
+			weekdaycell.setCellValue(itcal);			//写入周中日期信息
+			datecell.setCellValue(itcal);				//以日期格式重新写入表头信息
+			weekdaycell.setCellStyle(weekdaystyle);		//写入周中日期格式
+			datecell.setCellStyle(datestyle);			//写入日期格式
+			if((counter-startcol)%7==0) {				//如果已经过了7天，则合并weekrow的7个单元格，并写入周数信息
+				weekcell=weekrow.createCell(counter-6);			//创建单元格
+				weekcell.setCellStyle(weekstyle);
+				weekcell.setCellValue(itcal.get(Calendar.YEAR)+"年"+itcal.get(Calendar.WEEK_OF_YEAR)+"周");	//写入周数
+				ondaysheet.addMergedRegion(new CellRangeAddress(weekrow.getRowNum(),weekrow.getRowNum(),counter-6,counter));	//合并单元格
+			}
+			ondaysheet.setColumnWidth(counter, colwidth*256);	//设置列宽度
+		}
+		String lastclient="NOTCLIENT";	//上一个客户
+		String curclient;		//当前客户
+		int clientbegin=-1;		//clientbegin起始行
+		ModelContent temp;
+		Cell clientcell;		//客户cell
+		Cell infocell;			//项目cell
+		Cell pncell;			//成品cell
+		for(int counter=startrow+2;;counter++) {	//遍历pn列，填写
+			if(ondaysheet.getRow(counter)==null) {	//如果是空行，则需要合并上一批单元格的客户单元格
+				if(clientbegin!=-1)	{		//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
+					clientcell=ondaysheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
+					clientcell.setCellValue(lastclient);
+					clientcell.setCellStyle(clientstyle);		//使用weekstyle
+					ondaysheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
+				}
+				break;
+			}
+			pncell=ondaysheet.getRow(counter).getCell(startcol);
+			if(pncell==null) break;
+			temp=matmap_fin.get(pncell.getStringCellValue());				//获取pn的Model对象
+			if(temp==null) {
+				logger.error("不能在工作簿中写入按天需求数据，成品图中没有对应的成品号["+pncell.getStringCellValue()+"]");
+				return;
+			}
+			curclient=temp.getClient()+"\n"+temp.getPrjcode();	//确认当前客户
+			if(!curclient.equals(lastclient)) {					//如果当前客户不是以前客户，则说明新客户开始了，需要合并老客户单元格，并写入老客户信息
+				if(clientbegin!=-1)	{		//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
+					clientcell=ondaysheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
+					clientcell.setCellValue(lastclient);
+					clientcell.setCellStyle(clientstyle);		//使用weekstyle
+					ondaysheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
+				}
+				clientbegin=counter;
+				lastclient=curclient;
+			}
+			infocell=ondaysheet.getRow(counter).createCell(startcol-1);		//创建infocell
+			infocell.setCellValue(temp.getInfo());
+		}
+		ondaysheet.setColumnWidth(startcol-2, 12*256);
+		ondaysheet.setColumnWidth(startcol-1, 15*256);
+		ondaysheet.createFreezePane(startrow+2, startcol+1);
 	}
 	
 }

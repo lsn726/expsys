@@ -20,11 +20,11 @@ public class ReportProcess {
 	private static final Logger logger=Logger.getLogger(ReportProcess.class);
 	
 	/**
-	 * 产生需求矩阵并写入Excel表格
+	 * 产生MRP矩阵报告并写入Excel表格
 	 * @param weeknum 需求表格长度
 	 * @return 成功true/失败false
 	 */
-	public static boolean genDemandMatrixToExcel(String filepath,int weeknum) {
+	public static boolean genMRPMatrixToExcel(String filepath,int weeknum) {
 		if(filepath==null) {
 			logger.error("不能产生需求矩阵并写入Excel，文件路径为空。");
 			return false;
@@ -52,6 +52,26 @@ public class ReportProcess {
 			return true;
 		} catch(Throwable ex) {
 			logger.error("不能产生需求矩阵并写入Excel，Excel表格写入磁盘时出现错误：",ex);
+			return false;
+		}
+	}
+
+	/**
+	 * 产生需求矩阵(按天/周/月)并写入Excel文件filepath
+	 * @param filepath 文件路径
+	 * @return 成功true/失败false;
+	 */
+	public static boolean genDemandMatrixToExcel(String filepath) {
+		boolean result;
+		try {
+			result=new DemandReportForExcel().writeReportToFile("d:\\test123.xlsx");
+			if(result)
+				logger.info("成功产生需求矩阵并写入文件["+filepath+"]");
+			else
+				logger.info("不能产生需求矩阵和写入文件.");
+			return result;
+		} catch (Exception e) {
+			logger.error("不能产生需求报告：",e);
 			return false;
 		}
 	}

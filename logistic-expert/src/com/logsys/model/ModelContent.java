@@ -24,8 +24,7 @@ public class ModelContent {
 	/**包装数量*/
 	private int pq;
 
-	public ModelContent() {
-	}
+	public ModelContent() {}
 
 	public ModelContent(int id, String client, String model, String prjcode, String info) {
 		super();
