@@ -35,21 +35,51 @@ public class Matrixable {
 	}
 	
 	/**
-	 * 设置行表头的内容
+	 * 内容是否存在于行表头中
+	 * @param content 行表头
+	 * @return 存在true/不存在false
+	 */
+	public boolean isContentInRowHeader(String content) {
+		return rowHeader.containsValue(content);
+	}
+	
+	/**
+	 * 内容是否存在于列表头中
+	 * @param content 列表头
+	 * @return 存在true/不存在false
+	 */
+	public boolean isContentInColHeader(String content) {
+		return colHeader.containsValue(content);
+	}
+	
+	/**
+	 * 设置行表头的内容,表头内容不能重复
 	 * @param position 行表头位置
 	 * @param content 内容
+	 * @return 成功true/失败false
 	 */
-	public void putRowHeaderCell(int position, String content) {
+	public boolean putRowHeaderCell(int position, String content) {
+		if(rowHeader.containsValue(content)) {
+			logger.error("不能写入行表头数据，内容["+content+"]已存在。");
+			return false;
+		}
 		rowHeader.put(position, content);
+		return true;
 	}
 
 	/**
-	 * 设置列表头的内容
+	 * 设置列表头的内容,表头内容不能重复
 	 * @param position 列表头位置
 	 * @param content 内容
+	 * @return 成功true/失败false
 	 */
-	public void putColHeaderCell(int position, String content) {
+	public boolean putColHeaderCell(int position, String content) {
+		if(colHeader.containsValue(content)) {
+			logger.error("不能写入列表头数据，内容["+content+"]已存在。");
+			return false;
+		}
 		colHeader.put(position, content);
+		return true;
 	}
 	
 	/**

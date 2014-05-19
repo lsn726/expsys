@@ -14,9 +14,8 @@ public class Main {
 		
 		//ReportProcess.genDemandMatrixToExcel("d:\\DemandMatrix.xlsx", 33);	//生成需求矩阵报表，矩阵长度(周数)25
 		try {
-			new DemandReportForExcel().writeReportToFile("d:\\test123.xlsx");
+			new DemandReportForExcel().writeReportToFile("e:\\test123.xlsx");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

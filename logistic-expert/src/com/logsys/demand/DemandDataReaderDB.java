@@ -149,7 +149,7 @@ public class DemandDataReaderDB {
 			logger.error("´´½¨Session´íÎó:",ex);
 			return null;
 		}
-		String hql="select new com.logsys.demand.DemandContent_Week(pn,year(date),month(date),sum(qty) as qty) from DemandContent where 1=1";
+		String hql="select new com.logsys.demand.DemandContent_Month(pn,year(date),month(date),sum(qty)) from DemandContent where 1=1";
 		if(begin!=null) hql+=" and date>=:begindate";
 		if(end!=null) hql+=" and date<=:enddate";
 		if(pnset!=null) {
