@@ -208,12 +208,10 @@ public class DemandReportForExcel {
 			logger.error("不能产生需求矩阵并写入Excel，文件["+filepath+"]已存在");
 			return false;
 		}
-		Workbook wb=new XSSFWorkbook();								//创建工作簿
-		writeOnDayDemandToWorkbook(wb);								//写入按天需求数据
-		Sheet onweeksheet=wb.createSheet(SHEETNAME_DEM_ONWEEK);		//创建按周sheet
-		dematrix_onweek.writeToExcelSheet(onweeksheet, new Location(0,0));	//写入周列表
-		Sheet onmonthsheet=wb.createSheet(SHEETNAME_DEM_ONMONTH);	//创建按月sheet
-		dematrix_onmonth.writeToExcelSheet(onmonthsheet, new Location(0,0));//写入月列表
+		Workbook wb=new XSSFWorkbook();			//创建工作簿
+		writeOnDayDemandToWorkbook(wb);			//写入按天需求数据
+		writeOnWeekDemandToWorkbook(wb);		//写入按周需求数据
+		writeOnMonthDemandToWorkbook(wb);		//写入按月需求数据		
 		try {
 			FileOutputStream fileOut=new FileOutputStream(filepath);
 			wb.write(fileOut);
@@ -263,7 +261,7 @@ public class DemandReportForExcel {
 		clientstyle.setAlignment(CellStyle.ALIGN_CENTER);									//配置客户单元格格式
 		clientstyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
 		clientstyle.setWrapText(true);		//允许换行
-		//完毕配置单元格格式
+		//开始写入星期几和WK信息
 		dematrix_onday.writeToExcelSheet(ondaysheet, new Location(startrow,startcol));		//写入天列表
 		Row daterow=ondaysheet.getRow(startrow);			//获取日期列所在行
 		Row weekdayrow=ondaysheet.createRow(startrow+1);	//创建一周7天列所在行
@@ -288,6 +286,7 @@ public class DemandReportForExcel {
 			}
 			ondaysheet.setColumnWidth(counter, colwidth*256);	//设置列宽度
 		}
+		//开始写入客户和型号信息
 		String lastclient="NOTCLIENT";	//上一个客户
 		String curclient;		//当前客户
 		int clientbegin=-1;		//clientbegin起始行
@@ -300,7 +299,7 @@ public class DemandReportForExcel {
 				if(clientbegin!=-1)	{		//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
 					clientcell=ondaysheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
 					clientcell.setCellValue(lastclient);
-					clientcell.setCellStyle(clientstyle);		//使用weekstyle
+					clientcell.setCellStyle(clientstyle);
 					ondaysheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
 				}
 				break;
@@ -317,7 +316,7 @@ public class DemandReportForExcel {
 				if(clientbegin!=-1)	{		//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
 					clientcell=ondaysheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
 					clientcell.setCellValue(lastclient);
-					clientcell.setCellStyle(clientstyle);		//使用weekstyle
+					clientcell.setCellStyle(clientstyle);
 					ondaysheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
 				}
 				clientbegin=counter;
@@ -326,9 +325,237 @@ public class DemandReportForExcel {
 			infocell=ondaysheet.getRow(counter).createCell(startcol-1);		//创建infocell
 			infocell.setCellValue(temp.getInfo());
 		}
-		ondaysheet.setColumnWidth(startcol-2, 12*256);
-		ondaysheet.setColumnWidth(startcol-1, 15*256);
-		ondaysheet.createFreezePane(startrow+2, startcol+1);
+		ondaysheet.setColumnWidth(startcol-2, 12*256);			//设置客户行宽度
+		ondaysheet.setColumnWidth(startcol-1, 15*256);			//设置型号航宽度
+		ondaysheet.createFreezePane(startcol+1, startrow+2);	//冻结窗格
+		Row itrow;			//遍历行
+		Cell itcell;		//遍历单元格
+		double demqty;		//需求数量
+		boolean hasdemand=false;	//是否有需求
+		//没有需求记录的行自动隐藏
+		for(int pncounter=startrow+2;;pncounter++) {			//外循环遍历行
+			itrow=ondaysheet.getRow(pncounter);		//提取遍历行
+			if(itrow==null) break;
+			hasdemand=false;
+			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
+				itcell=itrow.getCell(colcounter);		//提取遍历单元格
+				datecell=daterow.getCell(colcounter);	//提取日期单元格
+				if(datecell==null) break;			//如果日期列为空，则跳出循环
+				if(itcell==null) continue;			//如果单元格为空，继续遍历
+				else {
+					demqty=itcell.getNumericCellValue();	//获取需求值
+					if(demqty==0) continue;			//如果需求为0，则继续
+					else {
+						hasdemand=true;				//如果不为0，说明有需求，则不能隐藏
+						break;
+					}
+				}
+			}
+			if(!hasdemand)	//如果没有需求，则隐藏该列
+				itrow.setZeroHeight(true);
+		}
+	}
+	
+	/**
+	 * 将按周需求写入Excel工作簿对象
+	 * @param wb Excel工作簿对象
+	 */
+	private void writeOnWeekDemandToWorkbook(Workbook wb) {
+		if(wb==null) {
+			logger.error("不能在工作簿中写入按周需求数据，工作簿对象为空。");
+			return;
+		}
+		final int startrow=0;			//矩阵起始行
+		final int startcol=2;			//矩阵起始咧
+		final int colwidth=12;			//列宽度，12字符
+		Sheet onweeksheet=wb.createSheet(SHEETNAME_DEM_ONWEEK);		//创建按周sheet
+		//开始配置单元格格式
+		CellStyle weekstyle = wb.createCellStyle();			//日期单元格格式
+		CellStyle clientstyle = wb.createCellStyle();		//客户单元格格式
+		weekstyle.setAlignment(CellStyle.ALIGN_CENTER);		//配置按周单元格格式
+		weekstyle.setBorderLeft(CellStyle.BORDER_THIN);
+		weekstyle.setBorderRight(CellStyle.BORDER_THIN);
+		clientstyle.setAlignment(CellStyle.ALIGN_CENTER);	//配置客户单元格格式
+		clientstyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		clientstyle.setWrapText(true);		//允许换行
+		//开始将周数信息写入格式
+		dematrix_onweek.writeToExcelSheet(onweeksheet, new Location(startrow,startcol));	//写入周列表
+		Row weekrow=onweeksheet.getRow(startrow);			//创建周数列所在行
+		Cell weekcell;			//周数单元格
+		for(int counter=startcol+1;weekrow.getCell(counter)!=null;counter++) {	//遍历周行,改变单元格格式
+			weekcell=weekrow.getCell(counter);
+			weekcell.setCellStyle(weekstyle);
+			onweeksheet.setColumnWidth(counter, colwidth*256);	//设置列宽度
+		}
+		//开始写入客户和型号信息
+		String lastclient="NOTCLIENT";	//上一个客户
+		String curclient;		//当前客户
+		int clientbegin=-1;		//clientbegin起始行
+		ModelContent temp;
+		Cell clientcell;		//客户cell
+		Cell infocell;			//项目cell
+		Cell pncell;			//成品cell
+		for(int counter=startrow+1;;counter++) {	//遍历pn列，填写
+			if(onweeksheet.getRow(counter)==null) {	//如果是空行，则需要合并上一批单元格的客户单元格
+				if(clientbegin!=-1)	{				//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
+					clientcell=onweeksheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
+					clientcell.setCellValue(lastclient);
+					clientcell.setCellStyle(clientstyle);
+					onweeksheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
+				}
+				break;
+			}
+			pncell=onweeksheet.getRow(counter).getCell(startcol);
+			if(pncell==null) break;
+			temp=matmap_fin.get(pncell.getStringCellValue());	//获取pn的Model对象
+			if(temp==null) {
+				logger.error("不能在工作簿中写入按天需求数据，成品图中没有对应的成品号["+pncell.getStringCellValue()+"]");
+				return;
+			}
+			curclient=temp.getClient()+"\n"+temp.getPrjcode();	//确认当前客户
+			if(!curclient.equals(lastclient)) {					//如果当前客户不是以前客户，则说明新客户开始了，需要合并老客户单元格，并写入老客户信息
+				if(clientbegin!=-1)	{							//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
+					clientcell=onweeksheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
+					clientcell.setCellValue(lastclient);
+					clientcell.setCellStyle(clientstyle);
+					onweeksheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
+				}
+				clientbegin=counter;
+				lastclient=curclient;
+			}
+			infocell=onweeksheet.getRow(counter).createCell(startcol-1);		//创建infocell
+			infocell.setCellValue(temp.getInfo());
+		}
+		onweeksheet.setColumnWidth(startcol-2, 12*256);			//设置客户行宽度
+		onweeksheet.setColumnWidth(startcol-1, 15*256);			//设置型号航宽度
+		onweeksheet.createFreezePane(startcol+1, startrow+1);	//冻结窗格
+		Row itrow;			//遍历行
+		Cell itcell;		//遍历单元格
+		double demqty;		//需求数量
+		boolean hasdemand=false;	//是否有需求
+		//没有需求记录的行自动隐藏
+		for(int pncounter=startrow+1;;pncounter++) {	//外循环遍历行
+			itrow=onweeksheet.getRow(pncounter);		//提取遍历行
+			if(itrow==null) break;
+			hasdemand=false;
+			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
+				itcell=itrow.getCell(colcounter);		//提取遍历单元格
+				weekcell=weekrow.getCell(colcounter);	//提取日期单元格
+				if(weekcell==null) break;			//如果日期列为空，则跳出循环
+				if(itcell==null) continue;			//如果单元格为空，继续遍历
+				else {
+					demqty=itcell.getNumericCellValue();	//获取需求值
+					if(demqty==0) continue;			//如果需求为0，则继续
+					else {
+						hasdemand=true;				//如果不为0，说明有需求，则不能隐藏
+						break;
+					}
+				}
+			}
+			if(!hasdemand)	//如果没有需求，则隐藏该列
+				itrow.setZeroHeight(true);
+		}
+	}
+	
+	/**
+	 * 将按月需求写入Excel工作簿对象
+	 * @param wb Excel工作簿对象
+	 */
+	private void writeOnMonthDemandToWorkbook(Workbook wb) {
+		if(wb==null) {
+			logger.error("不能在工作簿中写入按周需求数据，工作簿对象为空。");
+			return;
+		}
+		final int startrow=0;			//矩阵起始行
+		final int startcol=2;			//矩阵起始咧
+		final int colwidth=12;			//列宽度，12字符
+		Sheet onmonthsheet=wb.createSheet(SHEETNAME_DEM_ONMONTH);	//创建按月sheet
+		//开始配置单元格格式
+		CellStyle monthstyle = wb.createCellStyle();		//按月单元格格式
+		CellStyle clientstyle = wb.createCellStyle();		//客户单元格格式
+		monthstyle.setAlignment(CellStyle.ALIGN_CENTER);	//配置按月单元格格式
+		monthstyle.setBorderLeft(CellStyle.BORDER_THIN);
+		monthstyle.setBorderRight(CellStyle.BORDER_THIN);
+		clientstyle.setAlignment(CellStyle.ALIGN_CENTER);	//配置客户单元格格式
+		clientstyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		clientstyle.setWrapText(true);		//允许换行
+		//开始将周数信息写入格式
+		dematrix_onmonth.writeToExcelSheet(onmonthsheet, new Location(startrow,startcol));	//写入月列表
+		Row monthrow=onmonthsheet.getRow(startrow);			//创建月数列所在行
+		Cell monthcell;			//月数单元格
+		for(int counter=startcol+1;monthrow.getCell(counter)!=null;counter++) {	//遍历月行,改变单元格格式
+			monthcell=monthrow.getCell(counter);
+			monthcell.setCellStyle(monthstyle);
+			onmonthsheet.setColumnWidth(counter, colwidth*256);	//设置列宽度
+		}
+		//开始写入客户和型号信息
+		String lastclient="NOTCLIENT";	//上一个客户
+		String curclient;		//当前客户
+		int clientbegin=-1;		//clientbegin起始行
+		ModelContent temp;
+		Cell clientcell;		//客户cell
+		Cell infocell;			//项目cell
+		Cell pncell;			//成品cell
+		for(int counter=startrow+1;;counter++) {		//遍历pn列，填写
+			if(onmonthsheet.getRow(counter)==null) {	//如果是空行，则需要合并上一批单元格的客户单元格
+				if(clientbegin!=-1)	{					//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
+					clientcell=onmonthsheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
+					clientcell.setCellValue(lastclient);
+					clientcell.setCellStyle(clientstyle);
+					onmonthsheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
+				}
+				break;
+			}
+			pncell=onmonthsheet.getRow(counter).getCell(startcol);
+			if(pncell==null) break;
+			temp=matmap_fin.get(pncell.getStringCellValue());	//获取pn的Model对象
+			if(temp==null) {
+				logger.error("不能在工作簿中写入按天需求数据，成品图中没有对应的成品号["+pncell.getStringCellValue()+"]");
+				return;
+			}
+			curclient=temp.getClient()+"\n"+temp.getPrjcode();	//确认当前客户
+			if(!curclient.equals(lastclient)) {					//如果当前客户不是以前客户，则说明新客户开始了，需要合并老客户单元格，并写入老客户信息
+				if(clientbegin!=-1)	{							//如果为-1，则说明是第一个客户,初始化clientbegin和lastclient
+					clientcell=onmonthsheet.getRow(clientbegin).createCell(startcol-2);	//创建客户Cell
+					clientcell.setCellValue(lastclient);
+					clientcell.setCellStyle(clientstyle);
+					onmonthsheet.addMergedRegion(new CellRangeAddress(clientbegin,counter-1,startcol-2,startcol-2));	//合并单元格
+				}
+				clientbegin=counter;
+				lastclient=curclient;
+			}
+			infocell=onmonthsheet.getRow(counter).createCell(startcol-1);		//创建infocell
+			infocell.setCellValue(temp.getInfo());
+		}
+		onmonthsheet.setColumnWidth(startcol-2, 12*256);			//设置客户行宽度
+		onmonthsheet.setColumnWidth(startcol-1, 15*256);			//设置型号航宽度
+		onmonthsheet.createFreezePane(startcol+1, startrow+1);		//冻结窗格
+		Row itrow;			//遍历行
+		Cell itcell;		//遍历单元格
+		double demqty;		//需求数量
+		boolean hasdemand=false;	//是否有需求
+		//没有需求记录的行自动隐藏
+		for(int pncounter=startrow+1;;pncounter++) {			//外循环遍历行
+			itrow=onmonthsheet.getRow(pncounter);		//提取遍历行
+			if(itrow==null) break;
+			hasdemand=false;
+			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
+				itcell=itrow.getCell(colcounter);		//提取遍历单元格
+				monthcell=monthrow.getCell(colcounter);	//提取日期单元格
+				if(monthcell==null) break;			//如果日期列为空，则跳出循环
+				if(itcell==null) continue;			//如果单元格为空，继续遍历
+				else {
+					demqty=itcell.getNumericCellValue();	//获取需求值
+					if(demqty==0) continue;			//如果需求为0，则继续
+					else {
+						hasdemand=true;				//如果不为0，说明有需求，则不能隐藏
+						break;
+					}
+				}
+			}
+			if(!hasdemand)	//如果没有需求，则隐藏该列
+				itrow.setZeroHeight(true);
+		}
 	}
 	
 }

@@ -64,7 +64,7 @@ public class ReportProcess {
 	public static boolean genDemandMatrixToExcel(String filepath) {
 		boolean result;
 		try {
-			result=new DemandReportForExcel().writeReportToFile("d:\\test123.xlsx");
+			result=new DemandReportForExcel().writeReportToFile(filepath);
 			if(result)
 				logger.info("成功产生需求矩阵并写入文件["+filepath+"]");
 			else
