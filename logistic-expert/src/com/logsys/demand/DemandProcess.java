@@ -23,6 +23,7 @@ public class DemandProcess {
 	 * @param end 结束时间，如果是null,则默认为不限制结束时间
 	 * @return 成功/true,失败/false
 	 */
+	@Deprecated
 	public static boolean exportDemandToExcel(String exportfilepath,Set<String> pnset, Date begin, Date end) {
 		List<DemandContent> demlist=DemandDataReaderDB.getDemandDataFromDB_OnDay(pnset, begin, end);	//首先从数据库里读取数据
 		if(demlist==null) return false;
