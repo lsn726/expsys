@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.logsys.demand.DemandBackupContent;
 import com.logsys.demand.DemandContent;
 import com.logsys.demand.DemandContent_Month;
 import com.logsys.demand.DemandContent_Week;
@@ -34,7 +36,10 @@ import com.logsys.util.Location;
 import com.logsys.util.Matrixable;
 
 /**
- * 需求报表--按日的Sheet，按周的Sheet和按月的Sheet
+ * 需求报表，包含:
+ * --按日需求报表
+ * --按周需求报表
+ * --按月需求报表
  * @author ShaonanLi
  */
 public class DemandReportForExcel {
@@ -62,6 +67,9 @@ public class DemandReportForExcel {
 	/**按月需求表*/
 	private Matrixable dematrix_onmonth;
 	
+	/**追溯需求矩阵对象列表:成品号->回溯需求矩阵图*/
+	private Map<String,Matrixable> dematrixmap_backtrace;
+	
 	/**Sheet名称：按天需求*/
 	private static final String SHEETNAME_DEM_ONDAY="Demand_Daily";
 	
@@ -70,6 +78,9 @@ public class DemandReportForExcel {
 	
 	/**Sheet名称：按月需求*/
 	private static final String SHEETNAME_DEM_ONMONTH="Demand_Monthly";
+	
+	/**Sheet名称：需求跟踪回溯*/
+	private static final String SHEETNAME_DEM_BACKTRACE="Demand_Backtrace";
 	
 	public DemandReportForExcel() throws Exception {
 		if(!init()) {
@@ -145,6 +156,8 @@ public class DemandReportForExcel {
 	
 	/**
 	 * 获取按周需求数据矩阵
+	 * @param 开始时间，null则不限制
+	 * @param 结束时间，null则不限制
 	 * @return 按周需求矩阵对象
 	 */
 	private Matrixable genDemandMatrix_OnWeek(Date begindate, Date enddate) {
@@ -170,6 +183,8 @@ public class DemandReportForExcel {
 	
 	/**
 	 * 获取按月需求数据矩阵
+	 * @param 开始时间，null则不限制
+	 * @param 结束时间，null则不限制
 	 * @return 按月需求矩阵对象
 	 */
 	private Matrixable genDemandMatrix_OnMonth(Date begindate, Date enddate) {
@@ -191,6 +206,29 @@ public class DemandReportForExcel {
 			demmat_onmonth.setData(monthdem.getPn(), colheader, monthdem.getQty());	//写入数据
 		}
 		return demmat_onmonth;
+	}
+	
+	/**
+	 * 产生回溯需求矩阵图
+	 * @param begindate 开始日期
+	 * @param enddate 结束日期
+	 * @return 回溯需求矩阵对象图<成品号->回溯需求矩阵图>
+	 */
+	private Map<String,Matrixable> genDemandMatrix_Backtrace(Date begindate, Date enddate) {
+		List<DemandBackupContent> bkupdemlist=DemandDataReaderDB.getBackupDemandDataFromDB(null, begindate, enddate);	//获取备份需求列表
+		if(bkupdemlist==null) {
+			logger.error("不能产生回溯需求矩阵列表，备份需求读取错误。");
+			return null;
+		}
+		Map<String,Matrixable> btracedemmap=new HashMap<String,Matrixable>();
+		if(bkupdemlist.size()==0)
+			return btracedemmap;
+		for(String fertpn:matset_fin)			//遍历成品号，初始化矩阵图
+			btracedemmap.put(fertpn, new Matrixable());
+		for(DemandBackupContent bkupcont:bkupdemlist) {	//遍历备份需求内容列表，写入回溯矩阵图
+			
+		}
+		return btracedemmap;
 	}
 	
 	/**
@@ -556,6 +594,14 @@ public class DemandReportForExcel {
 			if(!hasdemand)	//如果没有需求，则隐藏该列
 				itrow.setZeroHeight(true);
 		}
+	}
+	
+	/**
+	 * 将回溯需求表写入Excel工作簿
+	 * @param wb Excel工作簿对象
+	 */
+	private void writeBacktraceDemandToWorkbook(Workbook wb) {
+		
 	}
 	
 }

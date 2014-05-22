@@ -87,5 +87,12 @@ public class DemandBackupContent {
 	public void setDlvfix(int dlvfix) {
 		this.dlvfix = dlvfix;
 	}
+
+	@Override
+	public String toString() {
+		return "DemandBackupContent [id=" + id + ", version=" + version
+				+ ", pn=" + pn + ", qty=" + qty + ", date=" + date
+				+ ", dlvfix=" + dlvfix + "]";
+	}
 	
 }

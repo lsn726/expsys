@@ -173,4 +173,45 @@ public class DemandDataReaderDB {
 		}
 	}
 	
+	/**
+	 * 读取备份的需求数据
+	 * @param pnset 需要读取成品号集，如果为null，则读取所有的型号
+	 * @param begin 需求开始时间，如果为null，则不限制起始时间
+	 * @param end   需求结束时间，如果为null，则不限制结束时间
+	 * @return 备份需求列表/null空
+	 */
+	public static List<DemandBackupContent> getBackupDemandDataFromDB(Set<String> pnset, Date begin, Date end) {
+		if(pnset!=null)
+			if(pnset.size()==0) return new ArrayList<DemandBackupContent>();
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.getTransaction().begin();
+		} catch(Throwable ex) {
+			logger.error("创建Session错误:",ex);
+			return null;
+		}
+		String hql="from DemandBackupContent where 1=1";
+		if(begin!=null) hql+=" and date>=:begindate";
+		if(end!=null) hql+=" and date<=:enddate";
+		if(pnset!=null) {
+			hql+=" and (";
+			for(String pn:pnset) hql+=" pn='"+pn+"' or";
+			hql=hql.substring(0,hql.length()-3);
+			hql+=")";
+		}
+		Query query;
+		try {
+			query=session.createQuery(hql);
+			if(begin!=null) query.setDate("begindate", begin);
+			if(end!=null) query.setDate("enddate", end);
+			List<DemandBackupContent> dembkuplist=query.list();
+			session.close();
+			return dembkuplist;
+		} catch(Throwable ex) {
+			logger.error("从数据库读取按周需求数据时错误：",ex);
+			return null;
+		}
+	}
+	
 }
