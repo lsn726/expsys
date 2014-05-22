@@ -21,7 +21,6 @@ public class Main {
 		//ReportProcess.genDemandMatrixToExcel("e:\\Demand.xlsx");		//生成需求矩阵报表
 		
 		List<DemandBackupContent> dembkuplist=DemandDataReaderDB.getBackupDemandDataFromDB(null,new Date("2014/5/25"),null);
-		System.out.println(dembkuplist.size());
 		//TODO:StockDataReaderExcel继续完善
 	}
 
