@@ -25,7 +25,7 @@ import com.logsys.production.ProductionDataReaderDB;
 import com.logsys.setting.Settings;
 import com.logsys.setting.pd.bwi.BWIPLInfo.ProdLine;
 import com.logsys.util.DateInterval;
-import com.logsys.util.GeneralUtils;
+import com.logsys.util.TimeUtils;
 import com.logsys.util.Matrixable;
 
 /**
@@ -97,8 +97,8 @@ public class MrpReportForExcel {
 		List<ProductionContent_Week> pdwklist;					//按周产出列表
 		List<DemandContent_Week> demwklist;						//按周需求列表
 		List<ProdplanContent_Week> ppwklist;					//按周生产计划列表
-		Calendar begin=GeneralUtils.getValidCalendar();
-		Calendar end=GeneralUtils.getValidCalendar();
+		Calendar begin=TimeUtils.getValidCalendar();
+		Calendar end=TimeUtils.getValidCalendar();
 		//按周产出列表初始化
 		if(begin.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY)	//是周一则不用查询
 			pdwklist=new ArrayList<ProductionContent_Week>();
@@ -110,7 +110,7 @@ public class MrpReportForExcel {
 			if(pdwklist==null) return null;
 		}
 		//按周需求列表初始化
-		begin=GeneralUtils.getValidCalendar();
+		begin=TimeUtils.getValidCalendar();
 		begin.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);		//设置需求开始时间为本周周一
 		end.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		end.add(Calendar.WEEK_OF_YEAR, weeknum);				//末尾日期为weeknum周后的周末
@@ -123,7 +123,7 @@ public class MrpReportForExcel {
 		//初始化表头
 		for(String fertpn:matorder_fin.keySet())				//将成品的顺序写入行表头
 			demandMatrix.putRowHeaderCell(matorder_fin.get(fertpn)+1, fertpn);
-		begin=GeneralUtils.getValidCalendar();
+		begin=TimeUtils.getValidCalendar();
 		begin.setFirstDayOfWeek(Calendar.MONDAY);				//周一为每周第一天
 		for(int index=0;index<weeknum;index++)	{				//将年和周数写入列表头
 			demandMatrix.putColHeaderCell(index+1, String.format("%dwk%02d", begin.get(Calendar.YEAR) ,begin.get(Calendar.WEEK_OF_YEAR)));

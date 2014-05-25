@@ -1,6 +1,7 @@
 package com.logsys.demand;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -180,7 +181,7 @@ public class DemandDataReaderDB {
 	 * @param end   需求结束时间，如果为null，则不限制结束时间
 	 * @return 备份需求列表/null空
 	 */
-	public static List<DemandBackupContent> getBackupDemandDataFromDB(Set<String> pnset, Date begin, Date end) {
+	public static List<DemandBackupContent> getBackupDemandDataFromDB(Set<String> pnset, Calendar begin, Calendar end) {
 		if(pnset!=null)
 			if(pnset.size()==0) return new ArrayList<DemandBackupContent>();
 		Session session;
@@ -203,8 +204,8 @@ public class DemandDataReaderDB {
 		Query query;
 		try {
 			query=session.createQuery(hql);
-			if(begin!=null) query.setDate("begindate", begin);
-			if(end!=null) query.setDate("enddate", end);
+			if(begin!=null) query.setCalendar("begindate", begin);
+			if(end!=null) query.setCalendar("enddate", end);
 			List<DemandBackupContent> dembkuplist=query.list();
 			session.close();
 			return dembkuplist;

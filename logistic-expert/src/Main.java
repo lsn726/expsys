@@ -1,8 +1,4 @@
-import java.util.Date;
-import java.util.List;
-
-import com.logsys.demand.DemandBackupContent;
-import com.logsys.demand.DemandDataReaderDB;
+import com.logsys.report.DemandReportForExcel;
 
 
 
@@ -18,9 +14,14 @@ public class Main {
 		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\201404.xlsx");	//将SAP的mb51命令倒出的物料操作数据写入数据库	
 		
 		//ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 32);	//生成MRP矩阵报表，矩阵长度(周数)为第二参数
-		//ReportProcess.genDemandMatrixToExcel("e:\\Demand.xlsx");		//生成需求矩阵报表
-		
-		List<DemandBackupContent> dembkuplist=DemandDataReaderDB.getBackupDemandDataFromDB(null,new Date("2014/5/25"),null);
+		//ReportProcess.genDemandMatrixToExcel("D:\\Demand.xlsx");		//生成需求矩阵报表
+
+		try {
+			new DemandReportForExcel();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//TODO:StockDataReaderExcel继续完善
 	}
 

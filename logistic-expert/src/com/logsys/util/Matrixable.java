@@ -82,6 +82,16 @@ public class Matrixable {
 		return true;
 	}
 	
+	/**获取行表头数量*/
+	public int getRowHeaderSize() {
+		return rowHeader.size();
+	}
+	
+	/**获取列表头数量*/
+	public int getColHeaderSize() {
+		return colHeader.size();
+	}
+	
 	/**
 	 * 由行表头内容获取这个内容在行向量中的位置
 	 * @param rowcont 行内容

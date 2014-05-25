@@ -31,9 +31,9 @@ import com.logsys.model.ModelContent;
 import com.logsys.model.ModelDataReaderDB;
 import com.logsys.model.ModelUtil;
 import com.logsys.util.DateInterval;
-import com.logsys.util.GeneralUtils;
 import com.logsys.util.Location;
 import com.logsys.util.Matrixable;
+import com.logsys.util.TimeUtils;
 
 /**
  * 需求报表，包含:
@@ -98,20 +98,18 @@ public class DemandReportForExcel {
 		if(matorder_fin==null) return false;
 		matmap_fin=ModelUtil.convModelListToModelMap(matlist_fin);
 		if(matmap_fin==null) return false;
-		Calendar begindate=GeneralUtils.getValidCalendar();
-		Calendar now=GeneralUtils.getValidCalendar();
-		begindate.clear();
-		begindate.set(Calendar.YEAR,now.get(Calendar.YEAR));
-		begindate.set(Calendar.WEEK_OF_YEAR, now.get(Calendar.WEEK_OF_YEAR));
-		begindate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);				//按天计划和安周计划起始日期为本周周一
-		dematrix_onday=genDemandMatrix_OnDay(begindate.getTime(),null);		//获取按天计划
+		Calendar begindate;
+		begindate=TimeUtils.getFirstDayOfWeek(null);				//按天需求和安周需求起始日期为本周第一天
+		dematrix_onday=genDemandMatrix_OnDay(begindate.getTime(),null);		//获取按天需求
 		if(dematrix_onday==null) return false;
-		dematrix_onweek=genDemandMatrix_OnWeek(begindate.getTime(),null);	//获取按周计划
+		dematrix_onweek=genDemandMatrix_OnWeek(begindate.getTime(),null);	//获取按周需求
 		if(dematrix_onweek==null) return false;
-		begindate.clear();
-		begindate.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), 1);	//按月计划起始日期
-		dematrix_onmonth=genDemandMatrix_OnMonth(begindate.getTime(),null);	//获取按月计划
+		begindate=TimeUtils.getFirstDayOfMonth(null);				//按月需求起始日期为本月1日
+		dematrix_onmonth=genDemandMatrix_OnMonth(begindate.getTime(),null);	//获取按月需求
 		if(dematrix_onmonth==null) return false;
+		begindate=TimeUtils.getFirstDayOfWeek(null);				//需求回溯列表的需求起始日期为本周第一天
+		dematrixmap_backtrace=genDemandMatrix_Backtrace(begindate,null);
+		if(dematrixmap_backtrace==null) return false;
 		return true;
 	}
 	
@@ -131,8 +129,8 @@ public class DemandReportForExcel {
 			demmat_onday.putRowHeaderCell(matorder_fin.get(pn)+2, pn);
 		DateFormat dateconv=new SimpleDateFormat("yyyy/MM/dd");	//日期格式
 		DateInterval interval=DemandUtil.getMinMaxDateInDemandList(demlist_onday);	//获取时间最小值和最大值
-		Calendar begin=GeneralUtils.getValidCalendar();
-		Calendar end=GeneralUtils.getValidCalendar();
+		Calendar begin=TimeUtils.getValidCalendar();
+		Calendar end=TimeUtils.getValidCalendar();
 		if(begindate==null)							//设置起始时间
 			begin.setTime(interval.begindate);
 		else
@@ -209,22 +207,36 @@ public class DemandReportForExcel {
 	}
 	
 	/**
-	 * 产生回溯需求矩阵图
+	 * 产生回溯需求矩阵图，列表头为需求周，行表头为版本周，采用该周第一次需求数值 
 	 * @param begindate 开始日期
 	 * @param enddate 结束日期
 	 * @return 回溯需求矩阵对象图<成品号->回溯需求矩阵图>
 	 */
-	private Map<String,Matrixable> genDemandMatrix_Backtrace(Date begindate, Date enddate) {
+	private Map<String,Matrixable> genDemandMatrix_Backtrace(Calendar begindate, Calendar enddate) {
 		List<DemandBackupContent> bkupdemlist=DemandDataReaderDB.getBackupDemandDataFromDB(null, begindate, enddate);	//获取备份需求列表
 		if(bkupdemlist==null) {
-			logger.error("不能产生回溯需求矩阵列表，备份需求读取错误。");
+			logger.error("不能产生回溯需求矩阵，备份需求读取错误。");
 			return null;
 		}
 		Map<String,Matrixable> btracedemmap=new HashMap<String,Matrixable>();
 		if(bkupdemlist.size()==0)
 			return btracedemmap;
-		for(String fertpn:matset_fin)			//遍历成品号，初始化矩阵图
+		Map<String,Date> verIntervalMap=DemandUtil.getMinMaxVersionDateInBackupDemandList(bkupdemlist);	//获取按照型号区分的区间最大和最小值
+		if(verIntervalMap==null) {
+			logger.error("不能产生回溯需求矩阵列表，不能获得按照型号区分的最大最小值。");
+			return null;
+		}
+		for(String fertpn:matset_fin)					//遍历成品号，初始化矩阵图
 			btracedemmap.put(fertpn, new Matrixable());
+		Calendar begincal;		//开始时间
+		Calendar endcal;		//结束时间
+		//写入列表头，即需求周
+		begincal=TimeUtils.getFirstDayOfWeek(begindate);	//确认周需求起始日期
+		endcal=TimeUtils.getFirstDayOfWeek(enddate);		//确认周需求结束日期
+		for(int counter=1;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)		//遍历日期写入周需求
+			for(String pn:btracedemmap.keySet())			//遍历对每个Matrixable写入列表头
+				btracedemmap.get(pn).putColHeaderCell(counter, TimeUtils.getFormattedTimeStr_YearWeek(begincal));
+		//TODO:写入行表头，即版本周
 		for(DemandBackupContent bkupcont:bkupdemlist) {	//遍历备份需求内容列表，写入回溯矩阵图
 			
 		}
@@ -307,7 +319,7 @@ public class DemandReportForExcel {
 		Cell weekdaycell;		//weekday单元格
 		Cell datecell;			//日期单元格
 		Cell weekcell;			//周数单元格
-		Calendar itcal=GeneralUtils.getValidCalendar();		//正在遍历的日期
+		Calendar itcal=TimeUtils.getValidCalendar();		//正在遍历的日期
 		for(int counter=startcol+1;daterow.getCell(counter)!=null;counter++) {	//遍历日期行,写入星期几和周数据
 			datecell=daterow.getCell(counter);
 			itcal.setTime(new Date(datecell.getStringCellValue()));

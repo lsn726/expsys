@@ -193,4 +193,41 @@ public class DemandUtil {
 		return new DateInterval(mindate,maxdate);
 	}
 	
+	/**
+	 * 在BackupDemandList中获取需求最大最小的版本日期Map，格式为："Min-型号"->该型号最小日期 、"Max-型号"->该型号最大日期、"Min-TotalRecord"->整体最小日期、"Max-TotalRecord"->整体最大日期
+	 * @param bkupdemlist 备份需求列表对象 
+	 * @return 代表版本的最大最小值的区间映射对象/null
+	 */
+	public static Map<String,Date> getMinMaxVersionDateInBackupDemandList(List<DemandBackupContent> bkupdemlist) {
+		if(bkupdemlist==null) {
+			logger.error("不能提取数据备份需求列表的最大最小版本数据，备份列表参数值为null.");
+			return null;
+		}
+		Map<String,Date> verMap=new HashMap<String,Date>();
+		final String prefix_min="Min-";				//最小值前缀
+		final String prefix_max="Max-";				//最大值前缀
+		final String total_str="TotalRecord";		//总值字符串
+		Date tempdate;		//临时日期变量
+		Date contdate;		//内容日期时间
+		String pn;			//物料号
+		for(DemandBackupContent bkdemcont:bkupdemlist) {			//遍历循环获得最小值
+			pn=bkdemcont.getPn();
+			contdate=bkdemcont.getDate();
+			tempdate=verMap.get(prefix_min+pn);				//先筛选最小值
+			if(tempdate==null||tempdate.after(contdate))	//最小值为空，或者最小值在新值之后，则写入新的最小值
+				verMap.put(prefix_min+pn, contdate);
+			tempdate=verMap.get(prefix_max+pn);				//再筛选最大值
+			if(tempdate==null||tempdate.before(contdate))	//最大值为空，或者最大值在新职之前，则写入新的最大值
+				verMap.put(prefix_max+pn, contdate);
+			tempdate=verMap.get(prefix_min+total_str);		//再筛选总值最小值
+			if(tempdate==null||tempdate.after(contdate))
+				verMap.put(prefix_min+total_str, contdate);
+			tempdate=verMap.get(prefix_max+total_str);				//再筛总值选最大值
+			if(tempdate==null||tempdate.before(contdate))
+				verMap.put(prefix_max+total_str, contdate);
+		}
+		return verMap;
+	}
+	
+	
 }
