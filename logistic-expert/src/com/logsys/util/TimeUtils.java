@@ -1,8 +1,7 @@
 package com.logsys.util;
 
 import java.util.Calendar;
-
-import org.apache.log4j.Logger;
+import java.util.Date;
 
 /**
  * 时间日期工具类
@@ -10,7 +9,7 @@ import org.apache.log4j.Logger;
  */
 public class TimeUtils {
 
-	private static Logger logger=Logger.getLogger(TimeUtils.class);
+	//private static Logger logger=Logger.getLogger(TimeUtils.class);
 	
 	/**每周第一天变量*/
 	public static final int FIRST_DAY_OF_WEEK=Calendar.MONDAY;
@@ -55,6 +54,18 @@ public class TimeUtils {
 	}
 	
 	/**
+	 * getFirstDayOfWeek(Calendar)的Date参数版本
+	 */
+	public static Calendar getFirstDayOfWeek(Date date) {
+		Calendar cal=getValidCalendar();
+		if(date==null)
+			cal=null;
+		else
+			cal.setTime(date);
+		return getFirstDayOfWeek(cal);
+	}
+	
+	/**
 	 * 获取参数中日期对象的所在月份的第一天,小时分钟秒皆为0,参数为null则默认判断日期为当前日期
 	 * @param calendar 确定所在所在月的Calendar参数
 	 * @return 所在月第一天的Calendar对象
@@ -74,6 +85,18 @@ public class TimeUtils {
 	}
 	
 	/**
+	 * getFirstDayOfMonth(Calendar)的Date参数版本
+	 */
+	public static Calendar getFirstDayOfMonth(Date date) {
+		Calendar cal=getValidCalendar();
+		if(date==null)
+			cal=null;
+		else
+			cal.setTime(date);
+		return getFirstDayOfMonth(cal);
+	}
+	
+	/**
 	 * 获取格式化的时间字符串--年周字符串
 	 * @param calendar 要格式化的日期对象，如果为null则当前日期为判断日期
 	 * @return 格式化的年周字符串
@@ -84,7 +107,17 @@ public class TimeUtils {
 			cal=getValidCalendar();
 		else
 			cal=calendar;
-		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+calendar.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK;
+		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK;
+	}
+	
+	/**
+	 * getFormattedTimeStr_YearWeek(Calendar)的Date参数版本
+	 */
+	public static String getFormattedTimeStr_YearWeek(Date date) {
+		Calendar cal=getValidCalendar();
+		if(date!=null)
+			cal.setTime(date);
+		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK;
 	}
 	
 	/**
@@ -98,7 +131,7 @@ public class TimeUtils {
 			cal=getValidCalendar();
 		else
 			cal=calendar;
-		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+calendar.get(Calendar.MONTH)+FORMATTED_TIMESTR_MONTH;
+		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.MONTH)+FORMATTED_TIMESTR_MONTH;
 	}
 
 }

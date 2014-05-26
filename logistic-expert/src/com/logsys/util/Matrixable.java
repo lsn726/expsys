@@ -135,7 +135,7 @@ public class Matrixable {
 	public boolean setData(String rowheader,String colheader, Object data) {
 		Integer rowindex=getRowPosByRowHeader(rowheader);
 		if(rowindex==null) {
-			logger.error("无法设置矩阵数据["+data+"],因为行表头+["+rowheader+"]无法在行表头图中定位.");
+			logger.error("无法设置矩阵数据["+data+"],因为行表头["+rowheader+"]无法在行表头图中定位.");
 			return false;
 		}
 		Integer colindex=getColPosByColHeader(colheader);

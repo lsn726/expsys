@@ -17,7 +17,7 @@ public class Main {
 		//ReportProcess.genDemandMatrixToExcel("D:\\Demand.xlsx");		//生成需求矩阵报表
 
 		try {
-			new DemandReportForExcel();
+			new DemandReportForExcel().writeReportToFile("d:\\123.xlsx");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
