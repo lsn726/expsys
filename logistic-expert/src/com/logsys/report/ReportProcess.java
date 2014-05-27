@@ -59,12 +59,13 @@ public class ReportProcess {
 	/**
 	 * 产生需求矩阵(按天/周/月)并写入Excel文件filepath
 	 * @param filepath 文件路径
+	 * @param genBackTraceSheet 是否写入回溯需求矩阵
 	 * @return 成功true/失败false;
 	 */
-	public static boolean genDemandMatrixToExcel(String filepath) {
+	public static boolean genDemandMatrixToExcel(String filepath, boolean genBackTraceSheet) {
 		boolean result;
 		try {
-			result=new DemandReportForExcel().writeReportToFile(filepath);
+			result=new DemandReportForExcel().writeReportToFile(filepath, genBackTraceSheet);
 			if(result)
 				logger.info("成功产生需求矩阵并写入文件["+filepath+"]");
 			else

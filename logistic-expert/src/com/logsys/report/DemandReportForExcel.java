@@ -21,7 +21,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.logsys.demand.DemandBackupContent;
+import com.logsys.demand.DemandBackupContent_Week;
 import com.logsys.demand.DemandContent;
 import com.logsys.demand.DemandContent_Month;
 import com.logsys.demand.DemandContent_Week;
@@ -214,16 +217,16 @@ public class DemandReportForExcel {
 	 * @return 回溯需求矩阵对象图<成品号->回溯需求矩阵图>
 	 */
 	private Map<String,Matrixable> genDemandMatrix_Backtrace(Calendar begindate, Calendar enddate) {
-		List<DemandBackupContent> bkupdemlist=DemandDataReaderDB.getBackupDemandDataFromDB(null, begindate, enddate);	//获取备份需求列表
-		if(bkupdemlist==null) {
+		List<DemandBackupContent_Week> bkupdemwklist=DemandDataReaderDB.getBackupDemandDataFromDB_OnWeek(null, begindate, enddate);	//获取备份需求列表
+		if(bkupdemwklist==null) {
 			logger.error("不能产生回溯需求矩阵，备份需求读取错误。");
 			return null;
 		}
 		Map<String,Matrixable> btracedemmap=new HashMap<String,Matrixable>();
-		if(bkupdemlist.size()==0)
+		if(bkupdemwklist.size()==0)
 			return btracedemmap;
-		Map<String,Date> verIntervalMap=DemandUtil.getMinMaxVersionDateInBackupDemandList(bkupdemlist);	//获取按照型号区分的版本区间最大和最小值.
-		Map<String,Date> demIntervalMap=DemandUtil.getMinMaxDemandDateInBackupDemandList(bkupdemlist);	//获取按照型号区分的需求区间最大和最小值.
+		Map<String,Date> verIntervalMap=DemandUtil.getMinMaxVersionDateInBackupDemandList(bkupdemwklist);	//获取按照型号区分的版本区间最大和最小值.
+		Map<String,Date> demIntervalMap=DemandUtil.getMinMaxDemandDateInBackupDemandList(bkupdemwklist);	//获取按照型号区分的需求区间最大和最小值.
 		if(verIntervalMap==null) {
 			logger.error("不能产生回溯需求矩阵列表，不能获得按照型号区分的最大最小值。");
 			return null;
@@ -257,10 +260,10 @@ public class DemandReportForExcel {
 		}
 		//遍历备份需求列表，确认回溯需求数据，每个数据以当周的最早需求为基准
 		//Map<"FERTPN#DemandWeek#VersionWeek"->DemandBackupContent>对象定位，通过唯一定位实现确认当周最早需求  Request Demand Map--所需要的最终需求数据图
-		Map<String,DemandBackupContent> reqdemmap=new HashMap<String,DemandBackupContent>();
+		Map<String,DemandBackupContent_Week> reqdemmap=new HashMap<String,DemandBackupContent_Week>();
 		String locator;
-		DemandBackupContent tempcont;
-		for(DemandBackupContent bkupcont:bkupdemlist) {	//遍历备份需求内容列表，写入回溯矩阵图
+		DemandBackupContent_Week tempcont;
+		for(DemandBackupContent_Week bkupcont:bkupdemwklist) {	//遍历备份需求内容列表，写入回溯矩阵图
 			locator=bkupcont.getPn()+"#"				//生成定位字符串，需要全部以周的第一天做定论
 					+TimeUtils.getFormattedTimeStr_YearWeek(TimeUtils.getFirstDayOfWeek(bkupcont.getDate()))+"#"
 					+TimeUtils.getFormattedTimeStr_YearWeek(TimeUtils.getFirstDayOfWeek(bkupcont.getVersion()));
@@ -285,9 +288,10 @@ public class DemandReportForExcel {
 	/**
 	 * 将报告写入Excel文件
 	 * @param filepath 要写入的文件路径
+	 * @param genBackTraceSheet 是否写入回溯需求矩阵
 	 * @return 成功true/失败false
 	 */
-	public boolean writeReportToFile(String filepath) {
+	public boolean writeReportToFile(String filepath, boolean genBackTraceSheet) {
 		if(filepath==null) {
 			logger.error("不能产生需求矩阵并写入Excel，文件路径为空。");
 			return false;
@@ -300,8 +304,9 @@ public class DemandReportForExcel {
 		Workbook wb=new XSSFWorkbook();			//创建工作簿
 		writeOnDayDemandToWorkbook(wb);			//写入按天需求数据
 		writeOnWeekDemandToWorkbook(wb);		//写入按周需求数据
-		writeOnMonthDemandToWorkbook(wb);		//写入按月需求数据		
-		writeBacktraceDemandToWorkbook(wb);		//写入回溯需求数据
+		writeOnMonthDemandToWorkbook(wb);		//写入按月需求数据
+		if(genBackTraceSheet)
+			writeBacktraceDemandToWorkbook(wb);	//写入回溯需求数据
 		try {
 			FileOutputStream fileOut=new FileOutputStream(filepath);
 			wb.write(fileOut);
@@ -423,8 +428,8 @@ public class DemandReportForExcel {
 		double demqty;		//需求数量
 		boolean hasdemand=false;	//是否有需求
 		//没有需求记录的行自动隐藏
-		for(int pncounter=startrow+2;;pncounter++) {			//外循环遍历行
-			itrow=ondaysheet.getRow(pncounter);		//提取遍历行
+		for(int pncounter=startrow+2;;pncounter++) {	//外循环遍历行
+			itrow=ondaysheet.getRow(pncounter);			//提取遍历行
 			if(itrow==null) break;
 			hasdemand=false;
 			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
@@ -568,7 +573,7 @@ public class DemandReportForExcel {
 		monthstyle.setBorderRight(CellStyle.BORDER_THIN);
 		clientstyle.setAlignment(CellStyle.ALIGN_CENTER);	//配置客户单元格格式
 		clientstyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-		clientstyle.setWrapText(true);		//允许换行
+		clientstyle.setWrapText(true);	//允许换行
 		//开始将周数信息写入格式
 		dematrix_onmonth.writeToExcelSheet(onmonthsheet, new Location(startrow,startcol));	//写入月列表
 		Row monthrow=onmonthsheet.getRow(startrow);			//创建月数列所在行
@@ -658,11 +663,23 @@ public class DemandReportForExcel {
 			return;
 		}
 		int startrow=1;		//起始行
-		int startcol=1;		//起始列
+		int startcol=0;		//起始列
 		Sheet btracesheet=wb.createSheet(SHEETNAME_DEM_BACKTRACE);
-		Matrixable pnMatrix;		//成品Matrix对象
+		Matrixable fertMatrix;		//成品Matrix对象
 		String fertpn;
-		dematrixmap_backtrace.get("22271789").writeToExcelSheet(btracesheet, new Location(1,1));
+		BiMap<Integer,String> fertorderbimap=HashBiMap.create(this.matorder_fin).inverse();	//将顺序图转换为双向图
+		for(int counter=1;fertorderbimap.containsKey(counter);counter++) {	//遍历顺序
+			fertpn=fertorderbimap.get(counter);				//获取pn
+			fertMatrix=dematrixmap_backtrace.get(fertpn);	//获取矩阵
+			if(fertMatrix==null) {
+				logger.info("没有找到成品号["+fertpn+"]所对应的矩阵对象,应该是该成品无需求。");
+				continue;
+			}
+			fertMatrix.writeToExcelSheet(btracesheet, new Location(startrow,startcol));	//写入Sheet
+			Cell fertpncell=btracesheet.getRow(startrow).createCell(startcol);
+			fertpncell.setCellValue(fertpn);
+			startrow+=(fertMatrix.getRowHeaderSize()+2);	//将startrow向后滚动写入矩阵的行数
+		}
 	}
 	
 }

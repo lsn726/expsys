@@ -204,11 +204,11 @@ public class DemandUtil {
 	
 	/**
 	 * 在BackupDemandList中获取最大最小的版本日期Map，格式为：PREFIX_MINDATE+"型号"->该型号最小日期 、PREFIX_MAXDATE+"型号"->该型号最大日期、PREFIX_MINDATE+TOTAL_STR->整体最小日期、PREFIX_MAXDATE+TOTAL_STR->整体最大日期
-	 * @param bkupdemlist 备份需求列表对象 
+	 * @param bkupdemlist 备份需求列表按周对象 
 	 * @return 代表版本日期的最大最小值的区间映射对象/null
 	 */
-	public static Map<String,Date> getMinMaxVersionDateInBackupDemandList(List<DemandBackupContent> bkupdemlist) {
-		if(bkupdemlist==null) {
+	public static Map<String,Date> getMinMaxVersionDateInBackupDemandList(List<DemandBackupContent_Week> bkupdemwklist) {
+		if(bkupdemwklist==null) {
 			logger.error("不能提取数据备份需求列表的最大最小版本数据，备份列表参数值为null.");
 			return null;
 		}
@@ -216,7 +216,7 @@ public class DemandUtil {
 		Date tempdate;		//临时日期变量
 		Date contdate;		//内容日期时间
 		String pn;			//物料号
-		for(DemandBackupContent bkdemcont:bkupdemlist) {	//遍历循环获得最小值
+		for(DemandBackupContent_Week bkdemcont:bkupdemwklist) {	//遍历循环获得最小值
 			pn=bkdemcont.getPn();
 			contdate=bkdemcont.getVersion();				//以版本为判别依据
 			tempdate=verMap.get(PREFIX_MINDATE+pn);			//先筛选最小值
@@ -237,11 +237,11 @@ public class DemandUtil {
 	
 	/**
 	 * 在BackupDemandList中获取最大最小的需求日期Map，格式为："Min-型号"->该型号最小日期 、"Max-型号"->该型号最大日期、"Min-TotalRecord"->整体最小日期、"Max-TotalRecord"->整体最大日期
-	 * @param bkupdemlist 备份需求列表对象 
+	 * @param bkupdemlist 备份需求列表按周对象 
 	 * @return 代表需求日期的最大最小值的区间映射对象/null
 	 */
-	public static Map<String,Date> getMinMaxDemandDateInBackupDemandList(List<DemandBackupContent> bkupdemlist) {
-		if(bkupdemlist==null) {
+	public static Map<String,Date> getMinMaxDemandDateInBackupDemandList(List<DemandBackupContent_Week> bkupdemwklist) {
+		if(bkupdemwklist==null) {
 			logger.error("不能提取数据备份需求列表的最大最小需求数据，备份列表参数值为null.");
 			return null;
 		}
@@ -249,7 +249,7 @@ public class DemandUtil {
 		Date tempdate;		//临时日期变量
 		Date contdate;		//内容日期时间
 		String pn;			//物料号
-		for(DemandBackupContent bkdemcont:bkupdemlist) {	//遍历循环获得最小值
+		for(DemandBackupContent_Week bkdemcont:bkupdemwklist) {	//遍历循环获得最小值
 			pn=bkdemcont.getPn();
 			contdate=bkdemcont.getDate();					//以需求为判别依据
 			tempdate=verMap.get(PREFIX_MINDATE+pn);			//先筛选最小值
