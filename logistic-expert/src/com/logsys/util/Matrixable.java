@@ -171,7 +171,7 @@ public class Matrixable {
 			return;
 		}
 		for(Integer rowdiff:rowHeader.keySet())	{				//写入行表头
-			Row row=sheet.createRow(beginloc.row+rowdiff);		//先创建列
+			Row row=sheet.createRow(beginloc.row+rowdiff+1);	//先创建列
 			Cell cell=row.createCell(beginloc.column);			//创建单元格
 			cell.setCellValue(rowHeader.get(rowdiff));			//写入行表头
 		}
@@ -181,7 +181,7 @@ public class Matrixable {
 		}
 		Cell cell;
 		for(Location locdiff:datamap.keySet())	{				//写入数据内容
-			cell=sheet.getRow(beginloc.row+locdiff.row).createCell(beginloc.column+locdiff.column);
+			cell=sheet.getRow(beginloc.row+locdiff.row+1).createCell(beginloc.column+locdiff.column);
 			if(datamap.get(locdiff) instanceof Integer)	{		//如果是整数，将单元格格式设置为整数
 				cell.setCellValue((Integer)datamap.get(locdiff));
 			} else if(datamap.get(locdiff) instanceof Double) {

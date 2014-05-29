@@ -48,6 +48,7 @@ public class BWIMRPSettings implements MRPSettings {
 		scarpMap.put("22283595", 0.15f);
 		scarpMap.put("22283596", 0.15f);
 		scarpMap.put("22284696", 0.03f);
+		scarpMap.put("22284434", 0.03f);
 		//向上取整图
 		ceilMap.put("22271370", 50);
 		ceilMap.put("22271371", 50);
@@ -80,6 +81,7 @@ public class BWIMRPSettings implements MRPSettings {
 		ceilMap.put("22283595", 20);
 		ceilMap.put("22283596", 20);
 		ceilMap.put("22284696", 20);
+		ceilMap.put("22284434", 20);
 	}
 
 	@Override

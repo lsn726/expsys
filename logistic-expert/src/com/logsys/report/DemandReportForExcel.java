@@ -130,7 +130,7 @@ public class DemandReportForExcel {
 		Matrixable demmat_onday=new Matrixable();		//声明按天需求矩阵
 		if(demlist_onday.size()==0) return demmat_onday;
 		for(String pn:matorder_fin.keySet())			//将成品号写入行表头
-			demmat_onday.putRowHeaderCell(matorder_fin.get(pn)+2, pn);
+			demmat_onday.putRowHeaderCell(matorder_fin.get(pn)+1, pn);
 		DateFormat dateconv=new SimpleDateFormat("yyyy/MM/dd");	//日期格式
 		DateInterval interval=DemandUtil.getMinMaxDateInDemandList(demlist_onday);	//获取时间最小值和最大值
 		Calendar begin=TimeUtils.getValidCalendar();
@@ -428,7 +428,7 @@ public class DemandReportForExcel {
 		double demqty;		//需求数量
 		boolean hasdemand=false;	//是否有需求
 		//没有需求记录的行自动隐藏
-		for(int pncounter=startrow+2;;pncounter++) {	//外循环遍历行
+		for(int pncounter=startrow+1;;pncounter++) {	//外循环遍历行
 			itrow=ondaysheet.getRow(pncounter);			//提取遍历行
 			if(itrow==null) break;
 			hasdemand=false;

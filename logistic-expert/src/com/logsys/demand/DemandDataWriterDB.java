@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -78,11 +77,9 @@ public class DemandDataWriterDB {
 			session.beginTransaction();
 			int counter=0;
 			Map<Date,DemandContent> submap;
-			Criteria criteria;
 			Date mindate;
 			Date maxdate;
 			Query delquery;			//删除旧记录的Query
-			Query insertquery;		//写入新纪录的Query
 			for(Object pn:demandmap.keySet()) {
 				//首先删除区间内指定型号的记录
 				submap=demandmap.get(pn);

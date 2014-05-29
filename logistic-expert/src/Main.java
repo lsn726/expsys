@@ -1,11 +1,10 @@
 
 
 
-
 public class Main {
 
 	public static void main(String[] args) {
-		//DemandProcess.importDemandFromExcel("e:\\Audi.xlsx",null);			//导入新需求
+		//DemandProcess.importDemandFromExcel("e:\\cqac.xlsx",null);	//导入新需求
 		//BOMProcess.uploadBOMFromExcel_SAPCS12("e:\\22283596.xlsx");		//上传BOM
 		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\PP.xlsx", new Date("2014/6/3"), new Date("2014/6/15"),true));	//上传从下周一开始的计划
 		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\组装线FA1生产线日报表2014.5.xls", -1);	//将生产日报导入数据库。《《将导入所有数据》》
@@ -15,6 +14,7 @@ public class Main {
 		//ReportProcess.genDemandMatrixToExcel("e:\\Demand.xlsx",false);	//生成需求矩阵报表,默认不生成回溯需求矩阵
 		
 		//TODO:StockDataReaderExcel继续完善
+		//TODO:继续完善DemandExcelContainer表格
 	}
 
 }
