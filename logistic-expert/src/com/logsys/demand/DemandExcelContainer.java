@@ -34,6 +34,9 @@ public class DemandExcelContainer {
 	/**需求Excel表格的对象*/
 	private Workbook demwb;
 	
+	/**从Excel中提取的需求数据*/
+	private List<DemandContent> extractlist;
+	
 	/**禁止从外部创建对象*/
 	private DemandExcelContainer() {}
 	
@@ -76,10 +79,15 @@ public class DemandExcelContainer {
 	 */
 	public boolean processWorkBook() {
 		Sheet datasheet=demwb.getSheet(DEMAND_SHEET_NAME);
-		if(!verifyDataSheet(datasheet)) {		//首先验证
-			logger.error("不能处理Workbook数据，验证表格未通过。");
+		if(!verifyDataSheet(datasheet)) {		//第一步：验证表格准确性
+			logger.error("不能处理Workbook，验证表格未通过。");
 			return false;
 		}
+		if(!extractData()) {					//第二步：提取表格数据
+			logger.error("不能处理Workbook，未能成功提取Excel数据。");
+			return false;
+		}
+		//TODO: 第三步:分析表格数据
 		return true;
 	}
 	
@@ -97,24 +105,14 @@ public class DemandExcelContainer {
 	}
 	
 	/**
-	 * 从文件获取需求
-	 * @return 包含需求数据的需求
+	 * 提取文件中的数据
+	 * @return true提取成功/false提取失败
 	 */
-	private List<DemandContent> getDataFromFile(String filepath) {
-		File file=new File(filepath);
-		List<DemandContent> demandlist;
-		Workbook datasrc;
-		Sheet sheet;
-		try {
-			datasrc=WorkbookFactory.create(file);
-			sheet=datasrc.getSheetAt(0);
-		} catch(Throwable e) {
-			logger.error("文件打开错误,或者文件格式错误。可能不是正确的Excel文件。");
-			return null;
-		}
-		demandlist=new ArrayList<DemandContent>();
+	public boolean extractData() {
+		Sheet datasheet=demwb.getSheet(DEMAND_SHEET_NAME);
+		List<DemandContent> demlist=new ArrayList<DemandContent>(); 
 		DemandContent node;
-		for(Row row:sheet) {
+		for(Row row:datasheet) {
 			node=new DemandContent();
 			try {
 				node.setDate(row.getCell(COL_DATE).getDateCellValue());
@@ -125,11 +123,20 @@ public class DemandExcelContainer {
 			} catch(Throwable ex) {
 				logger.error("Excel中数据格式错误。");
 				ex.printStackTrace();
-				return null;
+				return false;
 			}
-			demandlist.add(node);
+			demlist.add(node);
 		}
-		return demandlist;
+		extractlist=demlist;
+		return true;
+	}
+	
+	/**
+	 * 分析表格中的数据，包括：将每个型号的最大时间和最小时间确定
+	 * @return 分析成功true/分析失败false
+	 */
+	public boolean anaylzeData() {
+		return false;
 	}
 	
 }
