@@ -1,6 +1,7 @@
 
 
 
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -15,6 +16,8 @@ public class Main {
 		
 		//TODO:StockDataReaderExcel继续完善
 		//TODO:继续完善DemandExcelContainer表格
+		//TODO:重写DemandImport过程
+		//TODO:为所有Process加入SystemUtils.getUniqueMachineID()
 	}
 
 }

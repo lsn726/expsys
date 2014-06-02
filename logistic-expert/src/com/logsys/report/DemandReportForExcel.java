@@ -36,7 +36,7 @@ import com.logsys.model.ModelUtil;
 import com.logsys.util.DateInterval;
 import com.logsys.util.Location;
 import com.logsys.util.Matrixable;
-import com.logsys.util.TimeUtils;
+import com.logsys.util.DateTimeUtils;
 
 /**
  * 需求报表，包含:
@@ -103,15 +103,15 @@ public class DemandReportForExcel {
 		if(matmap_fin==null) return false;
 		Calendar begindate;
 		Calendar nullcal=null;
-		begindate=TimeUtils.getFirstDayOfWeek(nullcal);				//按天需求和安周需求起始日期为本周第一天
+		begindate=DateTimeUtils.getFirstDayOfWeek(nullcal);				//按天需求和安周需求起始日期为本周第一天
 		dematrix_onday=genDemandMatrix_OnDay(begindate.getTime(),null);		//获取按天需求
 		if(dematrix_onday==null) return false;
 		dematrix_onweek=genDemandMatrix_OnWeek(begindate.getTime(),null);	//获取按周需求
 		if(dematrix_onweek==null) return false;
-		begindate=TimeUtils.getFirstDayOfMonth(nullcal);				//按月需求起始日期为本月1日
+		begindate=DateTimeUtils.getFirstDayOfMonth(nullcal);				//按月需求起始日期为本月1日
 		dematrix_onmonth=genDemandMatrix_OnMonth(begindate.getTime(),null);	//获取按月需求
 		if(dematrix_onmonth==null) return false;
-		begindate=TimeUtils.getFirstDayOfWeek(nullcal);				//需求回溯列表的需求起始日期为本周第一天
+		begindate=DateTimeUtils.getFirstDayOfWeek(nullcal);				//需求回溯列表的需求起始日期为本周第一天
 		dematrixmap_backtrace=genDemandMatrix_Backtrace(begindate,null);
 		if(dematrixmap_backtrace==null) return false;
 		return true;
@@ -133,8 +133,8 @@ public class DemandReportForExcel {
 			demmat_onday.putRowHeaderCell(matorder_fin.get(pn)+1, pn);
 		DateFormat dateconv=new SimpleDateFormat("yyyy/MM/dd");	//日期格式
 		DateInterval interval=DemandUtil.getMinMaxDateInDemandList(demlist_onday);	//获取时间最小值和最大值
-		Calendar begin=TimeUtils.getValidCalendar();
-		Calendar end=TimeUtils.getValidCalendar();
+		Calendar begin=DateTimeUtils.getValidCalendar();
+		Calendar end=DateTimeUtils.getValidCalendar();
 		if(begindate==null)							//设置起始时间
 			begin.setTime(interval.begindate);
 		else
@@ -236,11 +236,11 @@ public class DemandReportForExcel {
 		Calendar begincal;		//开始时间
 		Calendar endcal;		//结束时间
 		//写入列表头，即需求周
-		begincal=TimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MINDATE+DemandUtil.TOTAL_STR));	//确认周需求起始日期
-		endcal=TimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MAXDATE+DemandUtil.TOTAL_STR));		//确认周需求结束日期
+		begincal=DateTimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MINDATE+DemandUtil.TOTAL_STR));	//确认周需求起始日期
+		endcal=DateTimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MAXDATE+DemandUtil.TOTAL_STR));		//确认周需求结束日期
 		for(int counter=1;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)		//遍历日期写入需求周，即列表头
 			for(String pn:btracedemmap.keySet())			//遍历对每个Matrixable写入列表头
-				btracedemmap.get(pn).putColHeaderCell(counter, TimeUtils.getFormattedTimeStr_YearWeek(begincal));
+				btracedemmap.get(pn).putColHeaderCell(counter, DateTimeUtils.getFormattedTimeStr_YearWeek(begincal));
 		//写入行表头，即版本周
 		Matrixable tempMatrix;
 		for(String fertpn:matset_fin) {						//遍历成品号，写入最大最小时间间隔
@@ -252,11 +252,11 @@ public class DemandReportForExcel {
 				continue;
 			}
 			endcal.setTime(verIntervalMap.get(DemandUtil.PREFIX_MAXDATE+fertpn));	//如果有最小日期，则必然存在最大日期
-			begincal=TimeUtils.getFirstDayOfWeek(begincal);	//起始版本日期变为日期所在周的周一
-			endcal=TimeUtils.getFirstDayOfWeek(endcal);		//结束版本日期变为日期所在周的周一
+			begincal=DateTimeUtils.getFirstDayOfWeek(begincal);	//起始版本日期变为日期所在周的周一
+			endcal=DateTimeUtils.getFirstDayOfWeek(endcal);		//结束版本日期变为日期所在周的周一
 			tempMatrix=btracedemmap.get(fertpn);			//获取正在遍历成品号的矩阵对象
 			for(int counter=1;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)	//遍历日期写入版本周，即行表头
-				tempMatrix.putRowHeaderCell(counter, TimeUtils.getFormattedTimeStr_YearWeek(begincal));
+				tempMatrix.putRowHeaderCell(counter, DateTimeUtils.getFormattedTimeStr_YearWeek(begincal));
 		}
 		//遍历备份需求列表，确认回溯需求数据，每个数据以当周的最早需求为基准
 		//Map<"FERTPN#DemandWeek#VersionWeek"->DemandBackupContent>对象定位，通过唯一定位实现确认当周最早需求  Request Demand Map--所需要的最终需求数据图
@@ -265,8 +265,8 @@ public class DemandReportForExcel {
 		DemandBackupContent_Week tempcont;
 		for(DemandBackupContent_Week bkupcont:bkupdemwklist) {	//遍历备份需求内容列表，写入回溯矩阵图
 			locator=bkupcont.getPn()+"#"				//生成定位字符串，需要全部以周的第一天做定论
-					+TimeUtils.getFormattedTimeStr_YearWeek(TimeUtils.getFirstDayOfWeek(bkupcont.getDate()))+"#"
-					+TimeUtils.getFormattedTimeStr_YearWeek(TimeUtils.getFirstDayOfWeek(bkupcont.getVersion()));
+					+DateTimeUtils.getFormattedTimeStr_YearWeek(DateTimeUtils.getFirstDayOfWeek(bkupcont.getDate()))+"#"
+					+DateTimeUtils.getFormattedTimeStr_YearWeek(DateTimeUtils.getFirstDayOfWeek(bkupcont.getVersion()));
 			if(!reqdemmap.containsKey(locator))			//如果没有，即写入
 				reqdemmap.put(locator, bkupcont);
 			else {
@@ -364,7 +364,7 @@ public class DemandReportForExcel {
 		Cell weekdaycell;		//weekday单元格
 		Cell datecell;			//日期单元格
 		Cell weekcell;			//周数单元格
-		Calendar itcal=TimeUtils.getValidCalendar();		//正在遍历的日期
+		Calendar itcal=DateTimeUtils.getValidCalendar();		//正在遍历的日期
 		for(int counter=startcol+1;daterow.getCell(counter)!=null;counter++) {	//遍历日期行,写入星期几和周数据
 			datecell=daterow.getCell(counter);
 			itcal.setTime(new Date(datecell.getStringCellValue()));

@@ -7,7 +7,7 @@ import java.util.Date;
  * 时间日期工具类
  * @author lx8sn6
  */
-public class TimeUtils {
+public class DateTimeUtils {
 
 	//private static Logger logger=Logger.getLogger(TimeUtils.class);
 	
