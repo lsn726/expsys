@@ -1,5 +1,6 @@
 package com.logsys.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,13 +40,32 @@ public class ModelUtil {
 	 */
 	public static Map<String,ModelContent> convModelListToModelMap(List<ModelContent> modellist) {
 		if(modellist==null) {
-			logger.error("不能模型列表转换为模型图。参数为空");
+			logger.error("不能将模型列表转换为模型图。参数为空");
 			return null;
 		}
 		HashMap<String,ModelContent> modelmap=new HashMap<String,ModelContent>();
 		for(ModelContent modelcont:modellist)
 			modelmap.put(modelcont.getModel(), modelcont);
 		return modelmap;
+	}
+	
+	/**
+	 * 将List<ModelContent>转化为按照Model的PrjCoded划分的图:Map<PrjCode->ModelContentList>
+	 * @param modellist 需要划分的modellist对象
+	 * @return 按照Model的PrjCoded划分的图对象
+	 */
+	public static Map<String, List<ModelContent>> convModelListToMap_ByPrjCode(List<ModelContent> modellist) {
+		if(modellist==null) {
+			logger.error("不能将模型列表转换为按prjcode划分的图，参数为空。");
+			return null;
+		}
+		HashMap<String,List<ModelContent>> prjmap=new HashMap<String,List<ModelContent>>();
+		for(ModelContent modcont:modellist) {
+			if(!prjmap.containsKey(modcont.getPrjcode()))		//如果还没有相应的list，则加入新的modellist
+				prjmap.put(modcont.getPrjcode(), new ArrayList<ModelContent>());
+			prjmap.get(modcont.getPrjcode()).add(modcont);		//将新节点写入对应列表中
+		}
+		return prjmap;
 	}
 	
 }

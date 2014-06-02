@@ -23,6 +23,12 @@ public class TimeUtils {
 	/**格式化日期字符--周*/
 	public static final String FORMATTED_TIMESTR_WEEK="周";
 	
+	/**最小日期字符串*/
+	public static final String FORMATTED_TIMESTR_MINDATE="MinimumDate-";
+	
+	/**最大日期字符串*/
+	public static final String FORMATTED_TIMESTR_MAXDATE="MaximumDate-";
+	
 	/**
 	 * 获取合理的时间变量:设置周一为每周第一天，并且设置最少有四天在当年时这个周才为本年第一周
 	 * @return 日历对象
@@ -133,5 +139,43 @@ public class TimeUtils {
 			cal=calendar;
 		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.MONTH)+FORMATTED_TIMESTR_MONTH;
 	}
+	
+	/**
+	 * 返回最小时间的Calendar对象
+	 * @return 最小时间的Calendar对象
+	 */
+	public static Calendar getMinCalendar() {
+		Calendar cal=getValidCalendar();
+		cal.clear();
+		cal.set(1900, 1, 1);
+		return cal;
+	}
+	
+	/**
+	 * 返回最小时间的Date对象
+	 * @return 最小时间的Date对象
+	 */
+	public static Date getMinDate() {
+		return getMinCalendar().getTime();
+	}
 
+	/**
+	 * 返回最大时间的Calendar对象
+	 * @return 最大时间的Calendar对象
+	 */
+	public static Calendar getMaxCalendar() {
+		Calendar cal=getValidCalendar();
+		cal.clear();
+		cal.set(2150, 12, 31);
+		return cal;
+	}
+	
+	/**
+	 * 返回最大时间的Date对象
+	 * @return 最大时间的Date对象
+	 */
+	public static Date getMaxDate() {
+		return getMaxCalendar().getTime();
+	}
+	
 }
