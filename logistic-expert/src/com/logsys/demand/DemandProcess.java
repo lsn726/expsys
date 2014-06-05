@@ -34,6 +34,19 @@ public class DemandProcess {
 		return insertqty;
 	}
 	
-	
+	/**
+	 * 将Excel文件中的需求数据提取，备份，删除原数据，并写入数据库。
+	 * @param filepath Excel文件路径
+	 * @param version 需求版本,null为当前时间
+	 * @return 成功true/失败false
+	 */
+	public static boolean importDemandFromExcel_v2(String filepath, Date version) {
+		DemandExcelService demExcelService=DemandExcelService.getDemandExcelService(filepath);
+		if(demExcelService==null) {
+			logger.error("不能从Excel中倒出需求数据，需求Excel服务创建失败。");
+			return false;
+		}
+		return true;
+	}
 
 }

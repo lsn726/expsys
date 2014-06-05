@@ -17,13 +17,13 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import com.logsys.util.DateInterval;
 
 /**
- * Demand导入时Excel表格的封装对象
+ * Demand导入时Excel表格的封装服务
  * 运行工厂函数getDemandExcelContainer()获取对象
  * @author lx8sn6
  */
-public class DemandExcelContainer {
+public class DemandExcelService {
 
-	private static final Logger logger=Logger.getLogger(DemandExcelContainer.class);
+	private static final Logger logger=Logger.getLogger(DemandExcelService.class);
 	
 	/**需求日期列*/
 	private static final int COL_DATE=0;
@@ -50,14 +50,14 @@ public class DemandExcelContainer {
 	private Map<String,DateInterval> demandInterval;
 	
 	/**禁止从外部创建对象*/
-	private DemandExcelContainer() {}
+	private DemandExcelService() {}
 	
 	/**
 	 * 需求Excel表格容器类的工厂函数
 	 * @param filepath 文件路径
 	 * @return 容器对象/null
 	 */
-	public static DemandExcelContainer getDemandExcelContainer(String filepath) {
+	public static DemandExcelService getDemandExcelService(String filepath) {
 		if(filepath==null) {
 			logger.error("不能由文件["+filepath+"]创建需求Excel表格对象:文件路径为空");
 			return null;
@@ -67,7 +67,7 @@ public class DemandExcelContainer {
 			logger.error("不能由文件["+filepath+"]创建需求Excel表格对象:文件不存在");
 			return null;
 		}
-		DemandExcelContainer container=new DemandExcelContainer();
+		DemandExcelService container=new DemandExcelService();
 		try {
 			container.demwb=WorkbookFactory.create(file);
 		} catch(Throwable ex) {
