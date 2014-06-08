@@ -13,7 +13,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
+import com.logsys.hibernate.HibernateSessionFactory;
 import com.logsys.util.DateInterval;
 
 /**
@@ -82,7 +85,38 @@ public class DemandExcelService {
 	}
 	
 	/**
+	 * 与数据库进行同步:
+	 * 第一步：备份提取的需求数据
+	 * 第二步：删除以前的需求数据
+	 * 第三步：写入新的需求数据
+	 * @return 成功true/失败false
+	 */
+	public boolean syncDatabase() {
+		int backupedRecordQty=backupDemandData();			//第一步：备份提取的需求数据
+		if(backupedRecordQty<0) {
+			logger.error("不能与数据库进行同步，数据库备份失败。");
+		}
+		int removedRecordQty=removeObsoleteDemandData();	//第二步：删除以前的需求数据
+		if(removedRecordQty<0) {
+			logger.error("不能与数据库进行同步，旧需求数据不能被删除。");
+			return false;
+		}
+		int writedRecordQty=writeDemandData();				//第三步：写入新的需求数据
+		if(writedRecordQty<0) {
+			logger.error("不能与数据库进行同步，新数据写入错误。");
+			logger.fatal("注意！旧需求数据已经删除，但新需求数据没有写入！");
+			return false;
+		}
+		logger.info("需求数据成功写入数据库：备份数据["+backupedRecordQty+"]条,删除旧需求数据["+removedRecordQty+"]条，新需求数据写入["+writedRecordQty+"]条.");
+		return true;
+	}
+	
+	/**
 	 * 处理工作簿函数
+	 * 第一步：验证表格准确性
+	 * 第二步：提取表格数据
+	 * 第三步：分析提取的数据
+	 * 第四步：后期数据加工
 	 * @return 处理成功/处理失败
 	 */
 	private boolean processWorkBook() {
@@ -179,10 +213,148 @@ public class DemandExcelService {
 	
 	/**
 	 * 对于数据的后期修订。本步骤会根据业务需要而更改原有数据或者其衍生数据。
+	 * 第一步：合并重复的需求节点
 	 * @return 成功true/失败false
 	 */
 	private boolean reviseData() {
+		if(demandlist==null) {
+			logger.error("不能修正需求列表，列表尚未被初始化。");
+			return false;
+		}
+		int recordMerged=mergeDuplicatedPnDateRecord();		//第一步：合并重复的需求节点
+		if(recordMerged<0) {
+			logger.error("不能修正需求列表，合并重复节点时出现错误。");
+			return false;
+		} else if(recordMerged>0)
+			logger.info("需求数据中的pn-date重复值已合并，条数["+recordMerged+"]条.");
 		return true;
+	}
+	
+	/**
+	 * 合并同一型号同一日期的多条记录
+	 * @return 合并的条目数量
+	 */
+	private int mergeDuplicatedPnDateRecord() {
+		if(demandlist==null) {
+			logger.error("不能合并重复日期/pn的项，列表尚未被初始化。");
+			return -1;
+		}
+		Map<String,Map<Date,DemandContent>> demandmap=new HashMap<String,Map<Date,DemandContent>>();	//用于辅助筛查重复的Map<pn-Map<date,content>>对象
+		List<DemandContent> removelist=new ArrayList<DemandContent>();		//需要删除的重复节点
+		Date demdate;
+		String pn;
+		int counter=0;
+		for(DemandContent demand:demandlist) {					//遍历查重
+			pn=demand.getPn();
+			if(!demandmap.containsKey(pn))						//如果型号不存在，则新建Map并写入
+				demandmap.put(pn, new HashMap<Date,DemandContent>());
+			demdate=demand.getDate();
+			if(demandmap.get(pn).containsKey(demdate)) {		//如果已经有该型号下该日期的dem，则合并需求
+				demandmap.get(pn).get(demdate).setQty(demandmap.get(pn).get(demdate).getQty()+demand.getQty());
+				removelist.add(demand);							//将不需要的节点加入删除列表
+				counter++;
+			} else
+				demandmap.get(pn).put((Date)demand.getDate().clone(), demand);	//写入需求数据
+		}
+		for(DemandContent demand:removelist)					//遍历删除需要删除的节点
+			demandlist.remove(demand);
+		return counter;
+	}
+	
+	/**
+	 * 移除以前的需求数据，依据的是demandInterval记录的每个型号新需求的日期区间
+	 * @return 移除需求数据的条数
+	 */
+	private int removeObsoleteDemandData() {
+		if(demandInterval==null) {
+			logger.error("不能移除过期需求数据，需求区间对象为空。");
+			return -1;
+		}
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.beginTransaction();
+		} catch(Throwable ex) {
+			logger.error("session创建出现错误:"+ex);
+			return -1;
+		}
+		String hql;
+		Query delquery;
+		int counter=0;
+		for(String pn:demandInterval.keySet()) {			//遍历需求区间对象，删除旧有数据
+			hql="delete from DemandContent where pn=:pn and date>=:mindate and date<=:maxdate";
+			delquery=session.createQuery(hql);
+			delquery.setString("pn", pn);
+			delquery.setDate("mindate", demandInterval.get(pn).begindate);
+			delquery.setDate("maxdate", demandInterval.get(pn).enddate);
+			counter+=delquery.executeUpdate();
+		}
+		session.getTransaction().commit();
+		session.close();
+		return counter;
+	}
+	
+	/**
+	 * 备份需求新提取的数据，版本为当前时间
+	 * @return 备份的需求数据条数
+	 */
+	private int backupDemandData() {
+		if(demandlist==null) {
+			logger.error("不能备份需求数据，因为需求列表对象为空。");
+			return -1;
+		}
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.beginTransaction();
+		} catch(Throwable ex) {
+			logger.error("session创建出现错误:"+ex);
+			return -1;
+		}
+		int counter=0;
+		Date version=new Date();		//取版本为当前日期
+		for(DemandContent demcont:demandlist) {
+			session.save(DemandBackupContent.createDemBkupContFromDemCont(demcont, version));
+			if(counter%50==0) {
+				session.flush();
+				session.clear();
+			}
+			counter++;
+		}
+		session.getTransaction().commit();
+		session.close();
+		return counter;
+	}
+	
+	/**
+	 * 写入需求数据到数据库
+	 * @return 写入的需求记录条数
+	 */
+	private int writeDemandData() {
+		if(demandlist==null) {
+			logger.error("不能写入需求数据，因为需求列表对象为空。");
+			return 0;
+		}
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.beginTransaction();
+		} catch(Throwable ex) {
+			logger.error("session创建出现错误:"+ex);
+			return -1;
+		}
+		int counter=0;
+		for(DemandContent dcont:demandlist) {
+			session.save(dcont);
+			if(counter%100==0) {
+				session.flush();
+				session.clear();
+			}
+			counter++;
+		}
+		session.getTransaction().commit();
+		session.close();
+		return counter;
 	}
 	
 }

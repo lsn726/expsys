@@ -17,10 +17,6 @@ public class DemandUtil {
 
 	private static Logger logger=Logger.getLogger(DemandUtil.class);
 	
-	private static final Date DATE_MAX=new Date("2199/12/31");
-	
-	private static final Date DATE_MIN=new Date("1910/12/31");
-	
 	/**字符串前缀：最小值*/
 	public static final String PREFIX_MINDATE="MinDate-";
 	
@@ -29,115 +25,6 @@ public class DemandUtil {
 	
 	/**总记录字符串*/
 	public static final String TOTAL_STR="TotalRecord";
-	
-	/**
-	 * 在经过 函数demListToMapByPn处理后的单个demandmap(型号)value中查找最小需求日期的函数.
-	 * @param demandlist 需求数据列表
-	 * @return 返回的找到的最小需求日期
-	 */
-	public static Date getMinDate(Map<Date,DemandContent> demandmap) {
-		if(demandmap==null) {
-			logger.error("需求数据列表为空。");
-			return null;
-		}
-		if(demandmap.size()==0) {
-			logger.warn("需求数据列表不包含任何数据。");
-			return null;
-		}
-		Date mindate=(Date)DATE_MAX.clone();//设置一个最大日期
-		for(Date date:demandmap.keySet())
-			if(mindate.after(date))			//如果最小日期在此最新日期之后
-				mindate=date;				//设置为最小日期
-		return (Date)mindate.clone();
-	}
-	
-	/**
-	 * 在经过 函数demListToMapByPn处理后的单个demandmap(型号)中查找最大日期的函数.
-	 * @param demandlist 需求数据列表
-	 * @return 返回的找到的最晚需求日期
-	 */
-	public static Date getMaxDate(Map<Date,DemandContent> demandmap) {
-		if(demandmap==null) {
-			logger.error("需求数据列表为空。");
-			return null;
-		}
-		if(demandmap.size()==0) {
-			logger.warn("需求数据列表不包含任何数据。");
-			return null;
-		}
-		Date maxdate=(Date)DATE_MIN.clone();//设置一个最小日期
-		for(Date date:demandmap.keySet())
-			if(maxdate.before(date))		//如果最小日期在此最新日期之后
-				maxdate=date;				//设置为最小日期
-		return (Date)maxdate.clone();
-	}
-	
-	/**
-	 * 检视DemandUtil.demListToMapByPn()函数处理的结果，计算多个型号的最小时间。
-	 * @param demmap
-	 * @return 返回的找到的最早需求日期
-	 */
-	public static Date getMinDateInMultiModel(Map<String,Map<Date,DemandContent>> demmap) {
-		if(demmap==null) {
-			logger.error("需求数据参数为空");
-			return null;
-		}
-		Date mindate=(Date)DATE_MAX.clone();
-		Date temp;
-		for(String model:demmap.keySet()) {
-			temp=getMinDate(demmap.get(model));
-			if(mindate.after(temp))
-				mindate=temp;
-		}
-		return mindate;
-	}
-	
-	/**
-	 * 检视DemandUtil.demListToMapByPn()函数处理的结果，计算多个型号的最小时间。
-	 * @param demmap
-	 * @return 返回的找到的最晚需求日期
-	 */
-	public static Date getMaxDateInMultiModel(Map<String,Map<Date,DemandContent>> demmap) {
-		if(demmap==null) {
-			logger.error("需求数据参数为空");
-			return null;
-		}
-		Date maxdate=(Date)DATE_MIN.clone();
-		Date temp;
-		for(String model:demmap.keySet()) {
-			temp=getMaxDate(demmap.get(model));
-			if(maxdate.before(temp))
-				maxdate=temp;
-		}
-		return maxdate;
-	}
-	
-	/**
-	 * 混合无顺序的List->Map<型号,Map<日期,DemandBean>>,相同型号相同日期的需求将被合并
-	 * @param demandlist 需求列表
-	 * @return 格式化后的Map对象
-	 */
-	public static Map<String,Map<Date,DemandContent>> demListToMapByPn(List<DemandContent> demandlist) {
-		if(demandlist==null) {
-			logger.error("需求数据参数为空。");
-			return null;
-		}
-		String pn;
-		Map<String,Map<Date,DemandContent>> demandmap=new HashMap<String,Map<Date,DemandContent>>();
-		Date demdate;
-		for(DemandContent demand:demandlist) {
-			if(demand==null) continue;
-			pn=demand.getPn();
-			if(!demandmap.containsKey(pn))						//如果型号不存在，则新建Map并写入
-				demandmap.put(pn, new HashMap<Date,DemandContent>());
-			demdate=demand.getDate();
-			if(demandmap.get(pn).containsKey(demdate))			//如果已经有该型号下该日期的dem，则合并需求
-				demandmap.get(pn).get(demdate).setQty(demandmap.get(pn).get(demdate).getQty()+demand.getQty());
-			else
-				demandmap.get(pn).put((Date)demand.getDate().clone(), demand);	//写入需求数据
-		}
-		return demandmap;
-	}
 	
 	/**
 	 * 获取List<DemandContent>中时间的最小值和最大值的区间对象

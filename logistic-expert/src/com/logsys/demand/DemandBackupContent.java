@@ -39,6 +39,17 @@ public class DemandBackupContent {
 		this.date = date;
 		this.dlvfix = dlvfix;
 	}
+	
+	/**
+	 * 从需求对象创建备份需求对象
+	 * @param demcont 包含所需数据的DemandContent对象
+	 * @param version 需求版本
+	 * @return DemandBackupContent对象
+	 */
+	public static DemandBackupContent createDemBkupContFromDemCont(DemandContent demcont, Date version) {
+		if(demcont==null||version==null) return null;
+		return new DemandBackupContent(-1,version,demcont.getPn(),demcont.getQty(),demcont.getDate(),demcont.getDlvfix());
+	}
 
 	public int getId() {
 		return id;
