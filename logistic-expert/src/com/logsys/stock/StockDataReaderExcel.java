@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
@@ -18,12 +17,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class StockDataReaderExcel {
 
 	private static final Logger logger=Logger.getLogger(StockDataReaderExcel.class);
-	
-	/**表头行*/
-	private static final int HEADER_ROW=1;
-	
-	/**开始行*/
-	private static final int BEGIN_ROW=3;
 	
 	/**
 	 * 从SAP的mb52命令倒出的Excel列表中提取数据
@@ -57,7 +50,6 @@ public class StockDataReaderExcel {
 			logger.error("文件打开错误，也许不是正确的Excel格式。");
 			return null;
 		}
-		Sheet sheet;
 		return null;
 	}
 	
