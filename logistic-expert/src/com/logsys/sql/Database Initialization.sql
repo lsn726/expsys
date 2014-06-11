@@ -26,9 +26,11 @@ CREATE TABLE `model` (
   `model` char(20) NOT NULL COMMENT '型号',
   `prjcode` char(10) NOT NULL COMMENT '项目代号',
   `info` char(30) NOT NULL COMMENT '型号信息',
-  `pq` int(6) DEFAULT NULL COMMENT '包装数量',
+  `pq` int(6) NOT NULL COMMENT '包装数量',
+  `mrpfactor` double(5,2) NOT NULL COMMENT 'MRP因数，为百分数，范围：0.0%-999.99%',
+  `mrpround` int(6) NOT NULL COMMENT 'mrp取整值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='型号表'
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='型号表'
 
 CREATE TABLE `material` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
