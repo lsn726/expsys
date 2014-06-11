@@ -23,16 +23,24 @@ public class ModelContent {
 	
 	/**包装数量*/
 	private int pq;
+	
+	/**MRP乘数*/
+	private double mrpfactor;
+	
+	/**MRP的Rounding Value*/
+	private int mrpround; 
 
 	public ModelContent() {}
 
-	public ModelContent(int id, String client, String model, String prjcode, String info) {
-		super();
+	public ModelContent(int id, String client, String model, String prjcode, String info, int pq, double mrpfactor, int mrpround) {
 		this.id = id;
 		this.client = client;
 		this.model = model;
 		this.prjcode = prjcode;
 		this.info = info;
+		this.pq = pq;
+		this.mrpfactor = mrpfactor;
+		this.mrpround = mrpround;
 	}
 
 	public int getId() {
@@ -81,6 +89,22 @@ public class ModelContent {
 
 	public void setPq(int pq) {
 		this.pq = pq;
+	}
+
+	public double getMrpfactor() {
+		return mrpfactor;
+	}
+
+	public void setMrpfactor(double mrpfactor) {
+		this.mrpfactor = mrpfactor;
+	}
+
+	public int getMrpround() {
+		return mrpround;
+	}
+
+	public void setMrpround(int mrpround) {
+		this.mrpround = mrpround;
 	}
 	
 }

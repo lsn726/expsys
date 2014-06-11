@@ -11,6 +11,9 @@ import com.logsys.setting.pp.bwi.BWIPPExcelInfo20140528;
  */
 public class Settings {
 
+	/**经过授权的机器码*/
+	public static final String AUT_MACHINE_STR="1463e3b8ee2aadf2fc87249edcfec32f74";
+	
 	/**
 	 * BWI设置类
 	 * @author ShaonanLi

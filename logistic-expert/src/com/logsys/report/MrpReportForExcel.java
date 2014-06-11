@@ -122,7 +122,7 @@ public class MrpReportForExcel {
 		Matrixable demandMatrix=new Matrixable();//需求矩阵对象
 		//初始化表头
 		for(String fertpn:matorder_fin.keySet())				//将成品的顺序写入行表头
-			demandMatrix.putRowHeaderCell(matorder_fin.get(fertpn)+1, fertpn);
+			demandMatrix.putRowHeaderCell(matorder_fin.get(fertpn), fertpn);
 		begin=DateTimeUtils.getValidCalendar();
 		begin.setFirstDayOfWeek(Calendar.MONDAY);				//周一为每周第一天
 		for(int index=0;index<weeknum;index++)	{				//将年和周数写入列表头

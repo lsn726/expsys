@@ -34,6 +34,7 @@ import com.logsys.model.ModelDataReaderDB;
 import com.logsys.model.ModelUtil;
 import com.logsys.util.DateInterval;
 import com.logsys.util.DateTimeUtils;
+import com.logsys.util.ExcelUtils;
 import com.logsys.util.Location;
 import com.logsys.util.Matrixable;
 
@@ -422,32 +423,10 @@ public class DemandReportForExcel {
 		ondaysheet.setColumnWidth(startcol-2, 12*256);			//设置客户行宽度
 		ondaysheet.setColumnWidth(startcol-1, 15*256);			//设置型号航宽度
 		ondaysheet.createFreezePane(startcol+1, startrow+2);	//冻结窗格
-		Row itrow;			//遍历行
-		Cell itcell;		//遍历单元格
-		double demqty;		//需求数量
-		boolean hasdemand=false;	//是否有需求
 		//没有需求记录的行自动隐藏
-		for(int pncounter=startrow+1;;pncounter++) {	//外循环遍历行
-			itrow=ondaysheet.getRow(pncounter);			//提取遍历行
-			if(itrow==null) break;
-			hasdemand=false;
-			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
-				itcell=itrow.getCell(colcounter);		//提取遍历单元格
-				datecell=daterow.getCell(colcounter);	//提取日期单元格
-				if(datecell==null) break;			//如果日期列为空，则跳出循环
-				if(itcell==null) continue;			//如果单元格为空，继续遍历
-				else {
-					demqty=itcell.getNumericCellValue();	//获取需求值
-					if(demqty==0) continue;			//如果需求为0，则继续
-					else {
-						hasdemand=true;				//如果不为0，说明有需求，则不能隐藏
-						break;
-					}
-				}
-			}
-			if(!hasdemand)	//如果没有需求，则隐藏该列
-				itrow.setZeroHeight(true);
-		}
+		for(int pncounter=startrow+1;ondaysheet.getRow(pncounter)!=null;pncounter++)	//外循环遍历行
+			if(ExcelUtils.isExcelRowEmpty(daterow, startcol+1, ondaysheet.getRow(pncounter), startcol+1))	//如果没有需求，则隐藏该行
+				ondaysheet.getRow(pncounter).setZeroHeight(true);
 	}
 	
 	/**
@@ -523,32 +502,10 @@ public class DemandReportForExcel {
 		onweeksheet.setColumnWidth(startcol-2, 12*256);			//设置客户行宽度
 		onweeksheet.setColumnWidth(startcol-1, 15*256);			//设置型号航宽度
 		onweeksheet.createFreezePane(startcol+1, startrow+1);	//冻结窗格
-		Row itrow;			//遍历行
-		Cell itcell;		//遍历单元格
-		double demqty;		//需求数量
-		boolean hasdemand=false;	//是否有需求
 		//没有需求记录的行自动隐藏
-		for(int pncounter=startrow+1;;pncounter++) {	//外循环遍历行
-			itrow=onweeksheet.getRow(pncounter);		//提取遍历行
-			if(itrow==null) break;
-			hasdemand=false;
-			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
-				itcell=itrow.getCell(colcounter);		//提取遍历单元格
-				weekcell=weekrow.getCell(colcounter);	//提取日期单元格
-				if(weekcell==null) break;			//如果日期列为空，则跳出循环
-				if(itcell==null) continue;			//如果单元格为空，继续遍历
-				else {
-					demqty=itcell.getNumericCellValue();	//获取需求值
-					if(demqty==0) continue;			//如果需求为0，则继续
-					else {
-						hasdemand=true;				//如果不为0，说明有需求，则不能隐藏
-						break;
-					}
-				}
-			}
-			if(!hasdemand)	//如果没有需求，则隐藏该列
-				itrow.setZeroHeight(true);
-		}
+		for(int pncounter=startrow+1;onweeksheet.getRow(pncounter)!=null;pncounter++)	//外循环遍历行
+			if(ExcelUtils.isExcelRowEmpty(weekrow, startcol+1, onweeksheet.getRow(pncounter), startcol+1))	//如果没有需求，则隐藏该行
+				onweeksheet.getRow(pncounter).setZeroHeight(true);
 	}
 	
 	/**
@@ -624,32 +581,10 @@ public class DemandReportForExcel {
 		onmonthsheet.setColumnWidth(startcol-2, 12*256);			//设置客户行宽度
 		onmonthsheet.setColumnWidth(startcol-1, 15*256);			//设置型号航宽度
 		onmonthsheet.createFreezePane(startcol+1, startrow+1);		//冻结窗格
-		Row itrow;			//遍历行
-		Cell itcell;		//遍历单元格
-		double demqty;		//需求数量
-		boolean hasdemand=false;	//是否有需求
 		//没有需求记录的行自动隐藏
-		for(int pncounter=startrow+1;;pncounter++) {			//外循环遍历行
-			itrow=onmonthsheet.getRow(pncounter);		//提取遍历行
-			if(itrow==null) break;
-			hasdemand=false;
-			for(int colcounter=startcol+1;;colcounter++) {		//内循环遍历单元格
-				itcell=itrow.getCell(colcounter);		//提取遍历单元格
-				monthcell=monthrow.getCell(colcounter);	//提取日期单元格
-				if(monthcell==null) break;			//如果日期列为空，则跳出循环
-				if(itcell==null) continue;			//如果单元格为空，继续遍历
-				else {
-					demqty=itcell.getNumericCellValue();	//获取需求值
-					if(demqty==0) continue;			//如果需求为0，则继续
-					else {
-						hasdemand=true;				//如果不为0，说明有需求，则不能隐藏
-						break;
-					}
-				}
-			}
-			if(!hasdemand)	//如果没有需求，则隐藏该列
-				itrow.setZeroHeight(true);
-		}
+		for(int pncounter=startrow+1;onmonthsheet.getRow(pncounter)!=null;pncounter++)	//外循环遍历行
+			if(ExcelUtils.isExcelRowEmpty(monthrow, startcol+1, onmonthsheet.getRow(pncounter), startcol+1))	//如果没有需求，则隐藏该行
+				onmonthsheet.getRow(pncounter).setZeroHeight(true);
 	}
 	
 	/**

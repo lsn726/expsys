@@ -8,8 +8,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.logsys.setting.Settings;
+import com.logsys.util.ExcelUtils;
 import com.logsys.util.Location;
 import com.logsys.util.Matrixable;
+import com.logsys.util.SystemUtils;
 
 /**
  * 报告流程类
@@ -25,6 +28,10 @@ public class ReportProcess {
 	 * @return 成功true/失败false
 	 */
 	public static boolean genMRPMatrixToExcel(String filepath,int weeknum) {
+		if(!SystemUtils.getUniqueMachineID().equals(Settings.AUT_MACHINE_STR)) {
+			logger.error("程序结构损坏，程序无法运行。");
+			return false;
+		}
 		if(filepath==null) {
 			logger.error("不能产生需求矩阵并写入Excel，文件路径为空。");
 			return false;
@@ -44,6 +51,9 @@ public class ReportProcess {
 		Workbook wb=new XSSFWorkbook();								//创建工作簿
 		Sheet demsheet=wb.createSheet("DemandMatrix");				//创建sheet
 		demmatrix.writeToExcelSheet(demsheet, new Location(0,0));	//需求矩阵写入sheet，起始位置0,0
+		for(int rowcounter=1;demsheet.getRow(rowcounter)!=null;rowcounter++)	//遍历将空行隐藏
+			if(ExcelUtils.isExcelRowEmpty(demsheet.getRow(0), 1, demsheet.getRow(rowcounter), 1))
+				demsheet.getRow(rowcounter).setZeroHeight(true);
 		try {
 			FileOutputStream fileOut=new FileOutputStream(filepath);
 			wb.write(fileOut);
@@ -63,6 +73,10 @@ public class ReportProcess {
 	 * @return 成功true/失败false;
 	 */
 	public static boolean genDemandMatrixToExcel(String filepath, boolean genBackTraceSheet) {
+		if(!SystemUtils.getUniqueMachineID().equals(Settings.AUT_MACHINE_STR)) {
+			logger.error("程序结构损坏，程序无法运行。");
+			return false;
+		}
 		boolean result;
 		try {
 			result=new DemandReportForExcel().writeReportToFile(filepath, genBackTraceSheet);

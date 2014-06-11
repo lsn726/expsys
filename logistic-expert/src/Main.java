@@ -1,5 +1,6 @@
 
 
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -13,8 +14,6 @@ public class Main {
 		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",false);	//生成需求矩阵报表,默认不生成回溯需求矩阵
 		
 		//TODO:StockDataReaderExcel继续完善
-		//TODO:继续完善DemandExcelContainer表格
-		//TODO:重写DemandImport过程
 		//TODO:为所有Process加入SystemUtils.getUniqueMachineID()
 	}
 

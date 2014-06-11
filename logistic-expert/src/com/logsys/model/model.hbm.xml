@@ -14,6 +14,8 @@
 		<property name="prjcode" type="string" column="prjcode" />
 		<property name="info" type="string" column="info" />
 		<property name="pq" type="integer" column="pq" />
+		<property name="mrpfactor" type="double" column="mrpfactor"/>
+		<property name="mrpround" type="int" column="mrpround" />
 	</class>
 
 </hibernate-mapping>
