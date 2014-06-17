@@ -40,13 +40,13 @@ public class BWIMRPSettings implements MRPSettings {
 		scarpMap.put("22272177", 0.05f);
 		scarpMap.put("22271789", 0.05f);
 		scarpMap.put("22292191", 0.05f);
-		scarpMap.put("22292218", 0.15f);
-		scarpMap.put("22292219", 0.15f);
-		scarpMap.put("22292220", 0.15f);
-		scarpMap.put("22280909", 0.15f);
-		scarpMap.put("22280908", 0.15f);
-		scarpMap.put("22283595", 0.15f);
-		scarpMap.put("22283596", 0.15f);
+		scarpMap.put("22292218", 0.10f);
+		scarpMap.put("22292219", 0.10f);
+		scarpMap.put("22292220", 0.10f);
+		scarpMap.put("22280909", 0.10f);
+		scarpMap.put("22280908", 0.10f);
+		scarpMap.put("22283595", 0.10f);
+		scarpMap.put("22283596", 0.10f);
 		scarpMap.put("22284696", 0.03f);
 		scarpMap.put("22284434", 0.03f);
 		//向上取整图
