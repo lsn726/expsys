@@ -151,3 +151,15 @@ CREATE TABLE `stock` (
   `qtyblk` double NOT NULL COMMENT 'Block Quantity',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `storloc` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `pn` char(30) DEFAULT NULL COMMENT '料号',
+  `col` char(10) DEFAULT NULL COMMENT '列',
+  `cell` char(10) DEFAULT NULL COMMENT '单元',
+  `floor` char(10) DEFAULT NULL COMMENT '层',
+  `bin` char(10) DEFAULT NULL COMMENT '格',
+  `sloc` char(20) DEFAULT NULL COMMENT '库房',
+  `pq` int(10) DEFAULT NULL COMMENT '包装数量',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=899 DEFAULT CHARSET=utf8 COMMENT='库位表'
