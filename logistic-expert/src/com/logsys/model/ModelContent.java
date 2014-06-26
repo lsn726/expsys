@@ -107,4 +107,17 @@ public class ModelContent {
 		this.mrpround = mrpround;
 	}
 	
+	public ModelContent clone() {
+		ModelContent cloned=new ModelContent();
+		cloned.id = id;
+		cloned.client = new String(client);
+		cloned.model = new String(model);
+		cloned.prjcode = new String(prjcode);
+		cloned.info = new String(info);
+		cloned.pq = pq;
+		cloned.mrpfactor = mrpfactor;
+		cloned.mrpround = mrpround;
+		return cloned;
+	}
+	
 }

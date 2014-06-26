@@ -30,7 +30,7 @@ import com.logsys.demand.DemandContent_Week;
 import com.logsys.demand.DemandDataReaderDB;
 import com.logsys.demand.DemandUtil;
 import com.logsys.model.ModelContent;
-import com.logsys.model.ModelDataReaderDB;
+import com.logsys.model.ModelService;
 import com.logsys.model.ModelUtil;
 import com.logsys.util.DateInterval;
 import com.logsys.util.DateTimeUtils;
@@ -93,11 +93,11 @@ public class DemandReportForExcel {
 	}
 	
 	private boolean init() {
-		matlist_fin=ModelDataReaderDB.getDataFromDB(null);			//初始化成品列表，获取所有Model
+		matlist_fin=ModelService.getModelList();					//初始化成品列表，获取所有Model
 		if(matlist_fin==null) return false;
 		matset_fin=ModelUtil.getModelSet(matlist_fin);				//初始化成品集
 		if(matset_fin==null) return false;
-		matorder_fin=ModelDataReaderDB.sortModels(matset_fin);		//初始化成品顺序图
+		matorder_fin=ModelService.getSortedModelMap();				//初始化成品顺序图
 		if(matorder_fin==null) return false;
 		matmap_fin=ModelUtil.convModelListToModelMap(matlist_fin);
 		if(matmap_fin==null) return false;

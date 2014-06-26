@@ -40,6 +40,7 @@ public class BWIMRPSettings implements MRPSettings {
 		scarpMap.put("22272177", 0.05f);
 		scarpMap.put("22271789", 0.05f);
 		scarpMap.put("22292191", 0.05f);
+		scarpMap.put("22297053", 0.05f);
 		scarpMap.put("22292218", 0.10f);
 		scarpMap.put("22292219", 0.10f);
 		scarpMap.put("22292220", 0.10f);
@@ -62,7 +63,7 @@ public class BWIMRPSettings implements MRPSettings {
 		ceilMap.put("22272171", 50);
 		ceilMap.put("22272172", 50);
 		ceilMap.put("22272138", 50);
-		ceilMap.put("22292191", 50);
+		ceilMap.put("22291991", 50);
 		ceilMap.put("22265577", 20);
 		ceilMap.put("22265578", 20);
 		ceilMap.put("22265579", 20);
@@ -73,6 +74,7 @@ public class BWIMRPSettings implements MRPSettings {
 		ceilMap.put("22272177", 20);
 		ceilMap.put("22271789", 20);
 		ceilMap.put("22292191", 20);
+		ceilMap.put("22297053", 20);
 		ceilMap.put("22292218", 20);
 		ceilMap.put("22292219", 20);
 		ceilMap.put("22292220", 20);
@@ -91,6 +93,7 @@ public class BWIMRPSettings implements MRPSettings {
 
 	@Override
 	public int getCeilingValueByPN(String fertpn) {
+		//System.out.println(fertpn);
 		return ceilMap.get(fertpn);
 	}
 
