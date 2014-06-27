@@ -37,6 +37,7 @@
 	<mapping resource="com/logsys/prodplan/prodplan.hbm.xml" />
 	<mapping resource="com/logsys/production/production.hbm.xml" />
 	<mapping resource="com/logsys/matoperdoc/matoperdoc.hbm.xml" />
+	<mapping resource="com/logsys/stock/stock.hbm.xml" />
 
 </session-factory>
 

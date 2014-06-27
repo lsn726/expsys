@@ -1,5 +1,7 @@
 package com.logsys.stock;
 
+import java.util.Date;
+
 /**
  * 库存信息类--对接库存数据库表
  * @author lx8sn6
@@ -7,6 +9,8 @@ package com.logsys.stock;
 public class StockContent {
 
 	private int id;
+	
+	private Date date;
 	
 	private String pn;
 	
@@ -16,13 +20,11 @@ public class StockContent {
 	
 	private String wkcenter;
 	
-	private double qtyuns;
+	private double qty;
 	
-	private double uom;
-
-	private double qtyqi;
+	private String uom;
 	
-	private double qtyblk;
+	private String status;
 
 	public int getId() {
 		return id;
@@ -30,6 +32,14 @@ public class StockContent {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public String getPn() {
@@ -64,44 +74,36 @@ public class StockContent {
 		this.wkcenter = wkcenter;
 	}
 
-	public double getQtyuns() {
-		return qtyuns;
-	}
-
-	public void setQtyuns(double qtyuns) {
-		this.qtyuns = qtyuns;
-	}
-
-	public double getUom() {
+	public String getUom() {
 		return uom;
 	}
 
-	public void setUom(double uom) {
+	public void setUom(String uom) {
 		this.uom = uom;
 	}
 
-	public double getQtyqi() {
-		return qtyqi;
+	public double getQty() {
+		return qty;
 	}
 
-	public void setQtyqi(double qtyqi) {
-		this.qtyqi = qtyqi;
+	public void setQty(double qty) {
+		this.qty = qty;
 	}
 
-	public double getQtyblk() {
-		return qtyblk;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setQtyblk(double qtyblk) {
-		this.qtyblk = qtyblk;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Override
 	public String toString() {
-		return "StockContent [id=" + id + ", pn=" + pn + ", plant=" + plant
-				+ ", sloc=" + sloc + ", wkcenter=" + wkcenter + ", qtyuns="
-				+ qtyuns + ", uom=" + uom + ", qtyqi=" + qtyqi + ", qtyblk="
-				+ qtyblk + "]";
+		return "StockContent [id=" + id + ", date=" + date + ", pn=" + pn
+				+ ", plant=" + plant + ", sloc=" + sloc + ", wkcenter="
+				+ wkcenter + ", qty=" + qty + ", uom=" + uom + ", status="
+				+ status + "]";
 	}
 	
 }
