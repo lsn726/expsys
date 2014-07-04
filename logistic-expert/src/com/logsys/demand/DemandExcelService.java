@@ -17,6 +17,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.logsys.hibernate.HibernateSessionFactory;
+import com.logsys.model.ModelContent;
+import com.logsys.model.ModelService;
 import com.logsys.util.DateInterval;
 
 /**
@@ -214,6 +216,7 @@ public class DemandExcelService {
 	/**
 	 * 对于数据的后期修订。本步骤会根据业务需要而更改原有数据或者其衍生数据。
 	 * 第一步：合并重复的需求节点
+	 * 第二步：更新发货天数修正数据
 	 * @return 成功true/失败false
 	 */
 	private boolean reviseData() {
@@ -227,6 +230,10 @@ public class DemandExcelService {
 			return false;
 		} else if(recordMerged>0)
 			logger.info("需求数据中的pn-date重复值已合并，条数["+recordMerged+"]条.");
+		if(!updateDlvFixDays()) {
+			logger.error("更新发货天术修正失败!");
+			return false;
+		}
 		return true;
 	}
 	
@@ -259,6 +266,29 @@ public class DemandExcelService {
 		for(DemandContent demand:removelist)					//遍历删除需要删除的节点
 			demandlist.remove(demand);
 		return counter;
+	}
+	
+	/**
+	 * 在需求对象列表中更新发货天数修正数据
+	 * @return true更新成功/false更新失败
+	 */
+	private boolean updateDlvFixDays() {
+		if(demandlist==null) {
+			logger.error("不能更新发货天数修正数据，列表尚未被初始化。");
+			return false;
+		}
+		String pn;
+		ModelContent mcont;
+		for(DemandContent demcont:demandlist) {
+			pn=demcont.getPn();
+			mcont=ModelService.getModelContentByPn(pn); //将该Model的在途天数*-1后记为发货天术向前修正
+			if(mcont==null) {
+				logger.error("不能更新发货天术修正数据，出现不能识别的需求型号["+pn+"]");
+				return false;
+			}
+			demcont.setDlvfix(-mcont.getIntranday());
+		}
+		return true;
 	}
 	
 	/**

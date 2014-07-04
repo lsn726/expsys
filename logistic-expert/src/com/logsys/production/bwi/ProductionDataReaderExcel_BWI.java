@@ -37,6 +37,7 @@ import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_FricationWeld;
 import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_Grinding;
 import com.logsys.setting.pd.bwi.pr.BWIPdExcelInfoPR_Hardening;
 import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA;
+import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_Chemfer;
 import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_KTL;
 import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_NeckDown;
 import com.logsys.util.Location;
@@ -127,8 +128,10 @@ public class ProductionDataReaderExcel_BWI {
 		if(BWIPLInfo.getProdZoneByProdLine(pline).equals(ProdLine.DAMPER_ZONE_RTA))	{ //RTA区域
 			if(pline.equals(ProdLine.DAMPER_RTA_NECKDOWN))		//缩口单独配置
 				return new BWIPdExcelInfoRTA_NeckDown();
-			else if(pline.equals(ProdLine.DAMPER_RTA_KTL)||pline.equals(ProdLine.DAMPER_RTA_CHAMFER_WASH)||pline.equals(ProdLine.DAMPER_RTA_WASH_POSTNK))		//[电泳线]/[切割倒角]/[缩口前清洗]采用KTL的单独配置
+			else if(pline.equals(ProdLine.DAMPER_RTA_KTL))		//[电泳线]
 				return new BWIPdExcelInfoRTA_KTL();
+			else if(pline.equals(ProdLine.DAMPER_RTA_CHAMFER_WASH)||pline.equals(ProdLine.DAMPER_RTA_WASH_POSTNK))	//[倒角]/[缩口前清洗]采用倒角单独配置
+				return new BWIPdExcelInfoRTA_Chemfer();
 			else
 				return new BWIPdExcelInfoRTA();					//其他生产线使用RTA标准提取器
 		} else if(BWIPLInfo.getProdZoneByProdLine(pline).equals(ProdLine.DAMPER_ZONE_PR)) {	//PR线

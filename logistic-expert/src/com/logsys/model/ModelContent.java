@@ -29,10 +29,13 @@ public class ModelContent {
 	
 	/**MRP的Rounding Value*/
 	private int mrpround; 
+	
+	/**运输在途天数*/
+	private int intranday;
 
 	public ModelContent() {}
 
-	public ModelContent(int id, String client, String model, String prjcode, String info, int pq, double mrpfactor, int mrpround) {
+	public ModelContent(int id, String client, String model, String prjcode, String info, int pq, double mrpfactor, int mrpround, int intranday) {
 		this.id = id;
 		this.client = client;
 		this.model = model;
@@ -41,6 +44,7 @@ public class ModelContent {
 		this.pq = pq;
 		this.mrpfactor = mrpfactor;
 		this.mrpround = mrpround;
+		this.intranday=intranday;
 	}
 
 	public int getId() {
@@ -107,6 +111,14 @@ public class ModelContent {
 		this.mrpround = mrpround;
 	}
 	
+	public int getIntranday() {
+		return intranday;
+	}
+
+	public void setIntranday(int intranday) {
+		this.intranday = intranday;
+	}
+
 	public ModelContent clone() {
 		ModelContent cloned=new ModelContent();
 		cloned.id = id;
@@ -117,6 +129,7 @@ public class ModelContent {
 		cloned.pq = pq;
 		cloned.mrpfactor = mrpfactor;
 		cloned.mrpround = mrpround;
+		cloned.intranday = intranday;
 		return cloned;
 	}
 	

@@ -289,9 +289,10 @@ public class DemandReportForExcel {
 	 * 将报告写入Excel文件
 	 * @param filepath 要写入的文件路径
 	 * @param genBackTraceSheet 是否写入回溯需求矩阵
+	 * @param considerDlvFix 是否按照发货天数修正发货时间 [未开发，问题在在于发货时间如果修正后会在正确时间区间之前，怎样处理]
 	 * @return 成功true/失败false
 	 */
-	public boolean writeReportToFile(String filepath, boolean genBackTraceSheet) {
+	public boolean writeReportToFile(String filepath, boolean genBackTraceSheet, boolean considerDlvFix) {
 		if(filepath==null) {
 			logger.error("不能产生需求矩阵并写入Excel，文件路径为空。");
 			return false;

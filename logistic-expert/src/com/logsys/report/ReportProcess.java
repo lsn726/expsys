@@ -68,16 +68,17 @@ public class ReportProcess {
 	 * 产生需求矩阵(按天/周/月)并写入Excel文件filepath
 	 * @param filepath 文件路径
 	 * @param genBackTraceSheet 是否写入回溯需求矩阵
+	 * @param considerDlvFix 是否按照发货天数修正发货时间
 	 * @return 成功true/失败false;
 	 */
-	public static boolean genDemandMatrixToExcel(String filepath, boolean genBackTraceSheet) {
+	public static boolean genDemandMatrixToExcel(String filepath, boolean genBackTraceSheet, boolean considerDlvFix) {
 		//if(!SystemUtils.getUniqueMachineID().equals(Settings.AUT_MACHINE_STR)) {
 		//	logger.error("程序结构损坏，程序无法运行。");
 		//	return false;
 		//}
 		boolean result;
 		try {
-			result=new DemandReportForExcel().writeReportToFile(filepath, genBackTraceSheet);
+			result=new DemandReportForExcel().writeReportToFile(filepath, genBackTraceSheet, considerDlvFix);
 			if(result)
 				logger.info("成功产生需求矩阵并写入文件["+filepath+"]");
 			else

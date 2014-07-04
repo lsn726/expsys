@@ -16,6 +16,7 @@
 		<property name="pq" type="integer" column="pq" />
 		<property name="mrpfactor" type="double" column="mrpfactor"/>
 		<property name="mrpround" type="int" column="mrpround" />
+		<property name="intranday" type="int" column="intranday" />
 	</class>
 
 </hibernate-mapping>
