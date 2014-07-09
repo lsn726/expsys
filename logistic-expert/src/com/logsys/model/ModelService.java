@@ -66,6 +66,10 @@ public class ModelService {
 	 * @return 对应的型号对象
 	 */
 	public static ModelContent getModelContentByPn(String pn) {
+		if(!modelmap.containsKey(pn)) {
+			logger.error("不能获取ModelContent对象，没有成品物料号["+pn+"].");
+			return null;
+		}
 		return modelmap.get(pn).clone();
 	}
 	
