@@ -124,8 +124,8 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_HBF0835, "DamperRTA HBF 0835");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_NECKDOWN, "DamperRTA Neck Down");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_WASH_POSTNK, "DamperRTA Wash After ND");
-		STDNAME_MAP.put(ProdLine.DAMPER_RTA_FRONTWELDCELL, "DamperRTA FrontWeldCell");
-		STDNAME_MAP.put(ProdLine.DAMPER_RTA_REARWELDCELL, "DamperRTA RearWeldCell");
+		STDNAME_MAP.put(ProdLine.DAMPER_RTA_FRONTWELDCELL, "DamperRTA Front Weld Cell");
+		STDNAME_MAP.put(ProdLine.DAMPER_RTA_REARWELDCELL, "DamperRTA Rear Weld Cell");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_WASH, "DamperRTA Chamfer Wash");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH, "DamperRTA LeakTest Wash");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_SEATBRACKET_WELD, "DamperRTA Seat Bracket Weld");
