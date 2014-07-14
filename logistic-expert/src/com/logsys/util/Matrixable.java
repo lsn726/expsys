@@ -135,12 +135,12 @@ public class Matrixable {
 	public boolean setData(String rowheader,String colheader, Object data) {
 		Integer rowindex=getRowPosByRowHeader(rowheader);
 		if(rowindex==null) {
-			logger.error("无法设置矩阵数据["+data+"],因为行表头["+rowheader+"]无法在行表头图中定位.");
+			logger.error("无法设置矩阵数据["+data+"],因为行表头["+rowheader+"]无法在行表头图中定位.另外，对应的列表头为["+colheader+"].");
 			return false;
 		}
 		Integer colindex=getColPosByColHeader(colheader);
 		if(colindex==null) {
-			logger.error("无法设置矩阵数据["+data+"],因为列表头["+colheader+"]无法在列表头图中定位.");
+			logger.error("无法设置矩阵数据["+data+"],因为列表头["+colheader+"]无法在列表头图中定位.另外，对应的行表头为["+rowheader+"].");
 			return false;
 		}
 		Location keyloc=new Location(rowindex,colindex);

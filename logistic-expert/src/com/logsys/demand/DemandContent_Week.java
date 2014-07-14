@@ -21,6 +21,13 @@ public class DemandContent_Week {
 		this.qty = qty;
 	}
 	
+	public DemandContent_Week(String pn, String year, String week, double qty) {
+		this.pn = pn;
+		this.year = Integer.parseInt(year);
+		this.week = Integer.parseInt(week);
+		this.qty = qty;
+	}
+	
 	public String getPn() {
 		return pn;
 	}

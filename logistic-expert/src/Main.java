@@ -1,3 +1,5 @@
+import com.logsys.report.ReportProcess;
+
 
 
 public class Main {
@@ -9,7 +11,7 @@ public class Main {
 		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\MOD.xls", -1);	//将生产日报导入数据库。《《将导入所有数据》》
 		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\MOL201406.xlsx");	//将SAP的mb51命令倒出的物料操作数据写入数据库	
 		
-		//ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 35);					//生成MRP矩阵报表，矩阵长度(周数)为第二参数
+		ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 35);					//生成MRP矩阵报表，矩阵长度(周数)为第二参数
 		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",false,false);	//生成需求矩阵报表,默认不生成回溯需求矩阵
 		
 		//TODO:StockDataReaderExcel继续完善

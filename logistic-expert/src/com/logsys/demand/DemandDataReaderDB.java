@@ -103,7 +103,7 @@ public class DemandDataReaderDB {
 			logger.error("´´½¨Session´íÎó:",ex);
 			return null;
 		}
-		String hql="select new com.logsys.demand.DemandContent_Week(pn,year(date),week(date,3),sum(qty) as qty) from DemandContent where 1=1";
+		String hql="select new com.logsys.demand.DemandContent_Week(pn,substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),sum(qty)) from DemandContent where 1=1";
 		if(begin!=null) hql+=" and date>=:begindate";
 		if(end!=null) hql+=" and date<=:enddate";
 		if(pnset!=null) {
@@ -112,7 +112,7 @@ public class DemandDataReaderDB {
 			hql=hql.substring(0,hql.length()-3);
 			hql+=")";
 		}
-		hql+=" group by year(date),week(date,3),pn";
+		hql+=" group by substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),pn";
 		Query query;
 		try {
 			query=session.createQuery(hql);
