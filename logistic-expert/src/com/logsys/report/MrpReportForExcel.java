@@ -114,9 +114,15 @@ public class MrpReportForExcel {
 		for(String fertpn:matorder_fin.keySet())				//将成品的顺序写入行表头
 			demandMatrix.putRowHeaderCell(matorder_fin.get(fertpn), fertpn);
 		begin=DateTimeUtils.getValidCalendar();
-		begin.setFirstDayOfWeek(Calendar.MONDAY);				//周一为每周第一天
+		int year=begin.get(Calendar.YEAR);						//年
+		int week=begin.get(Calendar.WEEK_OF_YEAR);				//周
 		for(int index=0;index<weeknum;index++)	{				//将年和周数写入列表头
-			demandMatrix.putColHeaderCell(index+1, String.format("%dwk%02d", begin.get(Calendar.YEAR) ,begin.get(Calendar.WEEK_OF_YEAR)));
+			if(week-begin.get(Calendar.WEEK_OF_YEAR)>=51 && year-begin.get(Calendar.YEAR)==0)	//特别处理A年52周后一周，本应为A+1年第一周，却由于当周开始日期在A年，显示为A年第一周的情况
+				year++;
+			else
+				year=begin.get(Calendar.YEAR);
+			week=begin.get(Calendar.WEEK_OF_YEAR);
+			demandMatrix.putColHeaderCell(index+1, String.format("%dwk%02d", year ,week));
 			begin.add(Calendar.WEEK_OF_YEAR, 1);
 		}
 		//写入矩阵数据：首先写入按周需求
