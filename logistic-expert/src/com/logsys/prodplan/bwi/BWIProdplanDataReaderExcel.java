@@ -102,7 +102,12 @@ public class BWIProdplanDataReaderExcel {
 					modelpn=row.getCell(ppExcelInfo.getPnCol()).getStringCellValue();		//获取型号
 					for(Cell cell:row) {				//遍历单元
 						if(cell.getColumnIndex()<begincol||cell.getColumnIndex()>endcol) continue;	//在起始日期列之前的全部跳过
-						if(cell.getNumericCellValue()==0) continue;		//如果没有计划，则跳过
+						try {
+							if(cell.getNumericCellValue()==0) continue;		//如果没有计划，则跳过
+						} catch (Throwable ex) {
+							logger.error("单元格中不是数字，无法提取计划:位置["+cell.getRowIndex()+"]行["+cell.getColumnIndex()+"]列");
+							throw ex;
+						}
 						plandate=plansheet.getRow(ppExcelInfo.getFA1DateRow()).getCell(cell.getColumnIndex()).getDateCellValue();	//获取当前单元格计划日期
 						if(plandate==null) continue;					//如果没有相对应的日期，则跳过
 						temp=new ProdplanContent();

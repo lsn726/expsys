@@ -30,42 +30,6 @@ public class BWIPdExcelInfoRTA extends BWIPdExcelInfo {
 		VERIFYMAP_LOC_STR.put(new Location(8,8), "小时\n产出\nHourly Count");
 		VERIFYMAP_LOC_STR.put(new Location(8,33), "小时\n产出\nHourly Count");
 		VERIFYMAP_LOC_STR.put(new Location(8,58), "小时\n产出\nHourly Count");
-		VERIFYMAP_LOC_STR.put(new Location(17,11), "F T Q");
-		VERIFYMAP_LOC_STR.put(new Location(17,36), "F T Q");
-		VERIFYMAP_LOC_STR.put(new Location(17,61), "F T Q");
-		VERIFYMAP_LOC_STR.put(new Location(17,16), "Lost time");
-		VERIFYMAP_LOC_STR.put(new Location(17,41), "Lost time");
-		VERIFYMAP_LOC_STR.put(new Location(17,66), "Lost time");
-		VERIFYMAP_LOC_STR.put(new Location(19,11), "Part No\n零件号");
-		VERIFYMAP_LOC_STR.put(new Location(19,36), "Part No\n零件号");
-		VERIFYMAP_LOC_STR.put(new Location(19,61), "Part No\n零件号");
-		VERIFYMAP_LOC_STR.put(new Location(19,12), "Failure Mode\n失效模式");
-		VERIFYMAP_LOC_STR.put(new Location(19,37), "Failure Mode\n失效模式");
-		VERIFYMAP_LOC_STR.put(new Location(19,62), "Failure Mode\n失效模式");
-		VERIFYMAP_LOC_STR.put(new Location(19,13), "Rework\n返工");
-		VERIFYMAP_LOC_STR.put(new Location(19,38), "Rework\n返工");
-		VERIFYMAP_LOC_STR.put(new Location(19,63), "Rework\n返工");
-		VERIFYMAP_LOC_STR.put(new Location(19,14), "Scrap\n报废");
-		VERIFYMAP_LOC_STR.put(new Location(19,39), "Scrap\n报废");
-		VERIFYMAP_LOC_STR.put(new Location(19,64), "Scrap\n报废");
-		VERIFYMAP_LOC_STR.put(new Location(19,15), "Remarks\n备注");
-		VERIFYMAP_LOC_STR.put(new Location(19,40), "Remarks\n备注");
-		VERIFYMAP_LOC_STR.put(new Location(19,65), "Remarks\n备注");
-		VERIFYMAP_LOC_STR.put(new Location(19,16), "Time\n时段");
-		VERIFYMAP_LOC_STR.put(new Location(19,41), "Time\n时段");
-		VERIFYMAP_LOC_STR.put(new Location(19,66), "Time\n时段");
-		VERIFYMAP_LOC_STR.put(new Location(19,17), "Lost time\n损失时间");
-		VERIFYMAP_LOC_STR.put(new Location(19,42), "Lost time\n损失时间");
-		VERIFYMAP_LOC_STR.put(new Location(19,67), "Lost time\n损失时间");
-		VERIFYMAP_LOC_STR.put(new Location(19,18), "LT mode\n损失类型");
-		VERIFYMAP_LOC_STR.put(new Location(19,43), "LT mode\n损失类型");
-		VERIFYMAP_LOC_STR.put(new Location(19,68), "LT mode\n损失类型");
-		VERIFYMAP_LOC_STR.put(new Location(19,19), "Cause\n原因");
-		VERIFYMAP_LOC_STR.put(new Location(19,44), "Cause\n原因");
-		VERIFYMAP_LOC_STR.put(new Location(19,69), "Cause\n原因");
-		VERIFYMAP_LOC_STR.put(new Location(19,20), "Remarks\n备注");
-		VERIFYMAP_LOC_STR.put(new Location(19,45), "Remarks\n备注");
-		VERIFYMAP_LOC_STR.put(new Location(19,70), "Remarks\n备注");
 		VERIFYMAP_LOC_STR.put(new Location(47,4), "累计\nTotal");
 		VERIFYMAP_LOC_STR.put(new Location(47,29), "累计\nTotal");
 		VERIFYMAP_LOC_STR.put(new Location(47,54), "累计\nTotal");
@@ -122,7 +86,9 @@ public class BWIPdExcelInfoRTA extends BWIPdExcelInfo {
 		PRODMAP_ALIAS_STDPN.put("22280910 路虎", "22280910");
 		PRODMAP_ALIAS_STDPN.put("22290690 金杯", "22290690");
 		PRODMAP_ALIAS_STDPN.put("22280910 路虎前", "22280910");
+		PRODMAP_ALIAS_STDPN.put("22280911 路虎前左", "22280911");
 		PRODMAP_ALIAS_STDPN.put("22272184 奇瑞前", "22272184");
+		PRODMAP_ALIAS_STDPN.put("22297112 J11", "22297112");
 	}
 
 	@Override

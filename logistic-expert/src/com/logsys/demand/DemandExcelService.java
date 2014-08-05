@@ -136,6 +136,7 @@ public class DemandExcelService {
 		}
 		if(!reviseData()) {				//第四步：后期数据加工
 			logger.error("不能处理需求工作簿，未能成功进行后期数据加工。");
+			return false;
 		}
 		return true;
 	}
@@ -231,7 +232,7 @@ public class DemandExcelService {
 		} else if(recordMerged>0)
 			logger.info("需求数据中的pn-date重复值已合并，条数["+recordMerged+"]条.");
 		if(!updateDlvFixDays()) {
-			logger.error("更新发货天术修正失败!");
+			logger.error("更新发货天数修正失败!");
 			return false;
 		}
 		return true;
