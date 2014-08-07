@@ -18,13 +18,23 @@ public class StockContent {
 	
 	private String sloc;
 	
-	private String wkcenter;
-	
 	private double qty;
 	
 	private String uom;
 	
 	private String status;
+	
+	public StockContent() {}
+	
+	public StockContent(Date date, String pn, String plant, String sloc, double qty, String uom, String status) {
+		this.date = date;
+		this.pn = pn;
+		this.plant = plant;
+		this.sloc = sloc;
+		this.qty = qty;
+		this.uom = uom;
+		this.status = status;
+	}
 
 	public int getId() {
 		return id;
@@ -66,14 +76,6 @@ public class StockContent {
 		this.sloc = sloc;
 	}
 
-	public String getWkcenter() {
-		return wkcenter;
-	}
-
-	public void setWkcenter(String wkcenter) {
-		this.wkcenter = wkcenter;
-	}
-
 	public String getUom() {
 		return uom;
 	}
@@ -101,8 +103,8 @@ public class StockContent {
 	@Override
 	public String toString() {
 		return "StockContent [id=" + id + ", date=" + date + ", pn=" + pn
-				+ ", plant=" + plant + ", sloc=" + sloc + ", wkcenter="
-				+ wkcenter + ", qty=" + qty + ", uom=" + uom + ", status="
+				+ ", plant=" + plant + ", sloc=" + sloc
+				+ ", qty=" + qty + ", uom=" + uom + ", status="
 				+ status + "]";
 	}
 	

@@ -13,7 +13,6 @@
 		<property name="pn" type="string" column="pn" />
 		<property name="plant" type="string" column="plant" />
 		<property name="sloc" type="string" column="sloc" />
-		<property name="wkcenter" type="string" column="wkcenter" />
 		<property name="qty" type="double" column="qty" />
 		<property name="uom" type="string" column="uom" />
 		<property name="status" type="string" column="status" />
