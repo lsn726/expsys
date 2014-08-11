@@ -255,7 +255,7 @@ public class DemandReportForExcel {
 			begincal=DateTimeUtils.getFirstDayOfWeek(begincal);	//起始版本日期变为日期所在周的周一
 			endcal=DateTimeUtils.getFirstDayOfWeek(endcal);		//结束版本日期变为日期所在周的周一
 			tempMatrix=btracedemmap.get(fertpn);			//获取正在遍历成品号的矩阵对象
-			for(int counter=1;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)	//遍历日期写入版本周，即行表头
+			for(int counter=0;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)	//遍历日期写入版本周，即行表头
 				tempMatrix.putRowHeaderCell(counter, DateTimeUtils.getFormattedTimeStr_YearWeek(begincal));
 		}
 		//遍历备份需求列表，确认回溯需求数据，每个数据以当周的最早需求为基准

@@ -11,7 +11,7 @@ public class Main {
 		//StockProcess.importStockDataFromExcel_SAP_MB52("e:\\stock.xlsx", null);		//导入SAP的MB52库存数据,时间默认null为当天。
 		
 		//ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 35);					//生成MRP矩阵报表，矩阵长度(周数)为第二参数
-		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",false,false);	//生成需求矩阵报表,默认不生成回溯需求矩阵
+		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",true,false);	//生成需求矩阵报表,默认不生成回溯需求矩阵
 		
 		//TODO:StockDataReaderExcel继续完善
 		//TODO:为所有Process加入SystemUtils.getUniqueMachineID()

@@ -41,6 +41,17 @@ public class DemandBackupContent_Week {
 		this.date = date;
 		this.dlvfix = dlvfix;
 	}
+	
+	public DemandBackupContent_Week(String year, String week, Date version, String pn, double qty, Date date, int dlvfix) {
+		super();
+		this.year = Integer.parseInt(year);
+		this.week = Integer.parseInt(week);
+		this.version = version;
+		this.pn = pn;
+		this.qty = qty;
+		this.date = date;
+		this.dlvfix = dlvfix;
+	}
 
 	public Date getDate() {
 		return date;
