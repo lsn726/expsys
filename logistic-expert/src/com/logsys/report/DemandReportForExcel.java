@@ -603,7 +603,7 @@ public class DemandReportForExcel {
 		Matrixable fertMatrix;		//成品Matrix对象
 		String fertpn;
 		BiMap<Integer,String> fertorderbimap=HashBiMap.create(this.matorder_fin).inverse();	//将顺序图转换为双向图
-		for(int counter=1;fertorderbimap.containsKey(counter);counter++) {	//遍历顺序
+		for(int counter=0;fertorderbimap.containsKey(counter);counter++) {	//遍历顺序
 			fertpn=fertorderbimap.get(counter);				//获取pn
 			fertMatrix=dematrixmap_backtrace.get(fertpn);	//获取矩阵
 			if(fertMatrix==null) {
