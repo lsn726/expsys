@@ -5,7 +5,7 @@ public class Main {
 	public static void main(String[] args) {
 		//DemandProcess.importDemandFromExcel("e:\\dem.xlsx");							//从Excel文件导入新需求
 		//BOMProcess.uploadBOMFromExcel_SAPCS12("e:\\22283596.xlsx");					//上传BOM
-		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\pp.xlsx", new Date("2014/9/15"), new Date("2014/10/12"),true));	//上传从下周一开始的计划
+		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\pp.xlsx", new Date("2014/9/22"), new Date("2014/10/12"),true));	//上传从下周一开始的计划
 		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\lkt.xls", -1);	//将生产日报导入数据库。《《将导入所有数据》》
 		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\201408.xlsx");		//将SAP的mb51命令倒出的物料操作数据写入数据库
 		//StockProcess.importStockDataFromExcel_SAP_MB52("e:\\stock.xlsx", null);		//导入SAP的MB52库存数据,时间默认null为当天。
