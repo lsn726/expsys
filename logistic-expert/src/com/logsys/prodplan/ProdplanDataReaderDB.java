@@ -68,6 +68,46 @@ public class ProdplanDataReaderDB {
 	}
 
 	/**
+	 * 获取指定区间内的合并生产线的生产计划
+	 * @param dinterval 指定的读取区间，如果为Null,不设上下限。如果上限为空,则默认为不设上限,如果下限为空，则不设下限。 
+	 * @return 合并生产线的生产计划列表
+	 */
+	public static List<ProdplanContent_PrdLineCombined> getProdLineCombinedPPList(DateInterval dinterval) {
+		Date begindate=null;
+		Date enddate=null;
+		if(dinterval!=null) {
+			begindate=dinterval.begindate;
+			enddate=dinterval.enddate;
+		}
+		Session session;
+		try {
+			session=HibernateSessionFactory.getSession();
+			session.getTransaction().begin();
+		} catch(Throwable ex) {
+			logger.error("创建Session错误:",ex);
+			return null;
+		}
+		Query query;
+		String hql="select new com.logsys.prodplan.ProdplanContent_PrdLineCombined(date,pn,sum(qty)) from ProdplanContent where 1=1";
+		if(begindate!=null) hql+=" and begindate>=:begin";
+		if(enddate!=null) hql+=" and enddate<=:end"; 
+		List<ProdplanContent_PrdLineCombined> pplist=new ArrayList<ProdplanContent_PrdLineCombined>();
+		try {
+			query=session.createQuery(hql);
+			if(begindate!=null) query.setDate("begin", begindate);
+			if(enddate!=null) query.setDate("end", enddate);
+			pplist=query.list();
+			session.close();
+			return pplist;
+		} catch(Exception ex) {
+			logger.error("获取指定区间内的合并生产线生产计划出现错误.",ex);
+			session.close();
+			return null;
+		}
+	}
+	
+	
+	/**
 	 * 从数据库中读取按周的生产计划数量
 	 * @param plset 计划所包含的生产线,null不限制生产线
 	 * @param dinterval 时间区间，begin为null则不限起始时间,end为null则不限制结束时间,整体为null对时间不进行限制
