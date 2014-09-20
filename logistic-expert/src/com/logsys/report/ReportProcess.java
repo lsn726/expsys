@@ -40,7 +40,7 @@ public class ReportProcess {
 			return false;
 		}
 		MrpReportForExcel mrpreport=new MrpReportForExcel();		//产生MRP报表对象
-		Matrixable demmatrix=mrpreport.getDemandMatrix(weeknum); //生成报表对象
+		Matrixable demmatrix=mrpreport.getDemandMatrix(weeknum); 	//生成报表对象
 		if(demmatrix==null) {
 			logger.error("不能产生需求矩阵并写入Excel，需求矩阵生成失败。");
 			return false;
@@ -88,6 +88,26 @@ public class ReportProcess {
 			logger.error("不能产生需求报告：",e);
 			return false;
 		}
+	}
+	
+	/**
+	 * 生成SAP的MRP上传Excel报告
+	 * @param filepath 文件路径
+	 * @param weeknum 数据延伸的周数
+	 * @return 成功true/失败false
+	 */
+	public static boolean genSAPMrpUploadReportToExcel(String filepath, int weeknum) {
+		SAPMrpUploadReport report=SAPMrpUploadReport.createReportObject(filepath, weeknum);
+		if(report==null) {
+			logger.error("生成SAP的MRP报告出现错误，不能生成报告对象。");
+			return false;
+		}
+		if(!report.writeToExcel()) {
+			logger.error("生成SAP的MRP报告出现错误，不能将数据写入文件["+filepath+"].");
+			return false;
+		}
+		logger.info("成功将SAP的MRP上传报告写入文件["+filepath+"].");
+		return true;
 	}
 	
 }

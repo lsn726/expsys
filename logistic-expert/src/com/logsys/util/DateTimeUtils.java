@@ -23,6 +23,9 @@ public class DateTimeUtils {
 	/**格式化日期字符--周*/
 	public static final String FORMATTED_TIMESTR_WEEK="周";
 	
+	/**格式化日期字符--周*/
+	public static final String FORMATTED_TIMESTR_DAYOFWEEK="星期";
+	
 	/**最小日期字符串*/
 	public static final String FORMATTED_TIMESTR_MINDATE="MinimumDate-";
 	
@@ -30,76 +33,63 @@ public class DateTimeUtils {
 	public static final String FORMATTED_TIMESTR_MAXDATE="MaximumDate-";
 	
 	/**
-	 * 获取合理的时间变量:设置周一为每周第一天，并且设置最少有四天在当年时这个周才为本年第一周
-	 * @return 日历对象
+	 * 获取当前时间的合理变量:设置周一为每周第一天，并且设置最少有四天在当年时这个周才为本年第一周
+	 * @return 合理日历对象
 	 */
 	public static Calendar getValidCalendar() {
 		Calendar cal=Calendar.getInstance();
 		cal.setMinimalDaysInFirstWeek(4);			//最少有四天在当年时这个周才为本年第一周
-		cal.setFirstDayOfWeek(FIRST_DAY_OF_WEEK);		//周一为每周第一天
+		cal.setFirstDayOfWeek(FIRST_DAY_OF_WEEK);	//周一为每周第一天
 		return cal;
 	}
 	
 	/**
-	 * 获取参数中日期对象的所在周的第一天,小时分钟秒皆为0,参数为null则默认判断日期为当前日期
-	 * @param calendar 确定所在所在周的Calendar参数
-	 * @return 所在周第一天的Calendar对象
+	 * 获取指定时间戳的合理变量:设置周一为每周第一天，并且设置最少有四天在当年时这个周才为本年第一周
+	 * @param millsec 指定时间的毫秒时间戳 ，-1为则为当前时间
+	 * @return 合理日历对象
 	 */
-	public static Calendar getFirstDayOfWeek(Calendar calendar) {
-		Calendar cal;
-		if(calendar==null)
-			cal=getValidCalendar();
-		else
-			cal=calendar;
-		Calendar res=getValidCalendar();
-		res.clear();
-		res.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-		res.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR));
-		res.set(Calendar.DAY_OF_WEEK, FIRST_DAY_OF_WEEK);
-		return res;
-	}
-	
-	/**
-	 * getFirstDayOfWeek(Calendar)的Date参数版本
-	 */
-	public static Calendar getFirstDayOfWeek(Date date) {
+	public static Calendar getValidCalendar(long millsec) {
 		Calendar cal=getValidCalendar();
-		if(date==null)
-			cal=null;
-		else
-			cal.setTime(date);
-		return getFirstDayOfWeek(cal);
+		if(millsec>=0) cal.setTimeInMillis(millsec);
+		return cal;
 	}
 	
 	/**
-	 * 获取参数中日期对象的所在月份的第一天,小时分钟秒皆为0,参数为null则默认判断日期为当前日期
-	 * @param calendar 确定所在所在月的Calendar参数
-	 * @return 所在月第一天的Calendar对象
+	 * 清除毫秒时间戳中的小时，分钟，秒，毫秒数据,
+	 * @param millsec 需要清除的毫秒时间戳,如果小于0,则返回当前时间消除后的时间戳
+	 * @return 消除小时，分钟，秒，毫秒数据的毫秒时间戳
 	 */
-	public static Calendar getFirstDayOfMonth(Calendar calendar) {
-		Calendar cal;
-		if(calendar==null)
-			cal=getValidCalendar();
-		else
-			cal=calendar;
-		Calendar res=getValidCalendar();
-		res.clear();
-		res.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-		res.set(Calendar.MONTH, cal.get(Calendar.MONTH));
-		res.set(Calendar.DAY_OF_MONTH, 1);
-		return res;
+	public static long cutHourMinSecMil(long millsec) {
+		Calendar cal=getValidCalendar(millsec);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		return cal.getTimeInMillis();
 	}
 	
 	/**
-	 * getFirstDayOfMonth(Calendar)的Date参数版本
+	 * 获取参数时间戳所在周的第一天,小时分钟秒毫秒设置为0。
+	 * @param millsec 要获取所在周第一天的毫秒时间戳，如果小于0则默认为当前周第一天。
+	 * @return 所在周第一天的毫秒时间戳
 	 */
-	public static Calendar getFirstDayOfMonth(Date date) {
+	public static long getFirstDayOfWeek(long millsec) {
+		Calendar cal=getValidCalendar(cutHourMinSecMil(millsec));
+		cal.set(Calendar.DAY_OF_WEEK, FIRST_DAY_OF_WEEK);
+		return cal.getTimeInMillis();
+	}
+	
+	/**
+	 * 获取参数时间戳所在月的第一天,小时分钟秒毫秒设置为0。
+	 * @param millsec 要获取所在月第一天的毫秒时间戳，如果小于0则默认为当前月第一天。
+	 * @return 参数月第一天的时间戳
+	 */
+	public static long getFirstDayOfMonth(long millsec) {
+		millsec=cutHourMinSecMil(millsec);
 		Calendar cal=getValidCalendar();
-		if(date==null)
-			cal=null;
-		else
-			cal.setTime(date);
-		return getFirstDayOfMonth(cal);
+		cal.setTimeInMillis(millsec);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		return cal.getTimeInMillis();
 	}
 	
 	/**
@@ -124,6 +114,26 @@ public class DateTimeUtils {
 		if(date!=null)
 			cal.setTime(date);
 		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK;
+	}
+	
+	/**
+	 * 获取格式化的时间字符串--年周字符串
+	 * @param year 年数
+	 * @param week 周数
+	 * @return 格式化的年周字符串
+	 */
+	public static String getFormattedTimeStr_YearWeek(int year, int week) {
+		return year+FORMATTED_TIMESTR_YEAR+week+FORMATTED_TIMESTR_WEEK;
+	}
+	
+	/**
+	 * 获取格式化的时间字符串--年数周数星期几
+	 * @param millsec 要格式化的日期时间戳，如果为<0则判断日期为当天
+	 * @return 年数周数星期几
+	 */
+	public static String getFormattedTimeStr_YearWeekWkday(long millsec) {
+		Calendar cal=getValidCalendar(millsec);
+		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK+" "+FORMATTED_TIMESTR_DAYOFWEEK+cal.get(Calendar.DAY_OF_WEEK);
 	}
 	
 	/**

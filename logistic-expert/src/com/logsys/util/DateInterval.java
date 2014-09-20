@@ -13,9 +13,13 @@ public class DateInterval {
 	public Date enddate;
 
 	public DateInterval(Date begindate, Date enddate) {
-		super();
 		this.begindate = begindate;
 		this.enddate = enddate;
+	}
+	
+	public DateInterval(long begindate, long enddate) {
+		this.begindate = new Date(begindate);
+		this.enddate = new Date(enddate);
 	}
 	
 	public DateInterval() {}

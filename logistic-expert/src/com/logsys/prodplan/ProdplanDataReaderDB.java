@@ -89,8 +89,9 @@ public class ProdplanDataReaderDB {
 		}
 		Query query;
 		String hql="select new com.logsys.prodplan.ProdplanContent_PrdLineCombined(date,pn,sum(qty)) from ProdplanContent where 1=1";
-		if(begindate!=null) hql+=" and begindate>=:begin";
-		if(enddate!=null) hql+=" and enddate<=:end"; 
+		if(begindate!=null) hql+=" and date>=:begin";
+		if(enddate!=null) hql+=" and date<=:end"; 
+		hql+=" group by date,pn";
 		List<ProdplanContent_PrdLineCombined> pplist=new ArrayList<ProdplanContent_PrdLineCombined>();
 		try {
 			query=session.createQuery(hql);
@@ -124,7 +125,7 @@ public class ProdplanDataReaderDB {
 			logger.error("´´½¨Session´íÎó:",ex);
 			return null;
 		}
-		String hql="select new com.logsys.prodplan.ProdplanContent_Week(pn,year(date),week(date,3),sum(qty)) from ProdplanContent where 1=1";
+		String hql="select new com.logsys.prodplan.ProdplanContent_Week(pn,substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),sum(qty)) from ProdplanContent where 1=1";
 		if(dinterval!=null) {
 			if(dinterval.begindate!=null) hql+=" and date>=:begin";
 			if(dinterval.enddate!=null) hql+=" and date<=:end";
@@ -136,7 +137,7 @@ public class ProdplanDataReaderDB {
 			hql=hql.substring(0, hql.length()-3);
 			hql+=")";
 		}
-		hql+=" group by year(date),week(date,3),pn";
+		hql+=" group by substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),pn";
 		Query query;
 		try {
 			query=session.createQuery(hql);

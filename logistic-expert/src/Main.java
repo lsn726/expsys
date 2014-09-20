@@ -1,3 +1,5 @@
+import com.logsys.report.ReportProcess;
+
 
 
 public class Main {
@@ -11,7 +13,7 @@ public class Main {
 		//StockProcess.importStockDataFromExcel_SAP_MB52("e:\\stock.xlsx", null);		//导入SAP的MB52库存数据,时间默认null为当天。
 		
 		//ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 35);					//生成MRP矩阵报表，矩阵长度(周数)为第二参数
-		//TODO: 生成SAP上传表
+		//ReportProcess.genSAPMrpUploadReportToExcel("e:\\SAPMrpUploadReport.xlsx", 35);//生成SAP的Mrp上传报告。
 		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",true,false);		//生成需求矩阵报表
 		
 		//BWIWarehouseExcelReport report=BWIWarehouseExcelReport.createReportObject("e:\\rec.xlsx");

@@ -47,13 +47,19 @@ public class ProdplanContent_Week {
 	}
 
 	public ProdplanContent_Week(String pn, int year, int week, double qty) {
-		super();
 		this.pn = pn;
 		this.year = year;
 		this.week = week;
 		this.qty = qty;
 	}
 
+	public ProdplanContent_Week(String pn, String year, String week, double qty) {
+		this.pn = pn;
+		this.year = Integer.valueOf(year);
+		this.week = Integer.valueOf(week);
+		this.qty = qty;
+	}
+	
 	@Override
 	public String toString() {
 		return "ProdplanContent_Week [pn=" + pn + ", year=" + year + ", week="

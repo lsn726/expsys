@@ -102,16 +102,15 @@ public class DemandReportForExcel {
 		matmap_fin=ModelUtil.convModelListToModelMap(matlist_fin);
 		if(matmap_fin==null) return false;
 		Calendar begindate;
-		Calendar nullcal=null;
-		begindate=DateTimeUtils.getFirstDayOfWeek(nullcal);				//按天需求和安周需求起始日期为本周第一天
+		begindate=DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfWeek(-1));	//按天需求和按周需求起始日期为本周第一天
 		dematrix_onday=genDemandMatrix_OnDay(begindate.getTime(),null);		//获取按天需求
 		if(dematrix_onday==null) return false;
 		dematrix_onweek=genDemandMatrix_OnWeek(begindate.getTime(),null);	//获取按周需求
 		if(dematrix_onweek==null) return false;
-		begindate=DateTimeUtils.getFirstDayOfMonth(nullcal);				//按月需求起始日期为本月1日
+		begindate=DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfMonth(-1));	//按月需求起始日期为本月1日
 		dematrix_onmonth=genDemandMatrix_OnMonth(begindate.getTime(),null);	//获取按月需求
 		if(dematrix_onmonth==null) return false;
-		begindate=DateTimeUtils.getFirstDayOfWeek(nullcal);				//需求回溯列表的需求起始日期为本周第一天
+		begindate=DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfWeek(-1));	//需求回溯列表的需求起始日期为本周第一天
 		dematrixmap_backtrace=genDemandMatrix_Backtrace(begindate,null);
 		if(dematrixmap_backtrace==null) return false;
 		return true;
@@ -236,8 +235,8 @@ public class DemandReportForExcel {
 		Calendar begincal;		//开始时间
 		Calendar endcal;		//结束时间
 		//写入列表头，即需求周
-		begincal=DateTimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MINDATE+DemandUtil.TOTAL_STR));	//确认周需求起始日期
-		endcal=DateTimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MAXDATE+DemandUtil.TOTAL_STR));		//确认周需求结束日期
+		begincal=DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MINDATE+DemandUtil.TOTAL_STR).getTime()));	//确认周需求起始日期
+		endcal=DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfWeek(demIntervalMap.get(DemandUtil.PREFIX_MAXDATE+DemandUtil.TOTAL_STR).getTime()));	//确认周需求结束日期
 		for(int counter=1;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)		//遍历日期写入需求周，即列表头
 			for(String pn:btracedemmap.keySet())			//遍历对每个Matrixable写入列表头
 				btracedemmap.get(pn).putColHeaderCell(counter, DateTimeUtils.getFormattedTimeStr_YearWeek(begincal));
@@ -252,8 +251,8 @@ public class DemandReportForExcel {
 				continue;
 			}
 			endcal.setTime(verIntervalMap.get(DemandUtil.PREFIX_MAXDATE+fertpn));	//如果有最小日期，则必然存在最大日期
-			begincal=DateTimeUtils.getFirstDayOfWeek(begincal);	//起始版本日期变为日期所在周的周一
-			endcal=DateTimeUtils.getFirstDayOfWeek(endcal);		//结束版本日期变为日期所在周的周一
+			begincal.setTimeInMillis(DateTimeUtils.getFirstDayOfWeek(begincal.getTimeInMillis()));	//起始版本日期变为日期所在周的周一
+			endcal.setTimeInMillis(DateTimeUtils.getFirstDayOfWeek(endcal.getTimeInMillis()));		//结束版本日期变为日期所在周的周一
 			tempMatrix=btracedemmap.get(fertpn);			//获取正在遍历成品号的矩阵对象
 			for(int counter=0;!begincal.after(endcal);begincal.add(Calendar.WEEK_OF_YEAR, 1),counter++)	//遍历日期写入版本周，即行表头
 				tempMatrix.putRowHeaderCell(counter, DateTimeUtils.getFormattedTimeStr_YearWeek(begincal));
@@ -265,8 +264,8 @@ public class DemandReportForExcel {
 		DemandBackupContent_Week tempcont;
 		for(DemandBackupContent_Week bkupcont:bkupdemwklist) {	//遍历备份需求内容列表，写入回溯矩阵图
 			locator=bkupcont.getPn()+"#"				//生成定位字符串，需要全部以周的第一天做定论
-					+DateTimeUtils.getFormattedTimeStr_YearWeek(DateTimeUtils.getFirstDayOfWeek(bkupcont.getDate()))+"#"
-					+DateTimeUtils.getFormattedTimeStr_YearWeek(DateTimeUtils.getFirstDayOfWeek(bkupcont.getVersion()));
+					+DateTimeUtils.getFormattedTimeStr_YearWeek(DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfWeek(bkupcont.getDate().getTime())))+"#"
+					+DateTimeUtils.getFormattedTimeStr_YearWeek(DateTimeUtils.getValidCalendar(DateTimeUtils.getFirstDayOfWeek(bkupcont.getVersion().getTime())));
 			if(!reqdemmap.containsKey(locator))			//如果没有，即写入
 				reqdemmap.put(locator, bkupcont);
 			else {
@@ -365,7 +364,7 @@ public class DemandReportForExcel {
 		Cell weekdaycell;		//weekday单元格
 		Cell datecell;			//日期单元格
 		Cell weekcell;			//周数单元格
-		Calendar itcal=DateTimeUtils.getValidCalendar();		//正在遍历的日期
+		Calendar itcal=DateTimeUtils.getValidCalendar();	//正在遍历的日期
 		for(int counter=startcol+1;daterow.getCell(counter)!=null;counter++) {	//遍历日期行,写入星期几和周数据
 			datecell=daterow.getCell(counter);
 			itcal.setTime(new Date(datecell.getStringCellValue()));
