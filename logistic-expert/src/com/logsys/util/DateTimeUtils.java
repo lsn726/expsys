@@ -102,8 +102,14 @@ public class DateTimeUtils {
 		if(calendar==null)
 			cal=getValidCalendar();
 		else
-			cal=calendar;
-		return cal.get(Calendar.YEAR)+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK;
+			cal=(Calendar)calendar.clone();
+		int year;			//对第一周进行特别处理，如果是一年的第一周，则必须按照当周的最后一天指定年数
+		if(cal.get(Calendar.WEEK_OF_YEAR)==1) {
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			year=cal.get(Calendar.YEAR);
+		} else
+			year=calendar.get(Calendar.YEAR);
+		return year+FORMATTED_TIMESTR_YEAR+cal.get(Calendar.WEEK_OF_YEAR)+FORMATTED_TIMESTR_WEEK;
 	}
 	
 	/**
