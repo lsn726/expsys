@@ -35,28 +35,28 @@ public class ExcelStockService_SAP_MB52 {
 	private static final int STARTROW=3;
 	
 	/**数据列:PartNumber*/
-	private static final int COL_PN=2;
+	private static final int COL_PN=1;
 	
 	/**数据列:工厂*/
-	private static final int COL_PLANT=1;
+	private static final int COL_PLANT=2;
 	
 	/**数据列:存储位置*/
 	private static final int COL_SLOC=3;
 	
 	/**数据列:非限制区*/
-	private static final int COL_UNS=5;
+	private static final int COL_UNS=6;
 	
 	/**数据列:计量单位*/
-	private static final int COL_UOM=6;
+	private static final int COL_UOM=5;
 	
 	/**数据列:转移中数量*/
-	private static final int COL_INTRAN=10;
+	private static final int COL_INTRAN=7;
 	
 	/**数据列:IQC*/
-	private static final int COL_IQC=7;
+	private static final int COL_IQC=8;
 	
 	/**数据列:隔离数量*/
-	private static final int COL_BLK=8;
+	private static final int COL_BLK=10;
 	
 	/**物料状态:非限制*/
 	public static final String MAT_STATUS_UNS="Unrestricted";
@@ -77,16 +77,17 @@ public class ExcelStockService_SAP_MB52 {
 	private List<StockContent> stocklist;
 	
 	static {
-		validatorMap.put(new Location(1,1), "Plnt");
-		validatorMap.put(new Location(1,2), "Material Number");
-		validatorMap.put(new Location(1,3), "SLoc");
+		validatorMap.put(new Location(1,COL_PN), "Material Number");
+		validatorMap.put(new Location(1,COL_PLANT), "Plnt");
+		validatorMap.put(new Location(1,COL_SLOC), "SLoc");
 		validatorMap.put(new Location(1,4), "SL");
-		validatorMap.put(new Location(1,5), "    Unrestricted");
-		validatorMap.put(new Location(1,6), "BUn");
-		validatorMap.put(new Location(1,7), "In Qual. Insp.");
-		validatorMap.put(new Location(1,8), "       Blocked");
-		validatorMap.put(new Location(1,9), "       Returns");
-		validatorMap.put(new Location(1,10), "    Trans./Tfr");
+		validatorMap.put(new Location(1,COL_UOM), "BUn");
+		validatorMap.put(new Location(1,COL_UNS), "      Unrestricted");
+		validatorMap.put(new Location(1,COL_INTRAN), "   Transit/Transf.");
+		validatorMap.put(new Location(1,COL_IQC), "  In Quality Insp.");
+		validatorMap.put(new Location(1,9), "    Restricted-Use");
+		validatorMap.put(new Location(1,COL_BLK), "           Blocked");
+		validatorMap.put(new Location(1,11), "           Returns");
 	}
 	
 	private ExcelStockService_SAP_MB52(Sheet datasheet) {
