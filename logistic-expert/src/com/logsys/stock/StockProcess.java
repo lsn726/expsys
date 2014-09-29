@@ -20,7 +20,7 @@ public class StockProcess {
 	 */
 	public static int importStockDataFromExcel_SAP_MB52(String filepath,Date stockdate) {
 		ExcelStockService_SAP_MB52 service=ExcelStockService_SAP_MB52.getExcelReader("e:\\stock.xlsx");
-		if(!service.extractStockList(new Date())) {
+		if(!service.extractStockList(stockdate)) {
 			logger.error("提取库存数据时出现错误.操作失败。");
 			return -1;
 		}
