@@ -130,7 +130,7 @@ public class ProductionDataReaderExcel_BWI {
 				return new BWIPdExcelInfoRTA_NeckDown();
 			else if(pline.equals(ProdLine.DAMPER_RTA_KTL))		//[电泳线]
 				return new BWIPdExcelInfoRTA_KTL();
-			else if(pline.equals(ProdLine.DAMPER_RTA_CHAMFER_WASH)||pline.equals(ProdLine.DAMPER_RTA_WASH_POSTNK))	//[倒角]/[缩口前清洗]采用倒角单独配置
+			else if(pline.equals(ProdLine.DAMPER_RTA_CHAMFER_WASH)||pline.equals(ProdLine.DAMPER_RTA_WASH_POSTNK)||pline.equals(ProdLine.DAMPER_RTA_CHAMFER_CUT))	//[倒角]/[缩口前清洗]采用倒角单独配置
 				return new BWIPdExcelInfoRTA_Chemfer();
 			else
 				return new BWIPdExcelInfoRTA();					//其他生产线使用RTA标准提取器
