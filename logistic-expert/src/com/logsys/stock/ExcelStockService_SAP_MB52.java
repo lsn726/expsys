@@ -180,9 +180,11 @@ public class ExcelStockService_SAP_MB52 {
 		String uom;
 		stocklist=new ArrayList<StockContent>();
 		double qty;
+		int rownum=-1;
 		try {
 			for(Row row:stocksheet) {
-				if(row.getRowNum()<STARTROW) continue;
+				rownum=row.getRowNum();
+				if(rownum<STARTROW) continue;
 				row.getCell(COL_PN).setCellType(Cell.CELL_TYPE_STRING);
 				pn=row.getCell(COL_PN).getStringCellValue();
 				plant=row.getCell(COL_PLANT).getStringCellValue();
@@ -203,7 +205,7 @@ public class ExcelStockService_SAP_MB52 {
 					stocklist.add(new StockContent(date,pn,plant,sloc,qty,uom,MAT_STATUS_BLK));
 			}
 		} catch(Exception ex) {
-			logger.error("在读取库存列表时出现错误。",ex);
+			logger.error("在读取库存列表时出现错误。正在处理的行["+rownum+"]",ex);
 			stocklist=null;
 			return false;
 		}
