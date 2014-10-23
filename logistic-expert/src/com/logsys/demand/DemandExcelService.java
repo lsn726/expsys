@@ -171,7 +171,7 @@ public class DemandExcelService {
 				row.getCell(COL_QTY).setCellType(Cell.CELL_TYPE_NUMERIC);
 				node.setQty(row.getCell(COL_QTY).getNumericCellValue());
 			} catch(Throwable ex) {
-				logger.error("不能从工作簿中提取需求数据，提取时出现错误。",ex);
+				logger.error("不能从工作簿中提取需求数据，提取时出现错误。行数["+row.getRowNum()+"]",ex);
 				return false;
 			}
 			demlist.add(node);
