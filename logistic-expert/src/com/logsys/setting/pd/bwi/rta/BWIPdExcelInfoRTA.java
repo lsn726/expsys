@@ -193,6 +193,10 @@ public class BWIPdExcelInfoRTA extends BWIPdExcelInfo {
 		PRODMAP_LOC_INTERVAL.put(new Location(36,58), new ProductionInterval(PdInterval.Night7,31,0,32,0,60));		//需要目视确认
 		PRODMAP_LOC_INTERVAL.put(new Location(37,58), new ProductionInterval(PdInterval.Night7,31,0,32,0,60));		//需要目视确认
 		PRODMAP_LOC_INTERVAL.put(new Location(38,58), new ProductionInterval(PdInterval.Night7,31,0,32,0,60));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(39,58), new ProductionInterval(PdInterval.Night8,32,0,32,15,15));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(40,58), new ProductionInterval(PdInterval.Night8,32,0,32,15,15));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(41,58), new ProductionInterval(PdInterval.Night8,32,0,32,15,15));		//需要目视确认
+		PRODMAP_LOC_INTERVAL.put(new Location(42,58), new ProductionInterval(PdInterval.Night8,32,0,32,15,15));		//需要目视确认
 	}
 
 	@Override

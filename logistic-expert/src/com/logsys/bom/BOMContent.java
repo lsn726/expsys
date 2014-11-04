@@ -1,28 +1,33 @@
 package com.logsys.bom;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
- * BOM内容类，对应数据库的bom表bean
+ * 数据库BOM表的Bean对象
  * @author lx8sn6
  */
 public class BOMContent {
 
+	/**主键*/
 	private int id;
 	
-	private int lvl;
+	/**组装件物料号*/
+	private String asmpn;
 	
-	private String pn;
+	/**工厂*/
+	private String plant;
 	
+	/**用于组装组装件的子零件物料号*/
+	private String subpn;
+	
+	/**消耗数量*/
 	private double qty;
 	
-	private String unit;
+	/**计量单位*/
+	private String uom;
 	
-	private Date version;
-
-	public BOMContent() {
-		super();
-	}
+	/**BOM版本*/
+	private Calendar version;
 
 	public int getId() {
 		return id;
@@ -32,20 +37,28 @@ public class BOMContent {
 		this.id = id;
 	}
 
-	public int getLvl() {
-		return lvl;
+	public String getAsmpn() {
+		return asmpn;
 	}
 
-	public void setLvl(int lvl) {
-		this.lvl = lvl;
+	public void setAsmpn(String asmpn) {
+		this.asmpn = asmpn;
 	}
 
-	public String getPn() {
-		return pn;
+	public String getPlant() {
+		return plant;
 	}
 
-	public void setPn(String pn) {
-		this.pn = pn;
+	public void setPlant(String plant) {
+		this.plant = plant;
+	}
+
+	public String getSubpn() {
+		return subpn;
+	}
+
+	public void setSubpn(String subpn) {
+		this.subpn = subpn;
 	}
 
 	public double getQty() {
@@ -56,19 +69,19 @@ public class BOMContent {
 		this.qty = qty;
 	}
 
-	public String getUnit() {
-		return unit;
+	public String getUom() {
+		return uom;
 	}
 
-	public void setUnit(String unit) {
-		this.unit = unit;
+	public void setUom(String uom) {
+		this.uom = uom;
 	}
 
-	public Date getVersion() {
+	public Calendar getVersion() {
 		return version;
 	}
 
-	public void setVersion(Date version) {
+	public void setVersion(Calendar version) {
 		this.version = version;
 	}
 	

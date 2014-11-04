@@ -53,7 +53,7 @@ public class BWIPLInfo {
 		/**减震器--RTA--Cutting and Chamfering*/
 		DAMPER_RTA_CHAMFER_CUT,
 		/**减震器--RTA--Leak Test and Washing*/
-		DAMPER_RTA_LEAKTEST_WASH,
+		DAMPER_RTA_LEAKTEST_WASH_0041,
 		/**减震器--RTA--Leak Test and Washing--New--0851*/
 		DAMPER_RTA_LEAKTEST_WASH_0851,
 		/**减震器--RTA--Spring Seat and Bracket Welding*/
@@ -88,6 +88,10 @@ public class BWIPLInfo {
 		DAMPER_PR_CNC0808,
 		/**减震器--PR--CNC 0809*/
 		DAMPER_PR_CNC0809,
+		/**减震器--PR--CNC 0809*/
+		DAMPER_PR_CNC0810,
+		/**减震器--PR--CNC 0809*/
+		DAMPER_PR_CNC0811,
 		/**减震器--PR--Grinding Before Cr-Plating 1*/
 		DAMPER_PR_GRINDING_PRECR1,
 		/**减震器--PR--Grinding Before Cr-Plating 2*/
@@ -132,7 +136,7 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_REARWELDCELL, "DamperRTA Rear Weld Cell");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_WASH, "DamperRTA Chamfer Wash");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_CUT, "DamperRTA Chamfer Cut");
-		STDNAME_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH, "DamperRTA LeakTest Wash");
+		STDNAME_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH_0041, "DamperRTA LeakTest Wash 0041");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH_0851, "DamperRTA LeakTest Wash 0851");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_SEATBRACKET_WELD, "DamperRTA Seat Bracket Weld");
 		STDNAME_MAP.put(ProdLine.DAMPER_RTA_PUNCHING, "DamperRTA Punching");
@@ -151,6 +155,8 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_CNC0807, "DamperPR CNC0807");
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_CNC0808, "DamperPR CNC0808");
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_CNC0809, "DamperPR CNC0809");
+		STDNAME_MAP.put(ProdLine.DAMPER_PR_CNC0810, "DamperPR CNC0810");
+		STDNAME_MAP.put(ProdLine.DAMPER_PR_CNC0811, "DamperPR CNC0811");
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_GRINDING_PRECR1, "DamperPR Grinding Pre Cr 1");
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_GRINDING_PRECR2, "DamperPR Grinding Pre Cr 2");
 		STDNAME_MAP.put(ProdLine.DAMPER_PR_CR_PLATING, "DamperPR Cr Plating");
@@ -174,7 +180,7 @@ public class BWIPLInfo {
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_REARWELDCELL, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_WASH, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_CHAMFER_CUT, ProdLine.DAMPER_ZONE_RTA);
-		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH, ProdLine.DAMPER_ZONE_RTA);
+		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH_0041, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_LEAKTEST_WASH_0851, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_SEATBRACKET_WELD, ProdLine.DAMPER_ZONE_RTA);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_RTA_PUNCHING, ProdLine.DAMPER_ZONE_RTA);
@@ -193,6 +199,8 @@ public class BWIPLInfo {
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_CNC0807, ProdLine.DAMPER_ZONE_PR);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_CNC0808, ProdLine.DAMPER_ZONE_PR);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_CNC0809, ProdLine.DAMPER_ZONE_PR);
+		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_CNC0810, ProdLine.DAMPER_ZONE_PR);
+		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_CNC0811, ProdLine.DAMPER_ZONE_PR);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_GRINDING_PRECR1, ProdLine.DAMPER_ZONE_PR);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_GRINDING_PRECR2, ProdLine.DAMPER_ZONE_PR);
 		LINE_ZONE_MAP.put(ProdLine.DAMPER_PR_CR_PLATING, ProdLine.DAMPER_ZONE_PR);
@@ -224,6 +232,8 @@ public class BWIPLInfo {
 		ALIAS_LINE_MAP.put("机加工CNC 0807生产线", ProdLine.DAMPER_PR_CNC0807);
 		ALIAS_LINE_MAP.put("机加工CNC 0808生产线", ProdLine.DAMPER_PR_CNC0808);
 		ALIAS_LINE_MAP.put("机加工CNC 0809生产线", ProdLine.DAMPER_PR_CNC0809);
+		ALIAS_LINE_MAP.put("机加工CNC 0810生产线", ProdLine.DAMPER_PR_CNC0810);
+		ALIAS_LINE_MAP.put("机加工CNC 0811生产线", ProdLine.DAMPER_PR_CNC0811);
 		//**************RTA生产线别名->生产线枚举 映射图初始化*************
 		ALIAS_LINE_MAP.put("热成型焊接生产线HBF0031", ProdLine.DAMPER_RTA_HBF0031);
 		ALIAS_LINE_MAP.put("热成型焊接生产线HBF（0031）", ProdLine.DAMPER_RTA_HBF0031);
@@ -236,7 +246,7 @@ public class BWIPLInfo {
 		ALIAS_LINE_MAP.put("后焊接生产线Rear Welding Cell", ProdLine.DAMPER_RTA_REARWELDCELL);
 		ALIAS_LINE_MAP.put("倒角清洗 Chamfering&Washing(Cham)", ProdLine.DAMPER_RTA_CHAMFER_WASH);
 		ALIAS_LINE_MAP.put("倒角清洗 Chamfering&Washing(Cut)", ProdLine.DAMPER_RTA_CHAMFER_CUT);
-		ALIAS_LINE_MAP.put("测漏清洗Leak test&Washing", ProdLine.DAMPER_RTA_LEAKTEST_WASH);
+		ALIAS_LINE_MAP.put("测漏清洗Leak test&Washing(0041)", ProdLine.DAMPER_RTA_LEAKTEST_WASH_0041);
 		ALIAS_LINE_MAP.put("测漏清洗Leak test&Washing(0851)", ProdLine.DAMPER_RTA_LEAKTEST_WASH_0851);
 		ALIAS_LINE_MAP.put("弹簧盘（支架）焊接生产线S/Seat(Bracket) Welding Cell", ProdLine.DAMPER_RTA_SEATBRACKET_WELD);
 		ALIAS_LINE_MAP.put("打孔生产线Punching Cell", ProdLine.DAMPER_RTA_PUNCHING);

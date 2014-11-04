@@ -9,23 +9,12 @@
 		<id name="id" column="id">
 			<generator class="increment"/>
 		</id>
-		<property name="lvl" type="int" column="lvl" />
-		<property name="pn" type="string" column="pn" />
+		<property name="asmpn" type="string" column="asmpn" />
+		<property name="plant" type="string" column="plant" />
+		<property name="subpn" type="string" column="subpn" />
 		<property name="qty" type="double" column="qty" />
-		<property name="unit" type="string" column="unit" />
-		<property name="version" type="date" column="version" />
-	</class>
-
-	<class name="BOMBackupContent" table="bom_backup">
-		<id name="id" column="id">
-			<generator class="increment"/>
-		</id>
-		<property name="lvl" type="int" column="lvl" />
-		<property name="pn" type="string" column="pn" />
-		<property name="qty" type="double" column="qty" />
-		<property name="unit" type="string" column="unit" />
-		<property name="version" type="date" column="version" />
-		<property name="validto" type="date" column="validto" />
+		<property name="uom" type="string" column="uom" />
+		<property name="version" type="calendar_date" column="version" />
 	</class>
 
 </hibernate-mapping>
