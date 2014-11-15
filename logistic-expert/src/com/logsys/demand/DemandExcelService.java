@@ -2,6 +2,7 @@ package com.logsys.demand;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.logsys.hibernate.HibernateSessionFactory;
 import com.logsys.model.ModelContent;
 import com.logsys.model.ModelService;
 import com.logsys.util.DateInterval;
+import com.logsys.util.DateTimeUtils;
 
 /**
  * Demand导入时Excel表格的封装服务
@@ -236,6 +238,22 @@ public class DemandExcelService {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * 需求区间核实，提示用户写入的区间。
+	 * @return 用户确认区间正确并写入数据True/用户取消数据写入false
+	 */
+	private boolean demandIntervalValidation() {
+		if(demandInterval==null) {
+			logger.error("不能进行需求区间确认，需求区间对象为空。");
+			return false;
+		}
+		Calendar cal=DateTimeUtils.getValidCalendar();
+		cal.setTimeInMillis(DateTimeUtils.cutHourMinSecMil(cal.getTimeInMillis()));
+		String periodBeforeToday;		//本天之前的区间字符串
+		String periodValid;				//合理的区间字符串
+		
 	}
 	
 	/**

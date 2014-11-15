@@ -6,6 +6,9 @@ package com.logsys.util;
  */
 public class Location {
 
+	/**用于计算hashCode的质数因素*/
+	private static final int PRIME_FACTOR=10007;
+	
 	//行变量
 	public int column;
 	
@@ -20,10 +23,9 @@ public class Location {
 	public Location() {}
 	
 	public int hashCode() {
-		final int prime=10007;
 		int result=1;
-		result=result*prime+column;
-		result=result*prime+row;
+		result=result*PRIME_FACTOR+column;
+		result=result*PRIME_FACTOR+row;
 		return result;
 	}
 	

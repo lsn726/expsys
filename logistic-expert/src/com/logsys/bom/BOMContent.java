@@ -8,6 +8,9 @@ import java.util.Calendar;
  */
 public class BOMContent {
 
+	/**用于计算hashcode的质数因素*/
+	private static int PRIME_FACTOR=16823;
+	
 	/**主键*/
 	private int id;
 	
@@ -83,6 +86,21 @@ public class BOMContent {
 
 	public void setVersion(Calendar version) {
 		this.version = version;
+	}
+	
+	public int hashCode() {
+		int prime=1;
+		prime=prime*PRIME_FACTOR+id;
+		prime=prime*PRIME_FACTOR+(int)Math.round(qty);
+		prime=prime*PRIME_FACTOR+asmpn.hashCode();
+		prime=prime*PRIME_FACTOR+subpn.hashCode();
+		prime=prime*PRIME_FACTOR+plant.hashCode()+uom.hashCode();
+		return prime;
+	}
+	
+	public boolean equals(Object obj) {
+		if(this.hashCode()==obj.hashCode()) return true;
+		else return false;
 	}
 	
 }
