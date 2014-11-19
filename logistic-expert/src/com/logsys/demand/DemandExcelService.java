@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -218,6 +220,7 @@ public class DemandExcelService {
 	
 	/**
 	 * 对于数据的后期修订。本步骤会根据业务需要而更改原有数据或者其衍生数据。
+	 * 第一步：向用户核实需求的区间
 	 * 第一步：合并重复的需求节点
 	 * 第二步：更新发货天数修正数据
 	 * @return 成功true/失败false
@@ -225,6 +228,10 @@ public class DemandExcelService {
 	private boolean reviseData() {
 		if(demandlist==null) {
 			logger.error("不能修正需求列表，列表尚未被初始化。");
+			return false;
+		}
+		if(!demandIntervalValidation()) {
+			logger.error("核实需求区间时，用户取消数据写入。");
 			return false;
 		}
 		int recordMerged=mergeDuplicatedPnDateRecord();		//第一步：合并重复的需求节点
@@ -251,9 +258,17 @@ public class DemandExcelService {
 		}
 		Calendar cal=DateTimeUtils.getValidCalendar();
 		cal.setTimeInMillis(DateTimeUtils.cutHourMinSecMil(cal.getTimeInMillis()));
-		String periodBeforeToday;		//本天之前的区间字符串
-		String periodValid;				//合理的区间字符串
-		
+		String periodBeforeToday="";	//本天之前的区间字符串
+		String periodValid="";			//合理的区间字符串
+		DateInterval tempitval;			//时间区间对象
+		for(String pn:demandInterval.keySet()) {	//遍历确认区间
+			tempitval=demandInterval.get(pn);
+			if(tempitval.begindate.before(cal.getTime()))	//如果开始日期在当前日期之前
+				periodBeforeToday+="Part Number: ["+pn+"] "+tempitval+"\n";
+			else
+				periodValid+="Part Number: ["+pn+"] "+tempitval+"\n";
+		}
+		return JOptionPane.showConfirmDialog(null,"开始区间位于今天之前的型号:\n"+periodBeforeToday+"开始区间位于今天或者之后的型号:\n"+periodValid,"是否继续将需求数据写入数据库?",JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION;
 	}
 	
 	/**

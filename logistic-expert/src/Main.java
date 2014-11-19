@@ -1,3 +1,6 @@
+import com.logsys.bom.BOMNode;
+import com.logsys.bom.BOMService;
+
 
 
 public class Main {
@@ -19,6 +22,8 @@ public class Main {
 		//TODO:StockDataReaderExcel继续完善
 		//TODO:为所有Process加入SystemUtils.getUniqueMachineID()
 		//System.out.println(SystemUtils.getUniqueMachineID());
+		BOMNode test=BOMService.getBomByAsmPn(null, "22271789", BOMService.BOM_LEVEL_MULTI);
+		System.out.println(BOMService.getBomNodeInfo(test));
 	}
 
 }

@@ -79,7 +79,7 @@ public class BOMService {
 			for(Calendar cal:bommap.keySet())
 				if(cal.after(version)) version=cal;
 		}
-		return getBomByAsmPnRecursion(version,asmpn,bomtype,0);		//作为第0级别开始遍历
+		return getBomByAsmPnRecursion(version,asmpn,bomtype,1);		//作为第0级别开始遍历
 	}
 	
 	/**
@@ -99,18 +99,63 @@ public class BOMService {
 		if(!asmbommap.containsKey(asmpn))		//如果不包含该BOM的子结构，则确认为底层的BOM结构
 			return null;
 		List<BOMContent> subnodelist=asmbommap.get(asmpn);
-		BOMNode firstnode;						//第一节点
-		BOMNode indexnode;						//遍历节点
+		if(subnodelist.size()==0) 					//如果没有子BOM,则返回null
+			return null;
+		BOMNode firstnode=null;						//第一节点
+		BOMNode indexnode=null;						//遍历节点
+		BOMNode lastnode=null;						//上次遍历的节点
+		BOMNode subnode=null;						//子节点
 		String subpn;
 		for(BOMContent bcont:subnodelist) {		//遍历子键列表，遍历创建BOMNode
 			subpn=bcont.getSubpn();
 			if(bomtype==BOM_LEVEL_SINGLE)		//如果为单级BOM，则直接返回BOM对象
 				indexnode=new BOMNode(bcont,bomlevel);
 			else if(bomtype==BOM_LEVEL_MULTI) {	//如果为多级BOM，则需要递归调用，确认子层级BOM
-				indexnode=getBomByAsmPnRecursion(version,subpn,bomtype,bomlevel);
-				
+				indexnode=new BOMNode(bcont,bomlevel);
+				subnode=getBomByAsmPnRecursion(version,subpn,bomtype,bomlevel+1);
+				if(subnode!=null)				//如果有下层结构，则设置为子结构
+					indexnode.setSubnode(subnode);
 			}
+			if(firstnode==null)					//如果第一节点为空，则将遍历节点设置为第一节点
+				firstnode=indexnode;
+			else {								//如果不是第一节点，则将上一遍历节点的nextnode设置为本次遍历节点
+				lastnode.setNextnode(indexnode);
+				indexnode.setPrevnode(lastnode);
+			}
+			lastnode=indexnode;					//将本次节点设置为当前节点
 		}
+		return firstnode;
+	}
+	
+	/**
+	 * 获取本Node节点下的信息，包含所有统计节点和子节点。
+	 * @return 节点信息字符串
+	 */
+	public static String getBomNodeInfo(BOMNode node) {
+		if(node==null) return null;
+		String nodestr="";
+		int level=0;
+		int index=0;
+		while(node.getNextnode()!=null) {		//只要node还有下一个节点就要继续遍历
+			level=node.getLevel();
+			index=0;
+			while(index<node.getLevel()) {		//先写入level信息
+				nodestr+='-';
+				index++;
+			}
+			nodestr+=level;
+			nodestr+='[';
+			nodestr+=("ASMPN="+node.getBcont().getAsmpn()+"\t");
+			nodestr+=("SUBPN="+node.getBcont().getSubpn()+"\t");
+			nodestr+=("Qty="+node.getBcont().getQty()+"\t");
+			nodestr+=("Uom="+node.getBcont().getUom()+"\t");
+			nodestr+="\n";
+			if(node.getSubnode()!=null)
+				nodestr+=getBomNodeInfo(node.getSubnode());		//如果有子node，则遍递归遍历子node
+			node=node.getNextnode();
+		}
+		return nodestr;
 	}
 
+	
 }

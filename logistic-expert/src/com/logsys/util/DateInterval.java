@@ -23,5 +23,11 @@ public class DateInterval {
 	}
 	
 	public DateInterval() {}
+
+	@Override
+	public String toString() {
+		return "DateInterval [begindate=" + begindate + ", enddate=" + enddate
+				+ "]";
+	}
 	
 }
