@@ -136,7 +136,7 @@ public class BOMService {
 		String nodestr="";
 		int level=0;
 		int index=0;
-		while(node.getNextnode()!=null) {		//只要node还有下一个节点就要继续遍历
+		while(node!=null) {		//只要node还有下一个节点就要继续遍历
 			level=node.getLevel();
 			index=0;
 			while(index<node.getLevel()) {		//先写入level信息
@@ -144,8 +144,7 @@ public class BOMService {
 				index++;
 			}
 			nodestr+=level;
-			nodestr+='[';
-			nodestr+=("ASMPN="+node.getBcont().getAsmpn()+"\t");
+			nodestr+=("\tASMPN="+node.getBcont().getAsmpn()+"\t");
 			nodestr+=("SUBPN="+node.getBcont().getSubpn()+"\t");
 			nodestr+=("Qty="+node.getBcont().getQty()+"\t");
 			nodestr+=("Uom="+node.getBcont().getUom()+"\t");

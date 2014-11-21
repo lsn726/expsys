@@ -7,7 +7,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//DemandProcess.importDemandFromExcel("e:\\dem.xlsx");							//从Excel文件导入新需求
-		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\pp.xlsx", new Date("2014/11/17"), new Date("2015/1/4"),true));	//上传从下周一开始的计划
+		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\pp.xlsx", new Date("2014/11/24"), new Date("2015/1/4"),true));	//上传从下周一开始的计划
 		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\fa2.xls", -1);	//将生产日报导入数据库。《《将导入所有数据》》
 		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\201410.xlsx");		//将SAP的mb51命令倒出的物料操作数据写入数据库
 		//StockProcess.importStockDataFromExcel_SAP_MB52("e:\\stock.xlsx",null);		//导入SAP的MB52库存数据,时间默认null为当天。
@@ -22,8 +22,8 @@ public class Main {
 		//TODO:StockDataReaderExcel继续完善
 		//TODO:为所有Process加入SystemUtils.getUniqueMachineID()
 		//System.out.println(SystemUtils.getUniqueMachineID());
-		BOMNode test=BOMService.getBomByAsmPn(null, "22271789", BOMService.BOM_LEVEL_MULTI);
-		System.out.println(BOMService.getBomNodeInfo(test));
+		//BOMNode test=BOMService.getBomByAsmPn(null, "22271371", BOMService.BOM_LEVEL_MULTI);
+		//System.out.println(BOMService.getBomNodeInfo(test));
 	}
 
 }
