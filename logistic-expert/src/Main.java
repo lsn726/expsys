@@ -4,9 +4,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		//DemandProcess.importDemandFromExcel("e:\\dem.xlsx");							//从Excel文件导入新需求
-		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\pp.xlsx", new Date("2014/11/24"), new Date("2015/1/4"),true));	//上传从下周一开始的计划
-		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\fa2.xls", -1);	//将生产日报导入数据库。《《将导入所有数据》》
-		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\201410.xlsx");		//将SAP的mb51命令倒出的物料操作数据写入数据库
+		//System.out.println(ProdplanProcess.importProdplanFromExcel("e:\\pp.xlsx", new Date("2014/12/1"), new Date("2015/1/4"),true));	//上传从下周一开始的计划
+		//ProductionProcess.extractOutputDataFromPdExcelFileToDB("E:\\rwc.xls", -1);	//将生产日报导入数据库。《《将导入所有数据》》
+		//MatOperDocContentProcess.importSAPMb51ExcelFileIntoDB("e:\\201411.xlsx");		//将SAP的mb51命令倒出的物料操作数据写入数据库
 		//StockProcess.importStockDataFromExcel_SAP_MB52("e:\\stock.xlsx",null);		//导入SAP的MB52库存数据,时间默认null为当天。
 		
 		//ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 35);					//生成MRP矩阵报表，矩阵长度(周数)为第二参数

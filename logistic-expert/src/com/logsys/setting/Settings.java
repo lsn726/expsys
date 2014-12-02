@@ -1,7 +1,7 @@
 package com.logsys.setting;
 
 import com.logsys.setting.pp.bwi.BWIPPExcelInfo;
-import com.logsys.setting.pp.bwi.BWIPPExcelInfo20140715;
+import com.logsys.setting.pp.bwi.BWIPPExcelInfo20141128;
 
 /**
  * 设置类
@@ -19,7 +19,7 @@ public class Settings {
 	public static class BWISettings {
 		
 		/**生产计划Excel表格配置类*/
-		public static final BWIPPExcelInfo ppExcelInfo=new BWIPPExcelInfo20140715();
+		public static final BWIPPExcelInfo ppExcelInfo=new BWIPPExcelInfo20141128();
 		
 	}
 	

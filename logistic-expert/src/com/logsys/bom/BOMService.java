@@ -156,5 +156,15 @@ public class BOMService {
 		return nodestr;
 	}
 
+	/**
+	 * 获取subpn用于哪个组装件的列表
+	 * @param version BOM版本,null则默认为最新版本
+	 * @param subpn 需要获取组装所用的subpn
+	 * @param bomtype bom类型
+	 * @return 包含where used的BOMNode对象，顶级为最高级别的Node，底层为subpn的Node
+	 */
+	public static BOMNode getWhereUsedList(Calendar version, String subpn, int bomtype) {
+		return null;
+	}
 	
 }

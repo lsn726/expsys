@@ -2,8 +2,6 @@ package com.logsys.matoperdoc;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +28,7 @@ public class MatOperDocContentSAPExcelReaderMB51 {
 	private static final Map<Location,String> excelValidatorMap=new HashMap<Location,String>();
 	
 	/**Excel表中的日期格式转换器*/
-	private static final DateFormat dateformat=new SimpleDateFormat("yyyy.MM.dd");
+	//private static final DateFormat dateformat=new SimpleDateFormat("yyyy.MM.dd");
 	
 	/**正式记录开始行数*/
 	private static final int ROW_BEGIN=3;
@@ -172,7 +170,8 @@ public class MatOperDocContentSAPExcelReaderMB51 {
 			operdoc.setMvtype(row.getCell(COL_MVMTYPE).getStringCellValue());
 			row.getCell(COL_DOCNUM).setCellType(Cell.CELL_TYPE_STRING);
 			operdoc.setDocnum(row.getCell(COL_DOCNUM).getStringCellValue());
-			operdoc.setPostdate(dateformat.parse(row.getCell(COL_PSTDATE).getStringCellValue()));
+			//operdoc.setPostdate(dateformat.parse(row.getCell(COL_PSTDATE).getStringCellValue()));
+			operdoc.setPostdate(row.getCell(COL_PSTDATE).getDateCellValue());
 			if(row.getCell(COL_QTY)!=null)
 				operdoc.setQty(row.getCell(COL_QTY).getNumericCellValue());
 			if(row.getCell(COL_UOM)!=null)
@@ -195,7 +194,7 @@ public class MatOperDocContentSAPExcelReaderMB51 {
 			}
 			return operdoc;
 		} catch(Throwable ex) {
-			logger.error("不能从行对象中提取物料操作记录:",ex);
+			logger.error("不能从行对象中提取物料操作记录,为第["+row.getRowNum()+"]行。",ex);
 			return null;
 		}
 	}
