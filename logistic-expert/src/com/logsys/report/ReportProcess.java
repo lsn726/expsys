@@ -23,9 +23,10 @@ public class ReportProcess {
 	/**
 	 * 产生MRP矩阵报告并写入Excel表格
 	 * @param weeknum 需求表格长度
+	 * @param filldem 是否将空余的生产计划项填入客户需求,true需要将空位填入客户需求/false则不需填入需求
 	 * @return 成功true/失败false
 	 */
-	public static boolean genMRPMatrixToExcel(String filepath,int weeknum) {
+	public static boolean genMRPMatrixToExcel(String filepath,int weeknum, boolean filldem) {
 		//if(!SystemUtils.getUniqueMachineID().equals(Settings.AUT_MACHINE_STR)) {
 		//	logger.error("程序结构损坏，程序无法运行。");
 		//	return false;
@@ -40,7 +41,7 @@ public class ReportProcess {
 			return false;
 		}
 		MrpReportForExcel mrpreport=new MrpReportForExcel();		//产生MRP报表对象
-		Matrixable demmatrix=mrpreport.getDemandMatrix(weeknum); 	//生成报表对象
+		Matrixable demmatrix=mrpreport.getDemandMatrix(weeknum,filldem); 	//生成报表对象
 		if(demmatrix==null) {
 			logger.error("不能产生需求矩阵并写入Excel，需求矩阵生成失败。");
 			return false;

@@ -41,6 +41,7 @@ import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_Chemfer;
 import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_KTL;
 import com.logsys.setting.pd.bwi.rta.BWIPdExcelInfoRTA_NeckDown;
 import com.logsys.util.Location;
+import com.logsys.util.alias.AliasService;
 
 /**
  * 生产数据提取器，从Excel提取
@@ -97,7 +98,7 @@ public class ProductionDataReaderExcel_BWI {
 			}
 			List<ProductionContent> pcontlist=new ArrayList<ProductionContent>();
 			List<ProductionContent> temp;						//临时变量
-			for(;daycounter<=maxday;daycounter++) {	//开始遍历
+			for(;daycounter<=maxday;daycounter++) {				//开始遍历
 				sheet=wb.getSheet(String.valueOf(daycounter));	//按照日期便利天数的Sheet
 				if(sheet==null) break;							//当便利到没有Sheet时，说明本月已经遍历完成
 				if(!verifySheet(sheet,excelinfo)) {				//验证Sheet
@@ -241,7 +242,8 @@ public class ProductionDataReaderExcel_BWI {
 			tempcont=new ProductionContent();
 			try {
 				oripn=sheet.getRow(loc.row).getCell(loc.column+BWIPdExcelInfo.RELCOL_PARTNUM_OUTPUTQTY).getStringCellValue();	//提取产出产品
-				stdpn=excelinfo.getProdAliasStdPnMap().get(oripn);	//获得产出产品标准名
+				//stdpn=excelinfo.getProdAliasStdPnMap().get(oripn);	//获得产出产品标准名[ORI]
+				stdpn=AliasService.getStdNameByAliasName(oripn);
 				if(stdpn==null) {
 					logger.error("不能提取生产数据：Sheet["+sheet.getSheetName()+"]Row["+loc.row+"]Column["+(loc.column+BWIPdExcelInfo.RELCOL_PARTNUM_OUTPUTQTY)+"]单元格提取的别名["+oripn+"]没有标准名。");
 					return null;

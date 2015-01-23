@@ -73,9 +73,10 @@ public class MrpReportForExcel {
 	 * 矩阵值：需求数量
 	 * 原则：有计划，放计划；没计划，放需求；有产出，拿计划/需求减去产出
 	 * @param weeknum 出现在矩阵中需求的周数，必须大于0
+	 * @param filldem 是否将有生产计划的周数中，没有计划的型号以需求代替。True代替/False不代替
 	 * @return 需求矩阵
 	 */
-	public Matrixable getDemandMatrix(int weeknum) {
+	public Matrixable getDemandMatrix(int weeknum, boolean filldem) {
 		init();
 		if(weeknum<=0) {
 			logger.error("不能产生需求矩阵，需求周数必须大于0。");
@@ -117,7 +118,7 @@ public class MrpReportForExcel {
 		int year=begin.get(Calendar.YEAR);						//年
 		int week=begin.get(Calendar.WEEK_OF_YEAR);				//周
 		for(int index=0;index<weeknum;index++)	{				//将年和周数写入列表头
-			if(week-begin.get(Calendar.WEEK_OF_YEAR)>=51 && year-begin.get(Calendar.YEAR)==0)	//特别处理A年52周后一周，本应为A+1年第一周，却由于当周开始日期在A年，显示为A年第一周的情况
+			if((week==1 && begin.get(Calendar.MONTH)==Calendar.DECEMBER)/** || (week-begin.get(Calendar.WEEK_OF_YEAR)>=51 && year-begin.get(Calendar.YEAR)==0)*/)	//特别处理A年52周后一周，本应为A+1年第一周，却由于当周开始日期在A年，显示为A年第一周的情况
 				year++;
 			else
 				year=begin.get(Calendar.YEAR);
@@ -153,6 +154,14 @@ public class MrpReportForExcel {
 			}
 			//System.out.println(wkdem.getPn()+"["+rowindex+"]/["+colindex+"]/["+wkdem.getQty()+"]");
 			demandMatrix.setData(rowindex, colindex, Math.ceil(wkdem.getQty()*mrpfactor/100.0/roundvalue)*roundvalue);	//根据位置写入数据
+		}
+		//写入矩阵数据之前进行清空所在列需求的操作
+		if(!filldem) {				//如果不需要用使用需求替代空余的生产计划，则需要先行删除计划所在周的所有需求数据。
+			Set<Integer> ppcolset=new HashSet<Integer>();		//需要删除的所在列的集
+			for(ProdplanContent_Week wkpp:ppwklist)
+				ppcolset.add(demandMatrix.getColPosByColHeader(String.format("%dwk%02d",wkpp.getYear(),wkpp.getWeek())));
+			for(int col:ppcolset)
+				demandMatrix.cleanCol(col);
 		}
 		//写入矩阵数据：Prodplan代替Demand
 		for(ProdplanContent_Week wkpp:ppwklist) {

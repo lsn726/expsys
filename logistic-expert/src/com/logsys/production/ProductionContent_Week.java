@@ -23,6 +23,14 @@ public class ProductionContent_Week {
 		this.output = output;
 		this.qty = qty;
 	}
+	
+	public ProductionContent_Week(String workcenter, String year, String week, String output, double qty) {
+		this.workcenter = workcenter;
+		this.year = Integer.parseInt(year);
+		this.week = Integer.parseInt(week);
+		this.output = output;
+		this.qty = qty;
+	}
 
 	public String getWorkcenter() {
 		return workcenter;

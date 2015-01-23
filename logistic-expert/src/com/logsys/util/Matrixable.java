@@ -1,7 +1,9 @@
 package com.logsys.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -123,6 +125,52 @@ public class Matrixable {
 		if(datamap.containsKey(keyloc))
 			logger.warn("数据矩阵中已经存在位置对象["+keyloc+"],原有数据将被覆盖。");
 		datamap.put(keyloc, data);
+	}
+	
+	/**
+	 * 清空所在行
+	 * @param delrow 需要清空的行数
+	 * @return 清空成功true/清空失败false
+	 */
+	public boolean cleanRow(int delrow) {
+		if(delrow<0) {
+			logger.error("不能清空矩阵对象所在行["+delrow+"], 行数不能为负值。");
+			return false;
+		}
+		int counter=0;
+		Set<Location> removeloc=new HashSet<Location>();
+		for(Location loc:datamap.keySet())	//遍历数据地图，删除指定所在行的数据
+			if(loc.row==delrow)
+				removeloc.add(loc);
+		for(Location loc:removeloc) {
+			datamap.remove(loc);
+			counter++;
+		}
+		logger.info("已经从矩阵对象中删除指定行["+delrow+"]的数据共计["+counter+"]条。");
+		return true;
+	}
+	
+	/**
+	 * 清空所在列
+	 * @param delcol 需要清空的列数
+	 * @return 清空成功true/清空失败false
+	 */
+	public boolean cleanCol(int delcol) {
+		if(delcol<0) {
+			logger.error("不能清空矩阵对象所在列["+delcol+"], 列数不能为负值。");
+			return false;
+		}
+		int counter=0;
+		Set<Location> removeloc=new HashSet<Location>();
+		for(Location loc:datamap.keySet())	//遍历数据地图，删除指定所在行的数据
+			if(loc.column==delcol)
+				removeloc.add(loc);
+		for(Location loc:removeloc) {
+			datamap.remove(loc);
+			counter++;
+		}
+		logger.info("已经从矩阵对象中删除指定列["+delcol+"]的数据共计["+counter+"]条。");
+		return true;
 	}
 	
 	/**

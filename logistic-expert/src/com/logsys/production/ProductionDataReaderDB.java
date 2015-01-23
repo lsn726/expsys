@@ -99,7 +99,7 @@ public class ProductionDataReaderDB {
 			logger.error("´´½¨Session´íÎó:",ex);
 			return null;
 		}
-		String hql="select new com.logsys.production.ProductionContent_Week(workcenter,year(date),week(date,3),output,sum(qty) as qty) from ProductionContent where 1=1";
+		String hql="select new com.logsys.production.ProductionContent_Week(workcenter,substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),output,sum(qty) as qty) from ProductionContent where 1=1";
 		if(interval.begindate!=null) hql+=" and date>=:begindate";
 		if(interval.enddate!=null) hql+=" and date<=:enddate";
 		if(plset!=null) {
@@ -109,7 +109,7 @@ public class ProductionDataReaderDB {
 			hql=hql.substring(0, hql.length()-3);
 			hql+=")";
 		}
-		hql+=" group by workcenter,year(date),week(date,3),output";
+		hql+=" group by workcenter,substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),output";
 		Query query;
 		try {
 			query=session.createQuery(hql);
