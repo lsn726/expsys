@@ -105,7 +105,7 @@ public class MrpReportForExcel {
 		begin.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);		//设置需求开始时间为本周周一
 		end.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		end.add(Calendar.WEEK_OF_YEAR, weeknum);				//末尾日期为weeknum周后的周末
-		demwklist=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, begin.getTime(), end.getTime());
+		demwklist=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, begin.getTime(), end.getTime(), true);
 		if(demwklist==null) return null;
 		//按周生产计划列表初始化
 		ppwklist=ProdplanDataReaderDB.getOnWeekProdplanDataFromDB(plset, new DateInterval(begin.getTime(),null));

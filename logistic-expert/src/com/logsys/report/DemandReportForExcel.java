@@ -162,7 +162,7 @@ public class DemandReportForExcel {
 	 * @return 按周需求矩阵对象
 	 */
 	private Matrixable genDemandMatrix_OnWeek(Date begindate, Date enddate) {
-		List<DemandContent_Week> demlist_onweek=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, begindate, enddate);	//获得按周需求元数据
+		List<DemandContent_Week> demlist_onweek=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, begindate, enddate, false);	//获得按周需求元数据
 		if(demlist_onweek==null) {
 			logger.error("不能生成按周的需求矩阵，按周需求列表获取错误。");
 			return null;

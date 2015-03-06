@@ -85,9 +85,10 @@ public class DemandDataReaderDB {
 	 * @param pnset 需求型号列表，null不限制型号
 	 * @param begin 开始日期，null不限制起始日期
 	 * @param end 结束日期，null不限制结束日期
+	 * @param countlt 是否计入leadtime因素,true计入,false不计入
 	 * @return 按周需求/null
 	 */
-	public static List<DemandContent_Week> getDemandDataFromDB_OnWeek(Set<String> pnset, Date begin, Date end) {
+	public static List<DemandContent_Week> getDemandDataFromDB_OnWeek(Set<String> pnset, Date begin, Date end, boolean countlt) {
 		if(begin!=null&&end!=null) 
 			if(begin.after(end)) {
 				logger.error("起始时间晚于结束时间。");
@@ -103,7 +104,11 @@ public class DemandDataReaderDB {
 			logger.error("创建Session错误:",ex);
 			return null;
 		}
-		String hql="select new com.logsys.demand.DemandContent_Week(pn,substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),sum(qty)) from DemandContent where 1=1";
+		String hql;
+		if(countlt)		//是否计算LeadTime
+			hql="select new com.logsys.demand.DemandContent_Week(pn,substring(yearweek(date_add(date, dlvfix ,day),3),1,4),substring(yearweek(date_add(date, dlvfix, day),3),5,2),sum(qty)) from DemandContent where 1=1";
+		else
+			hql="select new com.logsys.demand.DemandContent_Week(pn,substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),sum(qty)) from DemandContent where 1=1";
 		if(begin!=null) hql+=" and date>=:begindate";
 		if(end!=null) hql+=" and date<=:enddate";
 		if(pnset!=null) {
@@ -112,7 +117,10 @@ public class DemandDataReaderDB {
 			hql=hql.substring(0,hql.length()-3);
 			hql+=")";
 		}
-		hql+=" group by substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),pn";
+		if(countlt)
+			hql+=" group by substring(yearweek(date_add(date, dlvfix, day),3),1,4),substring(yearweek(date_add(date, dlvfix, day),3),5,2),pn";
+		else
+			hql+=" group by substring(yearweek(date,3),1,4),substring(yearweek(date,3),5,2),pn";
 		Query query;
 		try {
 			query=session.createQuery(hql);

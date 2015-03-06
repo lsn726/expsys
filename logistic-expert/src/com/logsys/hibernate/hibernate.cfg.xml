@@ -6,7 +6,6 @@
 <hibernate-configuration>
 
 <session-factory>
-	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 	<property name="connection.url">jdbc:mysql://localhost:3306/explogistic</property>
 	<property name="connection.username">dev</property>
 	<property name="connection.password">123456</property>
@@ -16,7 +15,8 @@
 	<property name="connection.pool_size">1</property>
 
 	<!-- SQL dialect -->
-	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+	<!-- <property name="dialect">org.hibernate.dialect.MySQLDialect</property> -->
+	<property name="hibernate.dialect">com.logsys.hibernate.MySqlDateTimeDialect</property>
 
 	<!-- Enable Hibernate's automatic session context management -->
 	<property name="current_session_context_class">thread</property>

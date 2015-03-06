@@ -131,7 +131,7 @@ public class SAPMrpUploadReport {
 		cal.add(Calendar.WEEK_OF_YEAR, totalweek-1);
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		end=cal.getTimeInMillis();
-		wkdemlist=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, new Date(begin), new Date(end));
+		wkdemlist=DemandDataReaderDB.getDemandDataFromDB_OnWeek(null, new Date(begin), new Date(end), true);
 		if(wkdemlist==null) {
 			logger.error("初始化失败，不能产生按周需求列表。");
 			return false;
