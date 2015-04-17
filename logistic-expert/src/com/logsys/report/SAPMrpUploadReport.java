@@ -199,8 +199,9 @@ public class SAPMrpUploadReport {
 		//第五步：写入按周需求
 		for(DemandContent_Week wkdem:wkdemlist)
 			if(!datamatrix.setData(wkdem.getPn(), DateTimeUtils.getFormattedTimeStr_YearWeek(wkdem.getYear(),wkdem.getWeek()), wkdem.getQty())) {
-				logger.error("生成数据矩阵错误，写入按周需求出现错误。需求节点["+wkdem+"].");
-				return false;
+				logger.warn("生成数据矩阵警告，写入按周需求出现错误。需求节点["+wkdem+"]没有对应的行表头.很有可能是由于提早Deliver导致的需求数据在生产计划周所确定的。");
+				continue;		//先行忽略不能写入的 错误 ，有可能是
+				//return false;
 			}
 		//第六步：写入按周计划
 		for(ProdplanContent_Week wkpp:wkpplist)
