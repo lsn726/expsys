@@ -44,19 +44,19 @@ public class ExcelStockService_SAP_MB52 {
 	private static final int COL_SLOC=3;
 	
 	/**数据列:非限制区*/
-	private static final int COL_UNS=6;
+	private static final int COL_UNS=7;
 	
 	/**数据列:计量单位*/
-	private static final int COL_UOM=5;
+	private static final int COL_UOM=6;
 	
 	/**数据列:转移中数量*/
-	private static final int COL_INTRAN=7;
+	private static final int COL_INTRAN=8;
 	
 	/**数据列:IQC*/
-	private static final int COL_IQC=8;
+	private static final int COL_IQC=9;
 	
 	/**数据列:隔离数量*/
-	private static final int COL_BLK=10;
+	private static final int COL_BLK=11;
 	
 	/**物料状态:非限制*/
 	public static final String MAT_STATUS_UNS="Unrestricted";
@@ -85,9 +85,9 @@ public class ExcelStockService_SAP_MB52 {
 		validatorMap.put(new Location(1,COL_UNS), "      Unrestricted");
 		validatorMap.put(new Location(1,COL_INTRAN), "   Transit/Transf.");
 		validatorMap.put(new Location(1,COL_IQC), "  In Quality Insp.");
-		validatorMap.put(new Location(1,9), "    Restricted-Use");
+		//validatorMap.put(new Location(1,9), "    Restricted-Use");
 		validatorMap.put(new Location(1,COL_BLK), "           Blocked");
-		validatorMap.put(new Location(1,11), "           Returns");
+		//validatorMap.put(new Location(1,11), "           Returns");
 	}
 	
 	private ExcelStockService_SAP_MB52(Sheet datasheet) {
