@@ -30,6 +30,7 @@ public class BWIPdExcelInfoFA extends BWIPdExcelInfo {
 		VERIFYMAP_LOC_STR.put(new Location(8,10), "小时\n产出\nHourly Count");
 		VERIFYMAP_LOC_STR.put(new Location(8,37), "小时\n产出\nHourly Count");
 		VERIFYMAP_LOC_STR.put(new Location(8,64), "小时\n产出\nHourly Count");
+		/**
 		VERIFYMAP_LOC_STR.put(new Location(25,13), "F T Q");
 		VERIFYMAP_LOC_STR.put(new Location(25,40), "F T Q");
 		VERIFYMAP_LOC_STR.put(new Location(25,67), "F T Q");
@@ -66,6 +67,7 @@ public class BWIPdExcelInfoFA extends BWIPdExcelInfo {
 		VERIFYMAP_LOC_STR.put(new Location(27,22), "Remarks\n备注");
 		VERIFYMAP_LOC_STR.put(new Location(27,49), "Remarks\n备注");
 		VERIFYMAP_LOC_STR.put(new Location(27,76), "Remarks\n备注");
+		*/
 		VERIFYMAP_LOC_STR.put(new Location(47,6), "累计\nTotal");
 		VERIFYMAP_LOC_STR.put(new Location(47,33), "累计\nTotal");
 		VERIFYMAP_LOC_STR.put(new Location(47,60), "累计\nTotal");
