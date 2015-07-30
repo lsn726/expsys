@@ -26,22 +26,22 @@ public class BWIPPExcelInfo20150515 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA1PPEndRow() {
-		return 31;
+		return 28;
 	}
 
 	@Override
 	public int getFA2DateRow() {
-		return 32;
+		return 0;
 	}
 
 	@Override
 	public int getFA2PPBeginRow() {
-		return 38;
+		return 35;
 	}
 
 	@Override
 	public int getFA2PPEndRow() {
-		return 74;
+		return 67;
 	}
 
 	@Override
