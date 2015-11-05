@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.logsys.schelines">
+
+	<class name="SchelinesContent" table="schelines">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<property name="slversion" type="timestamp" column="slversion" />
+		<property name="podoc" type="long" column="podoc" />
+		<property name="poitem" type="int" column="poitem" />
+		<property name="slid" type="int" column="slid" />
+		<property name="dlvdate" type="date" column="dlvdate" />
+		<property name="schqty" type="double" column="schqty" />
+		<property name="preschqty" type="double" column="preschqty" />
+		<property name="dlvedqty" type="double" column="dlvedqty" />
+		<property name="creatmtd" type="char" column="creatmtd" />
+		<property name="orderdate" type="date" column="orderdate" />
+		<property name="fix" type="char" column="fix" />
+		<property name="qtyred" type="double" column="qtyred" />
+	</class>
+	
+</hibernate-mapping>
