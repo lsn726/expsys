@@ -123,6 +123,7 @@ public class MrpReportForExcel {
 			else
 				year=begin.get(Calendar.YEAR);
 			week=begin.get(Calendar.WEEK_OF_YEAR);
+			//if(week==53) year--;		//临时处理第53周
 			demandMatrix.putColHeaderCell(index+1, String.format("%dwk%02d", year ,week));
 			begin.add(Calendar.WEEK_OF_YEAR, 1);
 		}
