@@ -11,7 +11,7 @@ public class Main {
 
 		//ReportProcess.genMRPMatrixToExcel("e:\\MRPMatrix.xlsx", 35, false);			//生成MRP矩阵报表，矩阵长度(周数)为第二参数
 		//ReportProcess.genSAPMrpUploadReportToExcel("e:\\SAPMrpUploadReport.xlsx", 35);//生成SAP的Mrp上传报告。
-		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",true,false);		//生成需求矩阵报表
+		//ReportProcess.genDemandMatrixToExcel("e:\\DemandReport.xlsx",true,true);		//生成需求矩阵报表
 
 		//BWIWarehouseExcelReport report=BWIWarehouseExcelReport.createReportObject("e:\\rec.xlsx");
 		//report.analyzeWorkbook();

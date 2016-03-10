@@ -41,7 +41,7 @@ public class BWIPPExcelInfo20150515 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA2PPEndRow() {
-		return 78;
+		return 82;
 	}
 
 	@Override
