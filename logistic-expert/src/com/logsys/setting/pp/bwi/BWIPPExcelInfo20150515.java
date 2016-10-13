@@ -16,17 +16,17 @@ public class BWIPPExcelInfo20150515 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA1DateRow() {
-		return 3;
-	}
-
-	@Override
-	public int getFA1PPBeginRow() {
 		return 4;
 	}
 
 	@Override
+	public int getFA1PPBeginRow() {
+		return 5;
+	}
+
+	@Override
 	public int getFA1PPEndRow() {
-		return 28;
+		return 29;
 	}
 
 	@Override
@@ -36,12 +36,12 @@ public class BWIPPExcelInfo20150515 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA2PPBeginRow() {
-		return 36;
+		return 37;
 	}
 
 	@Override
 	public int getFA2PPEndRow() {
-		return 82;
+		return 84;
 	}
 
 	@Override
