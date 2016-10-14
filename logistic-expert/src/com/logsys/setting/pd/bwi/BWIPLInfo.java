@@ -30,6 +30,8 @@ public class BWIPLInfo {
 		DAMPER_FA_FA2,
 		/**¼õÕðÆ÷--FA--Module*/
 		DAMPER_FA_MODULE,
+		/**¼õÕðÆ÷--FA--HondaModule*/
+		DAMPER_FA_HONDA_MODULE,
 		/**¼õÕðÆ÷--FA--UV*/
 		DAMPER_FA_UV,
 		/**¼õÕðÆ÷--FA--Rebound Stop BF20/21/22*/
@@ -123,7 +125,8 @@ public class BWIPLInfo {
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FINAL_CHECK, "DamperFA Final Check");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FA1, "DamperFA FA 1");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_FA2, "DamperFA FA 2");
-		STDNAME_MAP.put(ProdLine.DAMPER_FA_MODULE, "DamperFA Module");
+		STDNAME_MAP.put(ProdLine.DAMPER_FA_MODULE, "DamperFA HondaMod");
+		STDNAME_MAP.put(ProdLine.DAMPER_FA_HONDA_MODULE, "DamperFA HondaMod");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_UV, "DamperFA UV");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_REBOUND_STOP_202122, "DamperFA RebStop 202122");
 		STDNAME_MAP.put(ProdLine.DAMPER_FA_REBOUND_STOP_23, "DamperFA RebStop 23");

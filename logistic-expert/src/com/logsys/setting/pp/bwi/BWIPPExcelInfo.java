@@ -47,9 +47,21 @@ public interface BWIPPExcelInfo {
 	
 	/**
 	 * 获取总装2线计划结束列数
-	 * @return 总装2线计划结束列数
+	 * @return 总装2线计划结束行数
 	 */
 	public int getFA2PPEndRow();
+	
+	/**
+	 * 获取Honda Module线计划起始行数
+	 * @return Honda Module线起始行数
+	 */
+	public int getHondaModuleBeginRow();
+	
+	/**
+	 * 获取Honda Module线计划结束行数
+	 * @return Honda Module线结束行数
+	 */
+	public int getHondaModuleEndRow();
 	
 	/**
 	 * 获取版本 

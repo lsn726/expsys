@@ -7,7 +7,7 @@ import java.util.Date;
  * BWI生产计划Excel信息版本:2014年4月10日
  * @author ShaonanLi
  */
-public class BWIPPExcelInfo20141128 implements BWIPPExcelInfo {
+public class BWIPPExcelInfo20161013 implements BWIPPExcelInfo {
 
 	@Override
 	public int getPnCol() {
@@ -16,40 +16,51 @@ public class BWIPPExcelInfo20141128 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA1DateRow() {
-		return 3;
-	}
-
-	@Override
-	public int getFA1PPBeginRow() {
 		return 4;
 	}
 
 	@Override
+	public int getFA1PPBeginRow() {
+		return 5;
+	}
+
+	@Override
 	public int getFA1PPEndRow() {
-		return 27;
+		return 29;
 	}
 
 	@Override
 	public int getFA2DateRow() {
-		return 32;
+		return 0;
 	}
 
 	@Override
 	public int getFA2PPBeginRow() {
-		return 34;
+		return 37;
 	}
 
 	@Override
 	public int getFA2PPEndRow() {
-		return 61;
+		return 80;
 	}
 
 	@Override
 	public Date getVersion() {
 		Calendar cal=Calendar.getInstance();
 		cal.clear();
-		cal.set(2014, Calendar.JULY, 15);
+		cal.set(2016, Calendar.OCTOBER, 13);
 		return cal.getTime();
+	}
+
+	@Override
+	public int getHondaModuleBeginRow() {
+		return 91;
+	}
+
+	@Override
+	public int getHondaModuleEndRow() {
+		// TODO Auto-generated method stub
+		return 96;
 	}
 
 }
