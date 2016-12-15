@@ -26,7 +26,7 @@ public class BWIPPExcelInfo20161013 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA1PPEndRow() {
-		return 29;
+		return 28;
 	}
 
 	@Override
@@ -36,12 +36,12 @@ public class BWIPPExcelInfo20161013 implements BWIPPExcelInfo {
 
 	@Override
 	public int getFA2PPBeginRow() {
-		return 37;
+		return 36;
 	}
 
 	@Override
 	public int getFA2PPEndRow() {
-		return 80;
+		return 77;
 	}
 
 	@Override
@@ -54,13 +54,13 @@ public class BWIPPExcelInfo20161013 implements BWIPPExcelInfo {
 
 	@Override
 	public int getHondaModuleBeginRow() {
-		return 91;
+		return 88;
 	}
 
 	@Override
 	public int getHondaModuleEndRow() {
 		// TODO Auto-generated method stub
-		return 96;
+		return 93;
 	}
 
 }
